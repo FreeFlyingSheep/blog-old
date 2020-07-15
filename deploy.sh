@@ -1,35 +1,22 @@
 #!/bin/bash
-
-# If a command fails then the deploy stops.
+# Deploy updates to GitHub.
 set -e
 
-printf "\033[0;32mDeploying updates to GitHub...\033[0m\n"
+echo "Deploying updates to GitHub..."
 
-
-# Go to public folder
 cd public
+git rm -rf . > /dev/null
 
-# Clean the directory.
-git rm -rf .
+cd ..
+hugo
 
-# Go To project folder
 cd public
-
-# Build the project.
-hugo # if using a theme, replace with `hugo -t <YOURTHEME>`
-
-# Go To Public folder
-cd public
-
-# Add changes to git.
 git add .
 
-# Commit changes.
-msg="Rebuild site on $(date)"
+msg="Rebuild site on `date '+%x %X'`"
 if [ -n "$*" ]; then
 	msg="$*"
 fi
 git commit -m "$msg"
 
-# Push source and build repos.
 git push origin master
