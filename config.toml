@@ -6,7 +6,7 @@ languageCode = "zh-CN"
 # whether to include Chinese, Japanese and Korean characters
 hasCJKLanguage = true
 # website title
-title = "FreeFlyingSheep"
+title = "FreeFlyingSheep 的小站"
 
 # Change the default theme to be use when building the site with Hugo
 theme = "LoveIt"
@@ -44,7 +44,7 @@ theme = "LoveIt"
     # Header title config
     [params.header.title]
       # title name
-      name = "FreeFlyingSheep"
+      name = "FreeFlyingSheep 的小站"
       # whether to use typeit animation for title name
       typeit = false
 
@@ -180,8 +180,8 @@ theme = "LoveIt"
       # Valine comment config
       [params.page.comment.valine]
         enable = true
-        appId = "4dcLJxWkXAoqqvkhhGeKjSUJ-9Nh9j0Va"
-        appKey = "kpCpNzaQsFNX99kfHgepHYSv"
+        appId = "mG7p8X8RIKzRBXDnYfuTFdXW-MdYXbMMI"
+        appKey = "4ac932i5ENGbEyOEa6kDuvwm"
         placeholder = "你的评论……"
         avatar = "mm"
         pageSize = 10

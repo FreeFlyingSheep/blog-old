@@ -1,13 +1,13 @@
 ---
 title: "MIPS (补充内容)"
 date: 2020-07-15
-lastmod: 2020-07-15
+lastmod: 2020-07-16
 tags: [MIPS]
 categories: [MIPS]
 draft: false
 --- 
 
-针对 [MIPS 汇编](mips_assembly.markdown) 和 [MIPS 体系结构](see_mips_run.markdown) 的补充内容，截止 2020 年 7 月。
+针对 [MIPS 汇编](/posts/mips/mips_assembly) 和 [MIPS 体系结构](/posts/mips/see_mips_run) 的补充内容，截止 2020 年 7 月。
 
 <!--more-->
 
@@ -63,4 +63,11 @@ draft: false
 ## Linux/MIPS 的内存管理
 
 - 32 位的 Linux/MIPS 内核假定整个低内存可通过 `kseg0` 访问，这一空间但最多 512MB。通常会保留该地址空间的一部分供其他使用，因此把低端内存限制为256MB，超出此范围的内存通过高端内存来访问。
-- 64位的 Linux/MIPS 内核通过xkphys访问低端内存。由于 xkphys的大小足够，整个物理内存是可以直接访问的，因此不需要高端内存。
+- 64位的 Linux/MIPS 内核通过xkphys访问低端内存。由于 xkphys 的大小足够，整个物理内存是可以直接访问的，因此不需要高端内存。
+
+## 参考文档
+
+MIPS 体系结构的文档可在官网上找到：
+
+- [MIPS32 Architecture](https://www.mips.com/products/architectures/mips32-2/)
+- [MIPS64 Architecture](https://www.mips.com/products/architectures/mips64/)
