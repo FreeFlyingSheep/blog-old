@@ -271,6 +271,12 @@ TODO
 
 将内容添加到 Github [相应页面](https://github.com/settings/ssh/new)添加公钥。
 
+### 验证
+
+    ssh -T git@github.com
+
+首次使用需要确认并添加主机到本机SSH可信列表。若返回 `Hi FreeFlyingSheep! You've successfully authenticated, but GitHub does not provide shell access.` 内容，则证明添加成功。
+
 ## Git 工具
 
 ### 贮藏与清理
