@@ -1,13 +1,13 @@
 ---
 title: "MIPS 汇编"
 date: 2020-07-10
-lastmod: 2020-07-15
+lastmod: 2020-07-16
 tags: [MIPS, 汇编]
 categories: [MIPS]
 draft: false
 --- 
 
-根据 *[Programmed Introduction to MIPS Assembly Language](http://programmedlessons.org/AssemblyTutorial/index.html)* (2020 年 7 月) 和《计算机组成与设计 软件/硬件接口 》 (原书第 5 版) 整理，部分内容可能已经过时，见后续笔记。
+根据 *[Programmed Introduction to MIPS Assembly Language](http://programmedlessons.org/AssemblyTutorial/index.html)* 和《计算机组成与设计 软件/硬件接口 》 (原书第 5 版) 整理。
 
 <!--more-->
 
@@ -110,8 +110,8 @@ MIPS 有 32 个 32 位的浮点寄存器 `$f0` – `$f31`。
 
 | 指令格式 | 含义 |
 | --- | --- |
-| `div rd,rt` | `lo = rd div rt; hi = rd mod rt` (有符号数) |
-| `divu rd,rt` | `lo = rd div rt; hi = rd mod rt` (无符号数) |
+| `div rd,rt` | `lo = rd / rt; hi = rd % rt` (有符号数) |
+| `divu rd,rt` | `lo = rd / rt; hi = rd % rt` (无符号数) |
 
 - `lo`：商
 - `hi`：余数

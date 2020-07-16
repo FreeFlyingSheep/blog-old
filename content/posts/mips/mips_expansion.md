@@ -7,7 +7,7 @@ categories: [MIPS]
 draft: false
 --- 
 
-针对 [MIPS 汇编](/posts/mips/mips_assembly) 和 [MIPS 体系结构](/posts/mips/see_mips_run) 的补充内容，截止 2020 年 7 月。
+针对 [MIPS 汇编](/posts/mips/mips_assembly) 和 [MIPS 体系结构](/posts/mips/see_mips_run) 的补充内容。
 
 <!--more-->
 
