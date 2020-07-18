@@ -1,7 +1,7 @@
 ---
 title: "MIPS 汇编"
 date: 2020-07-10
-lastmod: 2020-07-17
+lastmod: 2020-07-18
 tags: [MIPS, 汇编]
 categories: [MIPS]
 draft: false
@@ -431,4 +431,5 @@ MIPS 的指令总是 32 位的，因此指令是 4 字节对齐的，32 位地�
     5.1. 将 1.1 中保存的寄存器按与入栈时相反的顺序出栈。
 
 进入子程序时栈结构如下图所示：
+
 ![进入子程序时栈的结构](/images/mips/stack.png)

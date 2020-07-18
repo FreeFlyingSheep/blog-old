@@ -60,7 +60,7 @@ theme = "LoveIt"
     # Site creation time
     since = 2020
     # license info (HTML format is supported)
-    license = '<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。'
+    license = '<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="/images/license.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。'
 
   # Section (all posts) page config
   [params.section]
@@ -106,8 +106,8 @@ theme = "LoveIt"
   # Social config about the author
   [params.social]
     GitHub = "FreeFlyingSheep"
-    Stackoverflow = "13645603/freeflyingsheep"
-    Bilibili = "186403082"
+    # Stackoverflow = "13645603/freeflyingsheep"
+    # Bilibili = "186403082"
     Email = "fyang.168.hi@163.com"
     RSS = true
 
@@ -234,7 +234,6 @@ theme = "LoveIt"
     weight = 4
 
 # Markup related configuration in Hugo
-# Hugo 解析文档的配置
 [markup]
   # Syntax Highlighting (https://gohugo.io/content-management/syntax-highlighting)
   [markup.highlight]
@@ -263,9 +262,9 @@ theme = "LoveIt"
     endLevel = 6
 
 # Author config
-# 作者配置
 [author]
   name = "FreeFlyingSheep"
 
+# Options to make hugo output files
 [outputs]
   home = ["HTML", "RSS", "JSON"]

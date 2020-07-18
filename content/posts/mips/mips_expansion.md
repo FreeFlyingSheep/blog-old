@@ -1,7 +1,7 @@
 ---
 title: "MIPS (补充内容)"
 date: 2020-07-15
-lastmod: 2020-07-17
+lastmod: 2020-07-18
 tags: [MIPS]
 categories: [MIPS]
 draft: false
@@ -50,12 +50,15 @@ draft: false
 以下内容来自 *[The MIPS64 and microMIPS64 Privileged Resource Architecture v6.03](https://s3-eu-west-1.amazonaws.com/downloads-mips/documents/MD00091-2B-MIPS64PRA-AFP-06.03.pdf)* 。
 
 虚拟地址空间如下图所示：
+
 ![虚拟地址空间](/images/mips/virtual_address_space.png)
 
 特别地，对于 `xkphys` 空间，虚拟地址的格式如下：
+
 ![`xkphys` 空间下虚拟地址的格式](/images/mips/address_interpretation.png)
 
 针对 `CCA` 部分，具体描述如下：
+
 ![`CCA` 的具体描述](/images/mips/cacheabillity_and_coherency.png)
 
 根据上表描述的属性，`xkphys` 空间包括八个地址范围，每个地址范围提供了进入物理内存的 $2^{PABITS}$ 字节的窗口，因此不会使用TLB转换地址。
