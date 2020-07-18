@@ -15,13 +15,12 @@ git add .
 
 msg="Rebuild site on `date '+%x %X'`"
 if [ -n "$*" ]; then
-	msg="$*"
+    msg="$*"
 fi
 git commit -m "$msg"
 
 git push origin master
 
 cd ..
-git add .
-git commit -m "$msg"
-git push origin master
+git commit -am "$msg"
+git push --recurse-submodules=check origin master

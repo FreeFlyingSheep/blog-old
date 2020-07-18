@@ -460,7 +460,12 @@ Git 默认会尝试更新所有子模块，你也可以传递想要更新的子�
 
 ### 发布子模块改动
 
-在推送主模块前，应该先推送所有子模块，或者在主模块推送时采用如下命令，让 Git 自己尝试这么做：
+在推送主模块前，应该先推送所有子模块。
+可以使用 `check` 选项，这样如果任何提交的子模块改动没有推送，`push` 操作会直接失败：
+
+    git push --recurse-submodules=check
+
+或者在主模块推送时采用 `on-demand` 选项，让 Git 自己尝试这么做：
 
     git push --recurse-submodules=on-demand
 
