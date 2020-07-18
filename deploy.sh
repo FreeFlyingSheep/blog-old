@@ -22,5 +22,6 @@ git commit -m "$msg"
 git push origin master
 
 cd ..
-git commit -am "$msg"
+git add .
+git commit -m "$msg"
 git push --recurse-submodules=check origin master
