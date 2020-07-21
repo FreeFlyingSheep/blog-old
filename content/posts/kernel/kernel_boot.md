@@ -1,5 +1,5 @@
 ---
-title: "阅读 Linux 内核源码 (MIPS 启动)"
+title: "Linux/MIPS 启动"
 date: 2020-07-20
 lastmod: 2020-07-20
 tags: [Linux 内核, MIPS, 启动]
@@ -7,7 +7,7 @@ categories: [Kernel]
 draft: false
 --- 
 
-阅读 MIPS 启动部分的代码，从内核入口 `kernel_entry` 到 `start_kernel` 的第一个子函数 `lock_kernel`，基于 Linux kernel release 2.6.11.12。由于 Markdown 代码块语法高亮不支持汇编，此处统一用 `C` 标注。
+阅读 MIPS 启动部分的代码，从内核入口 `kernel_entry` 到 `start_kernel` 的第一个子函数 `lock_kernel`，很多细节本人并没理解，所以不进行展开。基于 Linux kernel release 2.6.11.12。由于 Markdown 代码块语法高亮不支持汇编，此处统一用 `C` 标注。
 
 <!--more-->
 
@@ -51,7 +51,7 @@ NESTED(kernel_entry, 16, sp) # kernel entry point
     END(kernel_entry)
 ```
 
-`init_thread_union` 定义于 `arch/mips/kernel/init_task.c`，见后续笔记。
+`init_thread_union` 定义于 `arch/mips/kernel/init_task.c`。
 
 ### `start_kernel`
 
@@ -92,7 +92,7 @@ extern void __lockfunc unlock_kernel(void) __releases(kernel_lock);
 #endif /* CONFIG_LOCK_KERNEL */
 ```
 
-`lock_kernel` 和 `unlock_kernel` 的具体实现在 `lib/kernel_lock.c` 中，见后续笔记。
+`lock_kernel` 和 `unlock_kernel` 的具体实现在 `lib/kernel_lock.c` 中。
 
 ## 汇编器指令
 
@@ -308,7 +308,7 @@ symbol:     .frame  sp, framesize, rpc
 
 ### `MAPPED_KERNEL_SETUP_TLB`
 
-定义于 `arch/mips/kernel/head.S`，见后续笔记。
+定义于 `arch/mips/kernel/head.S`。
 
 ### `ARC64_TWIDDLE_PC`
 
