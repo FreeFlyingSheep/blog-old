@@ -3,9 +3,9 @@ title: "MIPS (补充内容)"
 date: 2020-07-15
 lastmod: 2020-07-18
 tags: [MIPS]
-categories: [MIPS]
+categories: [MIPS, 汇编, 体系结构]
 draft: false
---- 
+---
 
 针对 [MIPS 汇编](/posts/mips/mips_assembly) 和 [MIPS 体系结构](/posts/mips/see_mips_run) 的补充内容。
 

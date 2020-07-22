@@ -5,7 +5,7 @@ lastmod: 2020-07-18
 tags: [MIPS, 汇编]
 categories: [MIPS]
 draft: false
---- 
+---
 
 根据 *[Programmed Introduction to MIPS Assembly Language](http://programmedlessons.org/AssemblyTutorial/index.html)* 和《计算机组成与设计 软件/硬件接口 》 (原书第 5 版) 整理。
 
