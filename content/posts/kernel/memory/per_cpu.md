@@ -158,7 +158,7 @@ buffered_rmqueue(struct zone *zone, int order, int gfp_flags)
 ```
 
 - 部分内容涉及[伙伴系统](/posts/kernel/memory/buddy_system)，此处不展开了。
-- 复合页：将物理上连续的两个或多个页看成一个独立的大页，此处不做具体阐述。
+- 复合页：将物理上连续的两个或多个页看成一个独立的大页，具体可以参考社区新闻 *[An introduction to compound pages](https://lwn.net/Articles/619514/)*。。
 
 ### 释放页框到 per-CPU 页框高速缓存
 

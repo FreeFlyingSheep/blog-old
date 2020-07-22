@@ -91,21 +91,21 @@ static inline void __free_pages_bulk (struct page *page, struct page *base,
     struct page *coalesced;
     int order_size = 1 << order;
 
-    if (unlikely(order))
+    if (unlikely(order)) // 复合页
         destroy_compound_page(page, order);
 
-    page_idx = page - base;
+    page_idx = page - base; // 当前块的下标
 
     BUG_ON(page_idx & (order_size - 1));
     BUG_ON(bad_range(zone, page));
 
     zone->free_pages += order_size;
-    while (order < MAX_ORDER-1) {
+    while (order < MAX_ORDER-1) { // 合并一个块和它的伙伴
         struct free_area *area;
         struct page *buddy;
         int buddy_idx;
 
-        buddy_idx = (page_idx ^ (1 << order));
+        buddy_idx = (page_idx ^ (1 << order)); // 当前块的伙伴的下标
         buddy = base + buddy_idx;
         if (bad_range(zone, buddy))
             break;
@@ -115,13 +115,15 @@ static inline void __free_pages_bulk (struct page *page, struct page *base,
         list_del(&buddy->lru);
         area = zone->free_area + order;
         area->nr_free--;
-        rmv_page_order(buddy);
-        page_idx &= buddy_idx;
+        rmv_page_order(buddy); // 清除 private
+        page_idx &= buddy_idx; // 恢复当前块的下标
         order++;
     }
     coalesced = base + page_idx;
     set_page_order(coalesced, order);
-    list_add(&coalesced->lru, &zone->free_area[order].free_list);
+    list_add(&coalesced->lru, &zone->free_area[order].free_list); // 添加到空闲链表
     zone->free_area[order].nr_free++;
 }
 ```
+
+复合页：将物理上连续的两个或多个页看成一个独立的大页，具体可以参考社区新闻 *[An introduction to compound pages](https://lwn.net/Articles/619514/)*。
