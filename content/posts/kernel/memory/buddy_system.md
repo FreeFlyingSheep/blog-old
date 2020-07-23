@@ -1,7 +1,7 @@
 ---
 title: "Linux 内存管理 (伙伴系统)"
 date: 2020-07-21
-lastmod: 2020-07-22
+lastmod: 2020-07-23
 tags: [Linux 内核, 内存管理, 伙伴系统]
 categories: [Kernel]
 draft: false
@@ -27,7 +27,39 @@ draft: false
 
 由于块的大小都是 2 的幂，所以被称为伙伴的块只有一位二进制位不同。对于一个块，只需要与掩码 (`1 << order`) 进行异或操作，就能找到它的伙伴。
 
-## 伙伴系统的实现
+## 伙伴系统分配器
+
+### 数据结构
+
+`include/linux/mmzone.h`：
+
+``` C
+struct zone {
+    ...
+    /*
+     * free areas of different sizes
+     */
+    spinlock_t lock;
+    struct free_area free_area[MAX_ORDER];
+    ...
+    /*
+     * Discontig memory support fields.
+     */
+    struct pglist_data *zone_pgdat;
+    struct page *zone_mem_map;
+    /* zone_start_pfn == zone_start_paddr >> PAGE_SHIFT */
+    unsigned long zone_start_pfn;
+
+    unsigned long spanned_pages; /* total size, including holes */
+    unsigned long present_pages; /* amount of memory (excluding holes) */
+    ...
+}
+```
+
+对每个管理区，Linux 采用不同的伙伴系统，每个伙伴系统使用的主要数据结构如下：
+
+- `mem_map` 数组。每个区都关系到该数组的子集，由 `zone_mem_map` 指定子集的第一个元素。
+- `free_area` 数组。该数组的元素类型为 `free_area`，每个元素对应一种块大小。
 
 ### 分配块
 
