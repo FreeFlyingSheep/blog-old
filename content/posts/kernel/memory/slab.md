@@ -1,7 +1,7 @@
 ---
 title: "Linux 内存管理 (slab 分配器)"
 date: 2020-07-23
-lastmod: 2020-07-23
+lastmod: 2020-07-24
 tags: [Linux 内核, 内存管理, slab 分配器]
 categories: [Kernel]
 draft: false

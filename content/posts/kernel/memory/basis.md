@@ -1,7 +1,7 @@
 ---
 title: "Linux 内存管理 (基础部分)"
 date: 2020-07-20
-lastmod: 2020-07-23
+lastmod: 2020-07-24
 tags: [Linux 内核, 内存管理, 内存模型, 页框分配]
 categories: [Kernel]
 draft: false
@@ -226,18 +226,6 @@ extern unsigned long FASTCALL(get_zeroed_page(unsigned int gfp_mask));
 
 ``` C
 /*
- * This is the 'heart' of the zoned buddy allocator.
- */
-struct page * fastcall
-__alloc_pages(unsigned int gfp_mask, unsigned int order,
-        struct zonelist *zonelist)
-{
-    ... // 这个函数太大了，这里不展开了，主要是处理标志，然后从伙伴系统分配页框，细节我也没看
-}
-
-EXPORT_SYMBOL(__get_free_pages);
-
-/*
  * Common helper functions.
  */
 fastcall unsigned long __get_free_pages(unsigned int gfp_mask, unsigned int order)
@@ -301,6 +289,8 @@ struct page *alloc_pages_current(unsigned gfp, unsigned order)
 EXPORT_SYMBOL(alloc_pages_current);
 ```
 
+`__alloc_pages()` 函数见[管理区分配器](/posts/kernel/memory/zone_allocator)。
+
 ### 释放页框
 
 | 函数 | 功能 |
@@ -322,57 +312,9 @@ extern void FASTCALL(free_cold_page(struct page *page));
 #define free_page(addr) free_pages((addr),0)
 ```
 
-`include/linux/mm.h`：
-
-``` C
-/*
- * Drop a ref, return true if the logical refcount fell to zero (the page has
- * no users)
- */
-#define put_page_testzero(p)                \
-    ({                      \
-        BUG_ON(page_count(p) == 0);     \
-        atomic_add_negative(-1, &(p)->_count);  \
-    })
-```
-
 `mm/page_alloc.c`：
 
 ``` C
-void __free_pages_ok(struct page *page, unsigned int order)
-{
-    LIST_HEAD(list);
-    int i;
-
-    arch_free_page(page, order);
-
-    mod_page_state(pgfree, 1 << order);
-
-#ifndef CONFIG_MMU
-    if (order > 0)
-        for (i = 1 ; i < (1 << order) ; ++i)
-            __put_page(page + i);
-#endif
-
-    for (i = 0 ; i < (1 << order) ; ++i)
-        free_pages_check(__FUNCTION__, page + i);
-    list_add(&page->lru, &list);
-    kernel_map_pages(page, 1<<order, 0);
-    free_pages_bulk(page_zone(page), 1, &list, order);
-}
-
-fastcall void __free_pages(struct page *page, unsigned int order)
-{
-    if (!PageReserved(page) && put_page_testzero(page)) {
-        if (order == 0)
-            free_hot_page(page);
-        else
-            __free_pages_ok(page, order);
-    }
-}
-
-EXPORT_SYMBOL(__free_pages);
-
 fastcall void free_pages(unsigned long addr, unsigned int order)
 {
     if (addr != 0) {
@@ -384,4 +326,5 @@ fastcall void free_pages(unsigned long addr, unsigned int order)
 EXPORT_SYMBOL(free_pages);
 ```
 
+`__free_pages()` 函数见[管理区分配器](/posts/kernel/memory/zone_allocator)。
 很多函数涉及[伙伴系统](/posts/kernel/memory/buddy_system)和 [per-CPU 页框高速缓存](/posts/kernel/memory/per_cpu)，这里就不展开了。

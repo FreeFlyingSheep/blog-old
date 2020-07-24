@@ -11,8 +11,6 @@ draft: true
 
 <!--more-->
 
-## 保留的页框池
-
 ## 高端内存页框的内存映射
 
 ## slub 分配器
@@ -21,6 +19,4 @@ draft: true
 
 ## 分配函数的选择
 
-连续内存分配涉及的内容大致如下：
-
-![连续内存分配](/images/kernel/memory/contiguous_memory.png)
+## 内存管理相关函数调用关系
