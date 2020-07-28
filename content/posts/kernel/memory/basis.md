@@ -1,7 +1,7 @@
 ---
 title: "Linux 内存管理 (基础部分)"
 date: 2020-07-20
-lastmod: 2020-07-24
+lastmod: 2020-07-28
 tags: [Linux 内核, 内存管理, 内存模型, 页框分配]
 categories: [Kernel]
 draft: false
@@ -104,7 +104,7 @@ Linux 支持 NUMA 模型，它通过把物理内存划分为多个节点，来�
 - `ZONE_NORMAL`：能正常映射的页框。
 - `ZONE_HIGHMEM`：动态映射的页框。
 
-此处两本书的描述略有不同，《Linux 内核设计与实现》基于 2.6.34 版本，这时候已经新加了 `ZONE_DMA32` 区，该区和 `ZONE_DMA` 的区别在于这个区只能被 32 位的设备访问。
+此处两本书的描述略有不同，《Linux 内核设计与实现》基于 2.6.34 版本，这时候已经新加了 `ZONE_DMA32` 区，该区和 `ZONE_DMA` 的区别在于这个区只能被 32 位的设备访问。该区具体是 2.6.14 版本添加的，参考社区新闻 *[ZONE_DMA32](https://lwn.net/Articles/152462/)*。
 这些定义位于 `include/linux/mmzone.h`。
 
 `ZONE_HIGHMEM` 区的内存被称为**高端内存**，其余部分则被称为**低端内存**。
