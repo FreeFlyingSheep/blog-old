@@ -1,7 +1,7 @@
 ---
 title: "Linux 内存管理 (管理区分配器)"
 date: 2020-07-24
-lastmod: 2020-07-24
+lastmod: 2020-07-28
 tags: [Linux 内核, 内存管理, 管理区分配器]
 categories: [Kernel]
 draft: false
@@ -176,7 +176,7 @@ restart:
         wakeup_kswapd(z, order);
 ```
 
-4、第二次遍历存放管理区的数组，但使用了较低的阈值 (注意传递给 `zone_watermark_ok()` 的参数不同)。若能满足请求，跳转到第 14 步。
+4、第二次遍历存放管理区的数组，但使用了较低的阈值 (注意传递给 `zone_watermark_ok()` 的参数不同)。若能满足请求，跳转到第 15 步。
 
 ``` C
     /*
@@ -210,15 +210,15 @@ restart:
     }
 ```
 
-6、来到这里，必须阻塞当前进程才能满足请求 (`__GFP_WAIT` 需要被置位)。
+6、来到这里，必须阻塞当前进程才能满足请求 (`__GFP_WAIT` 需要被置位)。否则，跳转到第 14 步。
 
 ``` C
-/* Atomic allocations - we can't balance anything */
-if (!wait)
-    goto nopage;
+    /* Atomic allocations - we can't balance anything */
+    if (!wait)
+        goto nopage;
 ```
 
-7、进程能够被阻塞，调用 `cond_resched()` 检查是否有其它进程需要 CPU。
+7、来到这里，说明进程能够被阻塞，调用 `cond_resched()` 检查是否有其它进程需要 CPU。
 
 ``` C
 rebalance:
@@ -232,7 +232,7 @@ rebalance:
     p->flags |= PF_MEMALLOC;
 ```
 
-9、将 `reclaim_state` 的存入 `current->reclaim_state`。
+9、将 `reclaim_state` 存入 `current->reclaim_state`。
 
 ``` C
     reclaim_state.reclaimed_slab = 0;
@@ -251,7 +251,7 @@ rebalance:
 ```
 
 11、如果已经释放了一些页框，那么按第 4 步的方式再次遍历存放内存管理区的数组。若能满足请求，跳转到第 15 步。
-如果分配请求不能被满足，`__GFP_NORETRY` (分配失败时不重复分配) 被清除且 `__GFP_FS` (可以启动文件系统 I/O) 被置位，那么再次遍历存放内存管理区的数组 (注意传递给 `zone_watermark_ok()` 的参数不同)。若能满足请求，跳转到第 15 步；反之，说明内存耗尽，通过调用 `out_of_memory()` (该函数位于 `mm/oom_kill.c`) 杀死一个进程，来保证系统不崩溃，然后转到第 2 步。这次遍历的阈值比之前的要高，因此很容易失败，只有在另一个内核控制路径已经通过杀死了一个进程来回收了它的内存的时候，才会成功，但这种情况下，确实避免了两个无辜的进程 (不是一个) 被杀死。
+如果分配请求不能被满足，`__GFP_NORETRY` (分配失败时不重复分配) 被清除且 `__GFP_FS` (可以启动文件系统 I/O) 被置位，那么再次遍历存放内存管理区的数组 (注意传递给 `zone_watermark_ok()` 的参数不同)。若能满足请求，跳转到第 15 步；反之，说明内存耗尽，通过调用 `out_of_memory()` (该函数位于 `mm/oom_kill.c`) 杀死一个进程，来保证系统不崩溃，然后转到第 2 步。这次遍历的阈值比之前的要高，因此很容易失败，只有在另一个内核控制路径已经通过杀死了一个进程来回收了它的内存的时候，才会成功，但这种情况下，确实避免了两个无辜的进程 (而不是一个) 被杀死。
 
 ``` C
     if (likely(did_some_progress)) {

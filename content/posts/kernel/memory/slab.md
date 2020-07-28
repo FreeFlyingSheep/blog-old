@@ -1,7 +1,7 @@
 ---
 title: "Linux 内存管理 (slab 分配器)"
 date: 2020-07-23
-lastmod: 2020-07-27
+lastmod: 2020-07-28
 tags: [Linux 内核, 内存管理, slab 分配器]
 categories: [Kernel]
 draft: false
@@ -154,7 +154,7 @@ slab 描述符与对象描述符的关系如下：
 
 ![slab 描述符与对象描述符的关系](/images/kernel/memory/slab_object.png)
 
-## 普通和专用高速缓存
+## 普通高速缓存和专用高速缓存
 
 高速缓存被分为普通和专用两种，普通高速缓存只由 slab 分配器用于自己的目的，而专用高速缓存由内核的其余部分使用。
 
