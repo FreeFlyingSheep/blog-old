@@ -17,11 +17,11 @@ msg="Rebuild site on `date '+%x %X'`"
 if [ -n "$*" ]; then
     msg="$*"
 fi
-git diff-index --quiet HEAD || git commit -m '$msg'
+git diff-index --quiet HEAD || git commit -m "$msg"
 
 git push origin master
 
 cd ..
 git add .
-git diff-index --quiet HEAD || git commit -m '$msg'
+git diff-index --quiet HEAD || git commit -m "$msg"
 git push --recurse-submodules=check origin master
