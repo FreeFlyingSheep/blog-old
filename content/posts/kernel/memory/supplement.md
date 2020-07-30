@@ -1,13 +1,13 @@
 ---
 title: "Linux 内存管理 (补充内容)"
 date: 2020-07-27
-lastmod: 2020-07-29
+lastmod: 2020-07-30
 tags: [Linux 内核, 内存管理]
 categories: [Kernel]
 draft: false
 ---
 
-根据《深入理解 Linux 内核》(第三版) 和《Linux 内核设计与实现》(原书第 3 版) 内存管理部分的整理和补充，补充介绍前面笔记未涉及的内容。代码部分基于 Linux kernel release 2.6.11.12。“TODO” 部分等后续工作中遇到再填坑 (鸽了)。
+根据《深入理解 Linux 内核》(第三版) 和《Linux 内核设计与实现》(原书第 3 版) 内存管理部分的整理和补充，补充介绍前面笔记未涉及的内容。代码部分基于 Linux kernel release 2.6.11.12。
 
 <!--more-->
 

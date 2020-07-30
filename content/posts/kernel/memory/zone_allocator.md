@@ -91,7 +91,7 @@ int zone_watermark_ok(struct zone *z, int order, unsigned long mark,
 `zone_watermark_ok()` 是一个辅助函数，在满足如下两个条件时返回 `1`：
 
 - 除了被分配的页框外，内存管理区中至少还有 `min` 个空闲页框 (不包括保留的页框)。
-- 除了被分配的页框外，在 `order` 至少为 `k` 的块中，有大于等于 `min` / $2^{k}$ 个空闲页框。
+- 除了被分配的页框外，在 `order` 至少为 `o` 的块中，有大于等于 `min` / $2^{o}$ 个空闲页框。
 
 阈值 `min` 的值由 `mask`、`can_try_harder` 和 `gfp_high` 确定：
 
