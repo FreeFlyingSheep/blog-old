@@ -2,7 +2,7 @@
 title: "Linux 内存管理 (基础部分)"
 date: 2020-07-20
 lastmod: 2020-07-28
-tags: [Linux 内核, 内存管理, 内存模型, 页框分配]
+tags: [Linux 内核, 内存管理]
 categories: [Kernel]
 draft: false
 ---
