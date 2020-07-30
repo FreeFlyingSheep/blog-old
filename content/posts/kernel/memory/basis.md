@@ -1,7 +1,7 @@
 ---
 title: "Linux 内存管理 (基础部分)"
 date: 2020-07-20
-lastmod: 2020-07-28
+lastmod: 2020-07-30
 tags: [Linux 内核, 内存管理]
 categories: [Kernel]
 draft: false
