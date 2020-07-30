@@ -3,4 +3,4 @@
 set -e
 
 git pull
-git submodule update --remote --merge
+git submodule update --remote --rebase

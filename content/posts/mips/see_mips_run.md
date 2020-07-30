@@ -7,7 +7,7 @@ categories: [MIPS]
 draft: false
 ---
 
-根据 *See MIPS Run (Second Edition)* (中文版) 整理。“TODO” 部分等后续工作中遇到再填坑 (鸽了)。
+根据 *See MIPS Run (Second Edition)* (中文版) 整理。
 
 <!--more-->
 
