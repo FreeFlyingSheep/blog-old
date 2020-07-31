@@ -38,7 +38,7 @@ draft: false
 - `pages_high`：回收页框使用的上界，被设置为 `pages_min` 的 $\frac{3}{2}$。
 - `lowmem_reserve`：每个管理区必须保留的页框数目，例子代码注释中有，见下。
 
-``` C
+```c
 /*
  * results with 256, 32 in the lowmem_reserve sysctl:
  *  1G machine -> (16M dma, 800M-16M normal, 1G-800M high)
@@ -55,7 +55,7 @@ draft: false
 
 `mm/page_alloc.c`：
 
-``` C
+```c
 /*
  * Return 1 if free pages are above 'mark'. This takes into account the order
  * of the allocation.
@@ -103,7 +103,7 @@ int zone_watermark_ok(struct zone *z, int order, unsigned long mark,
 
 `mm/page_alloc.c`：
 
-``` C
+```c
 /*
  * This is the 'heart' of the zoned buddy allocator.
  */
@@ -121,7 +121,7 @@ EXPORT_SYMBOL(__alloc_pages);
 
 1、准备工作。
 
-``` C
+```c
     const int wait = gfp_mask & __GFP_WAIT;
     struct zone **zones, *z;
     struct page *page;
@@ -154,7 +154,7 @@ EXPORT_SYMBOL(__alloc_pages);
 
 2、第一次遍历存放管理区的数组 (`zonelist`)，寻找有足够空闲内存的管理区。若能满足请求，跳转到第 15 步。
 
-``` C
+```c
 restart:
     /* Go through the zonelist once, looking for a zone with enough free */
     for (i = 0; (z = zones[i]) != NULL; i++) {
@@ -171,14 +171,14 @@ restart:
 
 3、来到这里，说明没足够的空闲内存。触发页框回收算法，这部分内容属于《深入理解 Linux 内核》中“回收页框”章节，这里不展开。
 
-``` C
+```c
     for (i = 0; (z = zones[i]) != NULL; i++)
         wakeup_kswapd(z, order);
 ```
 
 4、第二次遍历存放管理区的数组，但使用了较低的阈值 (注意传递给 `zone_watermark_ok()` 的参数不同)。若能满足请求，跳转到第 15 步。
 
-``` C
+```c
     /*
      * Go through the zonelist again. Let __GFP_HIGH and allocations
      * coming from realtime tasks to go deeper into reserves
@@ -197,7 +197,7 @@ restart:
 
 5、来到这里，说明系统没足够内存。如果内存分配请求的内核路径不是一个中断处理程序或一个可延迟函数，并且试图回收页框 (`PF_MEMALLOC` 或 `TIF_MEMDIE` 标志被置位)，那么进行第三次遍历，这次忽略阈值 (不调用 `zone_watermark_ok()`)。这种情况下，允许内核控制路径耗用为内存不足预留的页 (保留的页框池)。其实，`PF_MEMALLOC` 表示该进程当前正在执行“内存规整 (memory compaction)”或“直接回收 (direct reclaim)”，而 `TIF_MEMDIE` 则表示该进程已经触发了内存不足清理 (out-of-memory killer) 并且正在尝试退出，以上这些操作都可能导致更多的内存页框被释放，因此只要有可能，请求就被满足。若能满足请求，跳转到第 15 步；反之，跳转到第 14 步。
 
-``` C
+```c
     /* This allocation should allow future memory freeing. */
     if (((p->flags & PF_MEMALLOC) || unlikely(test_thread_flag(TIF_MEMDIE))) && !in_interrupt()) {
         /* go through the zonelist yet again, ignoring mins */
@@ -212,7 +212,7 @@ restart:
 
 6、来到这里，必须阻塞当前进程才能满足请求 (`__GFP_WAIT` 需要被置位)。否则，跳转到第 14 步。
 
-``` C
+```c
     /* Atomic allocations - we can't balance anything */
     if (!wait)
         goto nopage;
@@ -220,28 +220,28 @@ restart:
 
 7、来到这里，说明进程能够被阻塞，调用 `cond_resched()` 检查是否有其它进程需要 CPU。
 
-``` C
+```c
 rebalance:
     cond_resched();
 ```
 
 8、设置 `PF_MEMALLOC` 标志，表示进程已经准备好执行内存回收。
 
-``` C
+```c
     /* We now go into synchronous reclaim */
     p->flags |= PF_MEMALLOC;
 ```
 
 9、将 `reclaim_state` 存入 `current->reclaim_state`。
 
-``` C
+```c
     reclaim_state.reclaimed_slab = 0;
     p->reclaim_state = &reclaim_state;
 ```
 
 10、调用 `try_to_free_pages()` 来回收页框，这部分内容属于《深入理解 Linux 内核》中“回收页框”章节，这里不展开。该函数可能阻塞当前进程，一旦函数返回，重设 `PF_MEMALLOC` 标志并再次调用 `cond_resched()`。
 
-``` C
+```c
     did_some_progress = try_to_free_pages(zones, gfp_mask, order);
 
     p->reclaim_state = NULL;
@@ -253,7 +253,7 @@ rebalance:
 11、如果已经释放了一些页框，那么按第 4 步的方式再次遍历存放内存管理区的数组。若能满足请求，跳转到第 15 步。
 如果分配请求不能被满足，`__GFP_NORETRY` (分配失败时不重复分配) 被清除且 `__GFP_FS` (可以启动文件系统 I/O) 被置位，那么再次遍历存放内存管理区的数组 (注意传递给 `zone_watermark_ok()` 的参数不同)。若能满足请求，跳转到第 15 步；反之，说明内存耗尽，通过调用 `out_of_memory()` (该函数位于 `mm/oom_kill.c`) 杀死一个进程，来保证系统不崩溃，然后转到第 2 步。这次遍历的阈值比之前的要高，因此很容易失败，只有在另一个内核控制路径已经通过杀死了一个进程来回收了它的内存的时候，才会成功，但这种情况下，确实避免了两个无辜的进程 (而不是一个) 被杀死。
 
-``` C
+```c
     if (likely(did_some_progress)) {
         /*
          * Go through the zonelist yet one more time, keep
@@ -295,7 +295,7 @@ rebalance:
 
 12、如果 `order <= 3` (和具体实现有关) 或者 `__GFP_REPEAT` 被置位，设置 `do_retry`。如果 `__GFP_NOFAIL` 被置位，设置 `do_retry`。
 
-``` C
+```c
     /*
      * Don't let big-order allocations loop unless the caller explicitly
      * requests that.  Wait for some write requests to complete then retry.
@@ -314,7 +314,7 @@ rebalance:
 
 13、如果 `do_retry` 被设置，调用 `blk_congestion_wait()` 使进程休眠一会 (这部分内容属于《深入理解 Linux 内核》中“块设备驱动程序”章节，这里不展开)，并跳转到第 7 步。
 
-``` C
+```c
     if (do_retry) {
         blk_congestion_wait(WRITE, HZ/50);
         goto rebalance;
@@ -323,7 +323,7 @@ rebalance:
 
 14、来到这里，说明请求不能被满足，返回 `NULL`。
 
-``` C
+```c
 nopage:
     if (!(gfp_mask & __GFP_NOWARN) && printk_ratelimit()) {
         printk(KERN_WARNING "%s: page allocation failure."
@@ -336,7 +336,7 @@ nopage:
 
 15、来到这里，说明请求能被满足，调用 `zone_statistics()` 完成一些数据统计工作 (主要针对 NUMA)，然后返回第一个被分配的页框的页描述符。
 
-``` C
+```c
 got_pg:
     zone_statistics(zonelist, z);
     return page;
@@ -348,7 +348,7 @@ got_pg:
 
 `mm/page_alloc.c`：
 
-``` C
+```c
 void __free_pages_ok(struct page *page, unsigned int order)
 {
     LIST_HEAD(list);
@@ -386,7 +386,7 @@ EXPORT_SYMBOL(__free_pages);
 
 `include/linux/mm.h`：
 
-``` C
+```c
 /*
  * Drop a ref, return true if the logical refcount fell to zero (the page has
  * no users)

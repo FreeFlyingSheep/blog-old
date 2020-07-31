@@ -45,7 +45,7 @@ slab 分配器是为了解决内碎片问题而设计的。
 
 `include/linux/slab.h`：
 
-``` C
+```c
 /*
  * The slab lists of all objects.
  * Hopefully reduce the internal fragmentation
@@ -118,7 +118,7 @@ typedef struct kmem_cache_s kmem_cache_t;
 
 `mm/slab.c`：
 
-``` C
+```c
 /*
  * struct slab
  *
@@ -164,7 +164,7 @@ slab 描述符与对象描述符的关系如下：
 
 `mm/slab.c`：
 
-``` C
+```c
 /* internal cache of cache description objs */
 static kmem_cache_t cache_cache = {
     .lists = LIST3_INIT(cache_cache.lists),
@@ -184,7 +184,7 @@ static kmem_cache_t cache_cache = {
 
 `mm/slab.c`：
 
-``` C
+```c
 /* These are the default caches for kmalloc. Custom caches can have other sizes. */
 struct cache_sizes malloc_sizes[] = {
 #define CACHE(x) { .cs_size = (x) },
@@ -198,7 +198,7 @@ EXPORT_SYMBOL(malloc_sizes);
 
 `include/linux/kmalloc_sizes.h`：
 
-``` C
+```c
 #if (PAGE_SIZE == 4096)
     CACHE(32)
 #endif
@@ -246,7 +246,7 @@ EXPORT_SYMBOL(malloc_sizes);
 
 `mm/slab.c`：
 
-``` C
+```c
 /*
  * Interface to system's page allocator. No need to hold the cache-lock.
  *
@@ -286,7 +286,7 @@ static void *kmem_getpages(kmem_cache_t *cachep, int flags, int nodeid)
 
 `mm/slab.c`：
 
-``` C
+```c
 /*
  * Interface to system's page release.
  */
@@ -316,7 +316,7 @@ static void kmem_freepages(kmem_cache_t *cachep, void *addr)
 
 `mm/slab.c`：
 
-``` C
+```c
 /*
  * Grow (by 1) the number of slabs within a cache.  This is called by
  * kmem_cache_alloc() when there are no active objs left in a cache.
@@ -409,7 +409,7 @@ failed:
 
 `mm/slab.c`：
 
-``` C
+```c
 /* Destroy all the objs in a slab, and release the mem back to the system.
  * Before calling the slab must have been unlinked from the cache.
  * The cache-lock is not held/needed.
@@ -461,7 +461,7 @@ static void slab_destroy (kmem_cache_t *cachep, struct slab *slabp)
 
 `mm/slab.c`：
 
-``` C
+```c
 /*
  * struct array_cache
  *
@@ -489,7 +489,7 @@ struct array_cache {
 
 `mm/slab.c`：
 
-``` C
+```c
 static inline void ** ac_entry(struct array_cache *ac)
 {
     return (void**)(ac+1);
@@ -543,7 +543,7 @@ static inline void * __cache_alloc (kmem_cache_t *cachep, int flags)
 
 `mm/slab.c`：
 
-``` C
+```c
 /**
  * kmem_cache_free - Deallocate an object
  * @cachep: The cache the allocation was from.
@@ -593,7 +593,7 @@ static inline void __cache_free (kmem_cache_t *cachep, void* objp)
 
 `include/linux/slab.h`：
 
-``` C
+```c
 static inline void *kmalloc(size_t size, int flags)
 {
     if (__builtin_constant_p(size)) {
@@ -620,7 +620,7 @@ found:
 
 `mm/slab.c`：
 
-``` C
+```c
 /**
  * kmalloc - allocate memory
  * @size: how many bytes of memory are required.
@@ -669,7 +669,7 @@ EXPORT_SYMBOL(__kmalloc);
 
 `mm/slab.c`：
 
-``` C
+```c
 /**
  * kfree - free previously allocated memory
  * @objp: pointer returned by kmalloc.

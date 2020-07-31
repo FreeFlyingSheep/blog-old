@@ -33,7 +33,7 @@ draft: false
 
 `include/linux/mmzone.h`：
 
-``` C
+```c
 struct zone {
     ...
     /*
@@ -65,7 +65,7 @@ struct zone {
 
 `mm/page_alloc.c`：
 
-``` C
+```c
 static inline struct page *
 expand(struct zone *zone, struct page *page,
     int low, int high, struct free_area *area)
@@ -115,7 +115,7 @@ static struct page *__rmqueue(struct zone *zone, unsigned int order)
 
 `mm/page_alloc.c`：
 
-``` C
+```c
 static inline void __free_pages_bulk (struct page *page, struct page *base,
         struct zone *zone, unsigned int order)
 {

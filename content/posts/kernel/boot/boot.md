@@ -17,7 +17,7 @@ draft: false
 
 `arch/mips/kernel/head.S`：
 
-``` C
+```c
 NESTED(kernel_entry, 16, sp) # kernel entry point
     setup_c0_status_pri
 
@@ -57,7 +57,7 @@ NESTED(kernel_entry, 16, sp) # kernel entry point
 
 `init/main.c`：
 
-``` C
+```c
 /*
  * Activate the first processor.
  */
@@ -78,7 +78,7 @@ asmlinkage void __init start_kernel(void)
 
 `include/linux/smp_lock.h`：
 
-``` C
+```c
 #ifdef CONFIG_LOCK_KERNEL
 
 extern void __lockfunc lock_kernel(void) __acquires(kernel_lock);
@@ -158,7 +158,7 @@ extern void __lockfunc unlock_kernel(void) __releases(kernel_lock);
 
 `include/asm-mips/asm.h`：
 
-``` C
+```c
 /*
 * EXPORT - export definition of symbol
 */
@@ -173,7 +173,7 @@ symbol:
 
 `include/linux/init.h`：
 
-``` C
+```c
 #define __INIT .section ".init.text","ax"
 #define __FINIT .previous
 ```
@@ -184,7 +184,7 @@ symbol:
 
 32 位和 64 位情况下的数据长度和指令不同，具体见 `include/asm-mips/asm.h`，该文件中的部分宏定义如下：
 
-``` C
+```c
 /*
  * Size of a register
  */
@@ -225,7 +225,7 @@ symbol:
 
 `include/asm-mips/asm.h`：
 
-``` C
+```c
 /*
 * NESTED - declare nested routine entry point
 */
@@ -243,7 +243,7 @@ symbol:     .frame  sp, framesize, rpc
 
 `arch/mips/kernel/head.S`：
 
-``` C
+```c
     /*
      * For the moment disable interrupts, mark the kernel mode and
      * set ST0_KX so that the CPU does not spit fire when using
@@ -276,7 +276,7 @@ symbol:     .frame  sp, framesize, rpc
 
 `include/asm-mips/mipsregs.h`：
 
-``` C
+```c
 /*
  * Coprocessor 0 register names
  */
@@ -292,7 +292,7 @@ symbol:     .frame  sp, framesize, rpc
 
 `arch/mips/kernel/head.S`：
 
-``` C
+```c
 #ifdef CONFIG_SGI_IP27
     /*
      * outputs the local nasid into res.  IP27 stuff.
@@ -314,7 +314,7 @@ symbol:     .frame  sp, framesize, rpc
 
 `arch/mips/kernel/head.S`：
 
-``` C
+```c
     .macro ARC64_TWIDDLE_PC
 #if defined(CONFIG_ARC64) || defined(CONFIG_MAPPED_KERNEL)
     /* We get launched at a XKPHYS address but the kernel is linked to
@@ -398,7 +398,7 @@ endef
 
 `include/asm-mips/thread_info.h`：
 
-``` C
+```c
 /* thread information allocation */
 #if defined(CONFIG_PAGE_SIZE_4KB) && defined(CONFIG_MIPS32)
 #define THREAD_SIZE_ORDER (1)
@@ -421,7 +421,7 @@ endef
 
 include/asm-mips/page.h：
 
-``` C
+```c
 /*
  * PAGE_SHIFT determines the page size
  */
@@ -446,7 +446,7 @@ include/asm-mips/page.h：
 
 ### `END`
 
-``` C
+```c
 /*
 * END - mark end of function
 */
@@ -461,7 +461,7 @@ include/asm-mips/page.h：
 
 `include/asm-mips/mipsregs.h`：
 
-``` C
+```c
 #define CP0_STATUS $12
 ```
 
@@ -483,7 +483,7 @@ arch/mips/Makefile:
 
 `include/linux/linkage.h`：
 
-``` C
+```c
 #include <asm/linkage.h>
 
 #ifdef __cplusplus
@@ -499,7 +499,7 @@ arch/mips/Makefile:
 
 `include/asm-mips/linkage.h`：
 
-``` C
+```c
 /* Nothing to see here... */
 ```
 
@@ -509,7 +509,7 @@ arch/mips/Makefile:
 
 `include/linux/init.h`：
 
-``` C
+```c
 #define __init __attribute__ ((__section__ (".init.text")))
 ```
 
@@ -519,7 +519,7 @@ arch/mips/Makefile:
 
 `include/linux/compiler.h`：
 
-``` C
+```c
 # define __acquires(x) __attribute__((context(0,1)))
 # define __releases(x) __attribute__((context(1,0)))
 ```
@@ -530,13 +530,13 @@ arch/mips/Makefile:
 
 `include/linux/spinlock.h`：
 
-``` C
+```c
 #define __lockfunc fastcall __attribute__((section(".spinlock.text")))
 ```
 
 `include/linux/linkage.h`：
 
-``` C
+```c
 #ifndef FASTCALL
 #define FASTCALL(x) x
 #define fastcall
@@ -545,7 +545,7 @@ arch/mips/Makefile:
 
 `include/asm-mips/linkage.h`：
 
-``` C
+```c
 /* Nothing to see here... */
 ```
 

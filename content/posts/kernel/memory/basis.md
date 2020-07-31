@@ -21,7 +21,7 @@ draft: false
 
 `include/linux/mm.h`：
 
-``` C
+```c
 /*
  * Each physical page in the system has a struct page associated with
  * it to keep track of whatever it is we are using the page for at the
@@ -73,7 +73,7 @@ struct page {
 
 `mm/memory.c`：
 
-``` C
+```c
 struct page *mem_map;
 ```
 
@@ -118,7 +118,7 @@ Linux 支持 NUMA 模型，它通过把物理内存划分为多个节点，来�
 
 `include/linux/gfp.h`：
 
-``` C
+```c
 /*
  * GFP bitmasks..
  */
@@ -184,7 +184,7 @@ Linux 支持 NUMA 模型，它通过把物理内存划分为多个节点，来�
 
 `include/linux/gfp.h`：
 
-``` C
+```c
 static inline struct page *alloc_pages_node(int nid, unsigned int gfp_mask,
                         unsigned int order)
 {
@@ -224,7 +224,7 @@ extern unsigned long FASTCALL(get_zeroed_page(unsigned int gfp_mask));
 
 `mm/page_alloc.c`：
 
-``` C
+```c
 /*
  * Common helper functions.
  */
@@ -260,7 +260,7 @@ EXPORT_SYMBOL(get_zeroed_page);
 
 `mm/mempolicy.c`：
 
-``` C
+```c
 /**
  *  alloc_pages_current - Allocate pages.
  *
@@ -302,7 +302,7 @@ EXPORT_SYMBOL(alloc_pages_current);
 
 `include/linux/gfp.h`：
 
-``` C
+```c
 extern void FASTCALL(__free_pages(struct page *page, unsigned int order));
 extern void FASTCALL(free_pages(unsigned long addr, unsigned int order));
 extern void FASTCALL(free_hot_page(struct page *page));
@@ -314,7 +314,7 @@ extern void FASTCALL(free_cold_page(struct page *page));
 
 `mm/page_alloc.c`：
 
-``` C
+```c
 fastcall void free_pages(unsigned long addr, unsigned int order)
 {
     if (addr != 0) {

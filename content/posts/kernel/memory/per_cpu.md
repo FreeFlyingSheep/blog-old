@@ -49,7 +49,7 @@ draft: false
 
 `include/linux/mmzone.h`：
 
-``` C
+```c
 struct per_cpu_pages {
     int count; /* number of pages in the list */
     int low; /* low watermark, refill needed */
@@ -81,7 +81,7 @@ struct zone {
 
 `mm/page_alloc.c`：
 
-``` C
+```c
 /*
  * Obtain a specified number of elements from the buddy allocator, all under
  * a single hold of the lock, for efficiency.  Add them to the supplied list.
@@ -164,7 +164,7 @@ buffered_rmqueue(struct zone *zone, int order, int gfp_flags)
 
 `mm/page_alloc.c`：
 
-``` C
+```c
 /*
  * Frees a list of pages.
  * Assumes all pages on list are in same zone, and of same order.
