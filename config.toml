@@ -177,25 +177,13 @@ theme = "LoveIt"
     # Comment config
     [params.page.comment]
       enable = true
-      # Valine comment config
-      [params.page.comment.valine]
+      # Gitalk comment config (https://github.com/gitalk/gitalk)
+      [params.page.comment.gitalk]
         enable = true
-        appId = "mG7p8X8RIKzRBXDnYfuTFdXW-MdYXbMMI"
-        appKey = "4ac932i5ENGbEyOEa6kDuvwm"
-        placeholder = "你的评论……"
-        avatar = "mm"
-        pageSize = 10
-        lang = "zh-CN"
-        visitor = true
-        recordIP = true
-        highlight = true
-        enableQQ = false
-        # emoji data file name, default is "google.yml"
-        # ("apple.yml", "google.yml", "facebook.yml", "twitter.yml")
-        # located in "themes/LoveIt/assets/data/emoji/" directory
-        # you can store your own data files in the same path under your project:
-        # "assets/data/emoji/"
-        emoji = "apple.yml"
+        owner = "FreeFlyingSheep"
+        repo = "FreeFlyingSheep.github.io"
+        clientId = "61d73e15f63c9c39de68"
+        clientSecret = "57a3c5c87113ba262cdd06801cb7630ed72d1a3d"
 
 [menu]
   [[menu.main]]

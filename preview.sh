@@ -10,5 +10,4 @@ set -e
 # the comment system, CDN and fingerprint will not
 # be enabled in the development environment.
 # You could enable these features with hugo serve -e production.
-hugo serve --disableFastRender
-# hugo serve --disableFastRender -e production
+hugo serve --disableFastRender -e production
