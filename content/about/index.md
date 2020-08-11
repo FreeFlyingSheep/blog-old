@@ -3,6 +3,8 @@ title: "关于本站"
 date: 2020-07-10
 lastmod: 2020-07-17
 draft: false
+comment:
+  enable: false
 ---
 
 ## 关于我
