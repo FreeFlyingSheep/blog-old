@@ -2,8 +2,8 @@
 title: "MIPS (补充内容)"
 date: 2020-07-15
 lastmod: 2020-07-18
-tags: [MIPS]
-categories: [MIPS, 汇编, 体系结构]
+tags: [MIPS, 汇编, 体系结构]
+categories: [MIPS]
 draft: false
 ---
 

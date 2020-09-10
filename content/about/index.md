@@ -1,8 +1,5 @@
 ---
 title: "关于本站"
-date: 2020-07-10
-lastmod: 2020-07-17
-draft: false
 comment:
   enable: false
 ---
@@ -11,6 +8,14 @@ comment:
 
 - 菜鸟一枚，建立本站来记录学习笔记
 - 如果发现博文存在问题，欢迎评论指正
+
+## 关于博文
+
+- Git：Git 相关的学习笔记
+- Kernel：Linux 内核相关的学习笔记 (后续可能会重新整理)
+- LFS：Linux From Scratch 相关的学习笔记
+- Mips：Mips 体系结构相关的学习笔记
+- Tips：零散的知识点
 
 ## 联系方式
 
