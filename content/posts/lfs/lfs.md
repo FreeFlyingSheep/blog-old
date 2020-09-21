@@ -2,8 +2,8 @@
 title: "总结构建 LFS 系统"
 date: 2020-09-21
 lastmod: 2020-09-21
-tags: [Tips]
-categories: [Tips]
+tags: [LFS]
+categories: [LFS]
 draft: false
 ---
 
