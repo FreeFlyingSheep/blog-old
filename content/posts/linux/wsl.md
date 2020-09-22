@@ -2,8 +2,8 @@
 title: "安装 WSL"
 date: 2020-09-21
 lastmod: 2020-09-21
-tags: [LFS]
-categories: [LFS]
+tags: [WSL]
+categories: [Linux]
 draft: false
 ---
 

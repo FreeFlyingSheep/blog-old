@@ -3,7 +3,7 @@ title: "构建 LFS 系统"
 date: 2020-09-21
 lastmod: 2020-09-21
 tags: [LFS]
-categories: [LFS]
+categories: [Linux]
 draft: false
 ---
 
