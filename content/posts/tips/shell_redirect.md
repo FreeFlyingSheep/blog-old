@@ -2,7 +2,7 @@
 title: "shell 重定向小技巧"
 date: 2020-09-17
 lastmod: 2020-09-17
-tags: [Tips]
+tags: [shell 脚本]
 categories: [Tips]
 draft: false
 ---

@@ -1,13 +1,13 @@
 ---
 title: "安装 WSL"
 date: 2020-09-21
-lastmod: 2020-09-21
+lastmod: 2020-09-23
 tags: [WSL]
 categories: [Linux]
 draft: false
 ---
 
-根据微软官方文档[适用于 Linux 的 Windows 子系统安装指南 (Windows 10)](https://docs.microsoft.com/zh-cn/windows/wsl/install-win10) 整理。
+根据微软官方文档 [Windows Subsystem for Linux Installation Guide for Windows 10](https://docs.microsoft.com/en-us/windows/wsl/install-win10) 整理。
 
 <!--more-->
 
@@ -36,6 +36,10 @@ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /nores
 ```
 
 现在重启计算机。
+
+## 安装升级软件包
+
+下载 [WSL2 Linux kernel update package for x64 machines](https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi) 并安装。
 
 ## 将 WSL 2 设置为默认版本
 
@@ -71,6 +75,20 @@ dism.exe /online /disable-feature /featurename:Microsoft-Windows-Subsystem-Linux
 ## 安装 Linux 发行版
 
 在应用商店选择想要安装的发行版即可。个人推荐在 WSL 1 下使用 Debian，在 WSL 2 下使用 Ubuntu 或者 Debian。
+
+## 指定发行版使用 WSL1 或 WSL2
+
+查看所有安装的发行版，以管理员的身份打开 PowerShell 并运行：
+
+```powershell
+wsl --list -v
+```
+
+举个例子，若需要修改发行版 Debian 使用 WSL 1，运行以下指令：
+
+```powershell
+wsl --set-version Debian 1
+```
 
 ## 安装 Windows Terminal
 

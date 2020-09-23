@@ -2,7 +2,7 @@
 title: "查看 Linux 版本"
 date: 2020-09-21
 lastmod: 2020-09-21
-tags: [Tips]
+tags: [Linux]
 categories: [Tips]
 draft: false
 ---

@@ -2,7 +2,7 @@
 title: "自引用的宏 (Self-Referential Macros)"
 date: 2020-09-10
 lastmod: 2020-09-10
-tags: [Tips]
+tags: [C 语言]
 categories: [Tips]
 draft: false
 ---
