@@ -4,7 +4,7 @@ date: 2020-09-23
 lastmod: 2020-09-24
 tags: [Hugo, Github Pages]
 categories: [Tips]
-draft: true
+draft: false
 ---
 
 使用 [Hugo](https://gohugo.io/) 配合 [Github Pages](https://pages.github.com/) 搭建静态博客。
@@ -46,15 +46,38 @@ git submodule add https://github.com/dillonzq/LoveIt.git themes/LoveIt
 
 静态博客不具备评论功能，使用 [Gitalk](https://github.com/gitalk/gitalk/) 实现评论功能。
 
-新建 GitHub Application
+由于 LoveIt 主题支持 Gitalk，只需要注册一个 GitHub Application (位于 Settings -> Developer settings -> OAuth Apps)，并在 LoveIt 的配置中设置好相应内容即可启用。
 
-## 同步到 Github
+## 关联到 Github
 
+使用 `hugo` 命令会生成静态网站，默认在 `public` 文件夹中。需要 Github 展示的是 `public` 文件夹的内容，而不是整个项目的内容。
 
+可以采用子模块的方式管理这两个项目 (生成的 `public` 文件夹下静态网站以及 `Blog` 网站)，将 `public` 文件夹关联到 Github 远程仓库 `<username>.github.io` (`username` 是 Github 账户的用户名)，然后将该项目以子模块的形式添加到本项目 (即 `Blog` 项目)。这样就可以方便地管理这两个项目。
 
 ## 设置 Github Pages
 
+在 Github 的 `<username>.github.io` 仓库中设置启用 Github Pages，使用 master 分支以及根路径。
 
+保存后等待 Github 完成相应的构建，即可访问 `https://<username>.github.io`，查看个人博客。注意，有时候博客已经完成构建，但该网址仍然无法访问，Github 完成网址的映射可能需要几分钟甚至数个小时。
+
+## 克隆项目
+
+由于项目带子模块，采用如下方式克隆：
+
+```bash
+git clone --recurse-submodules <url>
+```
+
+或者：
+
+```bash
+git clone <url>
+cd <project>
+git submodule init
+git submodule update
+```
+
+后两个命令还可以合并为 `git submodule update --init`。
 
 ## 自动化脚本
 
@@ -62,6 +85,48 @@ git submodule add https://github.com/dillonzq/LoveIt.git themes/LoveIt
 
 ### 一键预览
 
+通常运行 `hugo serve` 即可，但以 LoveIt 主题为例，希望启用一些生成环境的功能，使用如下脚本：
+
+```bash
+hugo serve --disableFastRender -e production
+```
+
 ### 一键部署
 
+同时部署 `Blog` 和 `<username>.github.io` 项目：
+
+```bash
+echo "Deploying updates to GitHub..."
+
+cd public
+git rm -rf . > /dev/null
+
+cd ..
+hugo
+
+cd public
+git add .
+
+msg="Rebuild site on `date '+%x %X'`"
+if [ -n "$*" ]; then
+    msg="$*"
+fi
+git diff-index --quiet HEAD || git commit -m "$msg"
+
+git push origin master
+
+cd ..
+git add .
+git diff-index --quiet HEAD || git commit -am "$msg"
+git push --recurse-submodules=check origin master
+```
+
+每次生成静态网站前强制删了了以前的文件，这是为了应对修改了某些博文所在的目录后，原本的目录会残留的问题，目前没想到更好的解决办法。
+
 ### 一键更新
+
+使用如下命令即可：
+
+```bash
+git pull --rebase --recurse-submodules
+```
