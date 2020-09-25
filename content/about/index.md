@@ -19,5 +19,5 @@ comment:
 
 ## 联系方式
 
-- 邮箱：fyang.168.hi@163.com
+- 邮箱：chris.chenfeiyang@outlook.com
 - 博客：[freeflyingsheep.github.io](https://freeflyingsheep.github.io/)
