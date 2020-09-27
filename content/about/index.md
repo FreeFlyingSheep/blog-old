@@ -7,8 +7,8 @@ comment:
 ## 关于我
 
 - 菜鸟一枚，建立本站来记录学习笔记
-- 如果发现博文存在问题，欢迎评论指正
 - 出于一些原因，短期内不准备开启博客的评论功能
+- 如果发现博文存在问题，欢迎邮件或 QQ 联系
 
 ## 关于博文
 
@@ -21,4 +21,4 @@ comment:
 ## 联系方式
 
 - 邮箱：chris.chenfeiyang@outlook.com
-- 博客：[freeflyingsheep.github.io](https://freeflyingsheep.github.io/)
+- QQ：1458250037 (发送好友请求时请备注本人博客地址 <https://freeflyingsheep.github.io/>，否则一律不通过)
