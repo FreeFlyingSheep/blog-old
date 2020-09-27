@@ -533,7 +533,7 @@ ssh -T git@github.com
 ### 添加子模块
 
 ```bash
-git submodule add <url>
+git submodule add <url> <path>
 ```
 
 生成的 `.gitmodules` 该配置文件保存了项目 URL 与已经拉取的本地目录之间的映射。

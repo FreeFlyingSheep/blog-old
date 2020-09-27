@@ -176,7 +176,7 @@ theme = "LoveIt"
       Mix = false
     # Comment config
     [params.page.comment]
-      enable = true
+      enable = false
       # Gitalk comment config (https://github.com/gitalk/gitalk)
       [params.page.comment.gitalk]
         enable = true
