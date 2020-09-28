@@ -17,7 +17,7 @@ draft: false
 
 ## 实例
 
-## `su`
+### `su`
 
 ```bash
 su - lfs << "EOF"
@@ -25,7 +25,7 @@ su - lfs << "EOF"
 EOF
 ```
 
-## `exec`
+### `exec`
 
 ```bash
 exec /bin/bash -c "<command>"
@@ -36,7 +36,7 @@ EOF
 
 ```
 
-## `chroot`
+### `chroot`
 
 ```bash
 chroot /mnt/lfs /bin/bash -c "<command>"

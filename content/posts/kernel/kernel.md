@@ -1,7 +1,7 @@
 ---
 title: "Linux 内核学习笔记"
 date: 2020-09-25
-lastmod: 2020-09-27
+lastmod: 2020-09-28
 tags: [Linux 内核]
 categories: [Kernel]
 draft: false
@@ -11,13 +11,13 @@ draft: false
 
 ## 引言
 
-本文将作为 Linux 内核相关学习笔记的目录。
-
-**我计划用一年时间，初步阅读这三本书籍，逐渐完善相关学习笔记。**
+本文将作为 Linux 内核相关学习笔记的目录。**我计划用一年时间，初步阅读这三本书籍，逐渐完善相关学习笔记。**
 
 这三本讲解 Linux 内核的经典书籍，都基于 Linux 2.6 版本的内核。ULK3 基于 Linux 2.6.11 版本，LKD3 基于 Linux 2.6.34 版本，PLKA 基于 Linux 2.6.24 版本。
 
-虽然书中很多内容已经过时，但对于入门内核来说还是非常不错的选择。2.6 版本的 Linux 内核源码可以在 <https://www.kernel.org/pub/linux/kernel/v2.6/> 上下载，本系列学习笔记将基于 2.6.34 版本。注意，学习笔记中的不少内容可能已经不适用于现在的内核。
+虽然书中很多内容已经过时，但对于入门内核来说还是非常不错的选择。2.6 版本的 Linux 内核源码可以在 <https://www.kernel.org/pub/linux/kernel/v2.6/> 上下载，本系列学习笔记将基于 2.6.34 版本。
+
+**注意，本系列学习笔记只记录根据三本书籍整理的内容，即到 Linux 2.6.34 为止，且仅针对 x86 体系结构，学习笔记中的不少内容可能已经不适用于现在的内核。**
 
 ## 目录
 
@@ -33,12 +33,13 @@ draft: false
 
 - [Linux 内核基础](/posts/kernel/introduction/basis)
 
-### 内核数据结构
+### GCC 扩展语法和内核数据结构
 
 1. LKD3 第 6 章：内核数据结构
 2. PLKA 附录 C：有关 C 语言的注记
 
-- [内核链表](/posts/kernel/introduction/list)
+- [GCC 扩展语法](/posts/kernel/data-structure/expansion)
+- [内核链表](/posts/kernel/data-structure/list)
 
 ### 内核编译、调试
 
