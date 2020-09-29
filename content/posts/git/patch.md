@@ -1,7 +1,7 @@
 ---
 title: "Git 打补丁"
 date: 2020-08-11
-lastmod: 2020-08-19
+lastmod: 2020-09-29
 tags: [Git]
 categories: [Git]
 draft: false
@@ -23,13 +23,21 @@ git diff <branch1>[:<file1>] <branch2>[:<file2>] > <patch>
 
 ### `git format-patch`
 
+导出单个补丁：
+
+```bash
+git format-patch -1 <commit> [-o <dir>]
+```
+
+导出多个连续的补丁：
+
 ```bash
 git format-patch <commit1>[..<commit2>] [-o <dir>]
 ```
 
-使用 `git format-patch` 导出的补丁，默认包含提交信息。
-
 **注意，导出的区间是 `(commit1, commit2]`。**
+
+使用 `git format-patch` 导出的补丁，默认包含提交信息。
 
 ## 应用补丁
 

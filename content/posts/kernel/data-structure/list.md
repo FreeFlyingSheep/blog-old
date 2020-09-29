@@ -148,4 +148,31 @@ list_for_each_entry_safe(f, next, &fox_list, list) {
 
 ## 内核链表的实现
 
+所有内核链表的实现均位于 `include/linux/list.h`。
 
+### 链表结构体的实现
+
+```c
+struct list_head {
+    struct list_head *next, *prev;
+};
+```
+
+### 初始化链表的实现
+
+```c
+#define LIST_HEAD_INIT(name) { &(name), &(name) }
+
+#define LIST_HEAD(name) \
+    struct list_head name = LIST_HEAD_INIT(name)
+
+static inline void INIT_LIST_HEAD(struct list_head *list)
+{
+    list->next = list;
+    list->prev = list;
+}
+```
+
+### 添加节点的实现
+
+TODO
