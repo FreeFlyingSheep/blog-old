@@ -2,7 +2,7 @@
 title: "内核队列"
 date: 2020-10-10
 lastmod: 2020-10-10
-tags: [Linux 内核, 内核数据结构, 链表]
+tags: [Linux 内核, 内核数据结构, 队列]
 categories: [Kernel]
 draft: false
 ---
@@ -150,4 +150,4 @@ while (kfifo_avail(fifo)) {
 
 ### 帮助函数的实现
 
-
+TODO

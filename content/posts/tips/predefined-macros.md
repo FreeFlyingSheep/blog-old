@@ -2,8 +2,8 @@
 title: "预定义宏"
 date: 2020-10-10
 lastmod: 2020-10-10
-tags: [Linux 内核, 内核数据结构, 链表]
-categories: [Kernel]
+tags: [C 语言]
+categories: [Tips]
 draft: false
 ---
 
