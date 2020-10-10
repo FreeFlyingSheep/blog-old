@@ -1,7 +1,7 @@
 ---
 title: "内核链表"
 date: 2020-09-28
-lastmod: 2020-10-09
+lastmod: 2020-10-10
 tags: [Linux 内核, 内核数据结构, 链表]
 categories: [Kernel]
 draft: false
@@ -62,7 +62,7 @@ void add_rabbit(struct rabbit *list, struct rabbit *r)
 
 内核链表是一个“独特”的双向循环链表，下面我们先展示内核链表的用法，再探讨其具体实现。
 
-## 内核链表的用法
+## 内核链表的使用
 
 内核链表实现了通用的链表操作，仍然以 `fox` 结构体为例，下面展示内核链表的常见用法。
 
@@ -156,8 +156,6 @@ list_for_each_entry_safe(f, next, &fox_list, list) {
     ...
 }
 ```
-
-该宏主要用于遍历的同时会删除节点的情况。
 
 ## 内核链表的实现
 

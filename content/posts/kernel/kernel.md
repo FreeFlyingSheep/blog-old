@@ -21,7 +21,7 @@ draft: false
 
 ## 目录
 
-个人推荐将这三本书联系起来阅读，先看 LKD3，然后结合着看另外两本，某些章节 ULK3 更容易理解，某些则是 PLKA 更容易理解。
+我推荐将这三本书联系起来阅读，先看 LKD3，然后结合着看另外两本，某些章节 ULK3 更容易理解，某些则是 PLKA 更容易理解。
 
 下面根据个人理解，列出三本书相关章节的联系以及阅读顺序。其中某些标题具有包含的关系，如”文件系统“包含”虚拟文件系统“，但考虑到其内容较多，所以单独拿出来。
 
@@ -40,12 +40,22 @@ draft: false
 
 - [GCC 扩展语法](/posts/kernel/data-structure/expansion)
 - [内核链表](/posts/kernel/data-structure/list)
+- [内核队列](/posts/kernel/data-structure/kfifo)
+- 内核散列表
+- 内核基数树
+- 内核红黑树
+- 内核映射
 
 ### 内核编译、调试
 
 1. LKD3 第 2 章：从内核出发
 2. LKD3 第 18 章：调试
 3. PLKA 附录 B：使用源代码
+
+- 编译内核
+- Kbuild 简介
+- 动态调试
+- KGDB 简介
 
 ### 内核开发
 
@@ -160,3 +170,16 @@ draft: false
 
 1. PLKA 第 12 章：网络
 2. PLKA 第 19 章：审计
+
+## 手册
+
+在阅读源码的过程中，可能需要查询下列手册/官方文档：
+
+- [GCC 在线文档 (包括 GCC、CPP 等)](https://gcc.gnu.org/onlinedocs/)
+- [GNU Binutils 在线文档 (包括 ld、as 等)](https://sourceware.org/binutils/index.html)
+- [GNU 在线文档 (除了上述两个，还包括 Make 等)](https://www.gnu.org/manual/manual.html)
+
+下面是我根据手册部分章节整理的知识点：
+
+- [宏的陷阱和使用技巧](/posts/tips/macros-pitfalls)
+- [预定义宏](/posts/tips/predefined-macros)
