@@ -19,6 +19,19 @@ draft: false
 
 **注意，本系列学习笔记只记录根据三本书籍整理的内容，即到 Linux 2.6.34 为止，且仅针对 x86 体系结构，学习笔记中的不少内容可能已经不适用于现在的内核。**
 
+## 手册
+
+在阅读源码的过程中，可能需要查询下列手册/官方文档：
+
+- [GCC 在线文档 (包括 GCC、CPP 等)](https://gcc.gnu.org/onlinedocs/)
+- [GNU Binutils 在线文档 (包括 ld、as 等)](https://sourceware.org/binutils/index.html)
+- [GNU 在线文档 (除了上述两个，还包括 Make 等)](https://www.gnu.org/manual/manual.html)
+
+下面是我根据手册部分章节整理的知识点：
+
+- [宏的陷阱和使用技巧](/posts/tips/macros-pitfalls)
+- [预定义宏](/posts/tips/predefined-macros)
+
 ## 目录
 
 我推荐将这三本书联系起来阅读，先看 LKD3，然后结合着看另外两本，某些章节 ULK3 更容易理解，某些则是 PLKA 更容易理解。
@@ -32,6 +45,7 @@ draft: false
 3. PLKA 第 1 章：简介和概述
 
 - [Linux 内核基础](/posts/kernel/introduction/basis)
+- [Linux 内核常见函数/宏](/posts/kernel/introduction/common)
 
 ### GCC 扩展语法和内核数据结构
 
@@ -170,16 +184,3 @@ draft: false
 
 1. PLKA 第 12 章：网络
 2. PLKA 第 19 章：审计
-
-## 手册
-
-在阅读源码的过程中，可能需要查询下列手册/官方文档：
-
-- [GCC 在线文档 (包括 GCC、CPP 等)](https://gcc.gnu.org/onlinedocs/)
-- [GNU Binutils 在线文档 (包括 ld、as 等)](https://sourceware.org/binutils/index.html)
-- [GNU 在线文档 (除了上述两个，还包括 Make 等)](https://www.gnu.org/manual/manual.html)
-
-下面是我根据手册部分章节整理的知识点：
-
-- [宏的陷阱和使用技巧](/posts/tips/macros-pitfalls)
-- [预定义宏](/posts/tips/predefined-macros)

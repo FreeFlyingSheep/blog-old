@@ -1,7 +1,7 @@
 ---
 title: "内核队列"
 date: 2020-10-10
-lastmod: 2020-10-10
+lastmod: 2020-10-13
 tags: [Linux 内核, 内核数据结构, 队列]
 categories: [Kernel]
 draft: false
@@ -17,13 +17,13 @@ draft: false
 
 ### 创建队列
 
-创建并初始化一个大小为 `size` 的 `kfifo` (成功则返回 `0`，反之返回一个负数错误码)：
+创建并初始化一个大小为 `size` 的 `kfifo`，使用 `gfp_mask` 分配内存 (成功则返回 `0`，反之返回一个负数错误码)：
 
 ```c
 int kfifo_alloc(struct kfifo *fifo, unsigned int size, gfp_t gfp_mask);
 ```
 
-创建并初始化一个 `kfifo` 对象：
+创建并初始化一个 `kfifo` 对象，使用 `buffer` 指向的 `size` 大小的内存：
 
 ```c
 void kfifo_init(struct kfifo *fifo, void *buffer, unsigned int size);
@@ -148,6 +148,349 @@ while (kfifo_avail(fifo)) {
 
 内核队列的实现均位于 `kernel/kfifo.c` 和 `include/linux/kfifo.h`，下面列出常用函数/宏的实现。
 
-### 帮助函数的实现
+### 队列结构体的实现
 
-TODO
+```c
+struct kfifo {
+    unsigned char *buffer; /* the buffer holding the data */
+    unsigned int size;     /* the size of the allocated buffer */
+    unsigned int in;       /* data is added at offset (in % size) */
+    unsigned int out;      /* data is extracted from off. (out % size) */
+};
+```
+
+显然，内核队列是一个循环队列。
+
+### 帮助函数/宏的实现
+
+```c
+/* helper macro */
+#define __kfifo_initializer(s, b) \
+    (struct kfifo) { \
+        .size   = s, \
+        .in     = 0, \
+        .out    = 0, \
+        .buffer = b \
+    }
+
+/*
+ * __kfifo_add_out internal helper function for updating the out offset
+ */
+static inline void __kfifo_add_out(struct kfifo *fifo,
+                unsigned int off)
+{
+    smp_mb();
+    fifo->out += off;
+}
+
+/*
+ * __kfifo_add_in internal helper function for updating the in offset
+ */
+static inline void __kfifo_add_in(struct kfifo *fifo,
+                unsigned int off)
+{
+    smp_wmb();
+    fifo->in += off;
+}
+
+/*
+ * __kfifo_off internal helper function for calculating the index of a
+ * given offeset
+ */
+static inline unsigned int __kfifo_off(struct kfifo *fifo, unsigned int off)
+{
+    return off & (fifo->size - 1);
+}
+
+static inline void __kfifo_in_data(struct kfifo *fifo,
+        const void *from, unsigned int len, unsigned int off)
+{
+    unsigned int l;
+
+    /*
+     * Ensure that we sample the fifo->out index -before- we
+     * start putting bytes into the kfifo.
+     */
+
+    smp_mb();
+
+    off = __kfifo_off(fifo, fifo->in + off);
+
+    /* first put the data starting from fifo->in to buffer end */
+    l = min(len, fifo->size - off);
+    memcpy(fifo->buffer + off, from, l);
+
+    /* then put the rest (if any) at the beginning of the buffer */
+    memcpy(fifo->buffer, from + l, len - l);
+}
+
+static inline void __kfifo_out_data(struct kfifo *fifo,
+        void *to, unsigned int len, unsigned int off)
+{
+    unsigned int l;
+
+    /*
+     * Ensure that we sample the fifo->in index -before- we
+     * start removing bytes from the kfifo.
+     */
+
+    smp_rmb();
+
+    off = __kfifo_off(fifo, fifo->out + off);
+
+    /* first get the data from fifo->out until the end of the buffer */
+    l = min(len, fifo->size - off);
+    memcpy(to, fifo->buffer + off, l);
+
+    /* then get the rest (if any) from the beginning of the buffer */
+    memcpy(to + l, fifo->buffer, len - l);
+}
+```
+
+`__kfifo_initializer` 被用于静态初始化，
+
+### 创建队列的实现
+
+```c
+/**
+ * INIT_KFIFO - Initialize a kfifo declared by DECLARE_KFIFO
+ * @name: name of the declared kfifo datatype
+ */
+#define INIT_KFIFO(name) \
+    name = __kfifo_initializer(sizeof(name##kfifo_buffer) - \
+                sizeof(struct kfifo), \
+                name##kfifo_buffer + sizeof(struct kfifo))
+
+/**
+ * DEFINE_KFIFO - macro to define and initialize a kfifo
+ * @name: name of the declared kfifo datatype
+ * @size: size of the fifo buffer. Must be a power of two.
+ *
+ * Note1: the macro can be used for global and local kfifo data type variables
+ * Note2: the macro creates two objects:
+ *  A kfifo object with the given name and a buffer for the kfifo
+ *  object named name##kfifo_buffer
+ */
+#define DEFINE_KFIFO(name, size) \
+    unsigned char name##kfifo_buffer[size]; \
+    struct kfifo name = __kfifo_initializer(size, name##kfifo_buffer)
+
+static void _kfifo_init(struct kfifo *fifo, void *buffer,
+        unsigned int size)
+{
+    fifo->buffer = buffer;
+    fifo->size = size;
+
+    kfifo_reset(fifo);
+}
+
+/**
+ * kfifo_init - initialize a FIFO using a preallocated buffer
+ * @fifo: the fifo to assign the buffer
+ * @buffer: the preallocated buffer to be used.
+ * @size: the size of the internal buffer, this has to be a power of 2.
+ *
+ */
+void kfifo_init(struct kfifo *fifo, void *buffer, unsigned int size)
+{
+    /* size must be a power of 2 */
+    BUG_ON(!is_power_of_2(size));
+
+    _kfifo_init(fifo, buffer, size);
+}
+EXPORT_SYMBOL(kfifo_init);
+
+/**
+ * kfifo_alloc - allocates a new FIFO internal buffer
+ * @fifo: the fifo to assign then new buffer
+ * @size: the size of the buffer to be allocated, this have to be a power of 2.
+ * @gfp_mask: get_free_pages mask, passed to kmalloc()
+ *
+ * This function dynamically allocates a new fifo internal buffer
+ *
+ * The size will be rounded-up to a power of 2.
+ * The buffer will be release with kfifo_free().
+ * Return 0 if no error, otherwise the an error code
+ */
+int kfifo_alloc(struct kfifo *fifo, unsigned int size, gfp_t gfp_mask)
+{
+    unsigned char *buffer;
+
+    /*
+     * round up to the next power of 2, since our 'let the indices
+     * wrap' technique works only in this case.
+     */
+    if (!is_power_of_2(size)) {
+        BUG_ON(size > 0x80000000);
+        size = roundup_pow_of_two(size);
+    }
+
+    buffer = kmalloc(size, gfp_mask);
+    if (!buffer) {
+        _kfifo_init(fifo, NULL, 0);
+        return -ENOMEM;
+    }
+
+    _kfifo_init(fifo, buffer, size);
+
+    return 0;
+}
+EXPORT_SYMBOL(kfifo_alloc);
+```
+
+### 插入队列数据的实现
+
+```c
+/**
+ * kfifo_in - puts some data into the FIFO
+ * @fifo: the fifo to be used.
+ * @from: the data to be added.
+ * @len: the length of the data to be added.
+ *
+ * This function copies at most @len bytes from the @from buffer into
+ * the FIFO depending on the free space, and returns the number of
+ * bytes copied.
+ *
+ * Note that with only one concurrent reader and one concurrent
+ * writer, you don't need extra locking to use these functions.
+ */
+unsigned int kfifo_in(struct kfifo *fifo, const void *from,
+                unsigned int len)
+{
+    len = min(kfifo_avail(fifo), len);
+
+    __kfifo_in_data(fifo, from, len, 0);
+    __kfifo_add_in(fifo, len);
+    return len;
+}
+EXPORT_SYMBOL(kfifo_in);
+```
+
+### 摘取队列数据的实现
+
+```c
+/**
+ * kfifo_out - gets some data from the FIFO
+ * @fifo: the fifo to be used.
+ * @to: where the data must be copied.
+ * @len: the size of the destination buffer.
+ *
+ * This function copies at most @len bytes from the FIFO into the
+ * @to buffer and returns the number of copied bytes.
+ *
+ * Note that with only one concurrent reader and one concurrent
+ * writer, you don't need extra locking to use these functions.
+ */
+unsigned int kfifo_out(struct kfifo *fifo, void *to, unsigned int len)
+{
+    len = min(kfifo_len(fifo), len);
+
+    __kfifo_out_data(fifo, to, len, 0);
+    __kfifo_add_out(fifo, len);
+
+    return len;
+}
+EXPORT_SYMBOL(kfifo_out);
+
+/**
+ * kfifo_out_peek - copy some data from the FIFO, but do not remove it
+ * @fifo: the fifo to be used.
+ * @to: where the data must be copied.
+ * @len: the size of the destination buffer.
+ * @offset: offset into the fifo
+ *
+ * This function copies at most @len bytes at @offset from the FIFO
+ * into the @to buffer and returns the number of copied bytes.
+ * The data is not removed from the FIFO.
+ */
+unsigned int kfifo_out_peek(struct kfifo *fifo, void *to, unsigned int len,
+                unsigned offset)
+{
+    len = min(kfifo_len(fifo), len + offset);
+
+    __kfifo_out_data(fifo, to, len, offset);
+    return len;
+}
+EXPORT_SYMBOL(kfifo_out_peek);
+```
+
+### 获取队列长度的实现
+
+```c
+/**
+ * kfifo_size - returns the size of the fifo in bytes
+ * @fifo: the fifo to be used.
+ */
+static inline __must_check unsigned int kfifo_size(struct kfifo *fifo)
+{
+    return fifo->size;
+}
+
+/**
+ * kfifo_len - returns the number of used bytes in the FIFO
+ * @fifo: the fifo to be used.
+ */
+static inline unsigned int kfifo_len(struct kfifo *fifo)
+{
+    register unsigned int out;
+
+    out = fifo->out;
+    smp_rmb();
+    return fifo->in - out;
+}
+
+/**
+ * kfifo_is_empty - returns true if the fifo is empty
+ * @fifo: the fifo to be used.
+ */
+static inline __must_check int kfifo_is_empty(struct kfifo *fifo)
+{
+    return fifo->in == fifo->out;
+}
+
+/**
+ * kfifo_is_full - returns true if the fifo is full
+ * @fifo: the fifo to be used.
+ */
+static inline __must_check int kfifo_is_full(struct kfifo *fifo)
+{
+    return kfifo_len(fifo) == kfifo_size(fifo);
+}
+
+/**
+ * kfifo_avail - returns the number of bytes available in the FIFO
+ * @fifo: the fifo to be used.
+ */
+static inline __must_check unsigned int kfifo_avail(struct kfifo *fifo)
+{
+    return kfifo_size(fifo) - kfifo_len(fifo);
+}
+```
+
+### 重置队列的实现
+
+```c
+/**
+ * kfifo_reset - removes the entire FIFO contents
+ * @fifo: the fifo to be emptied.
+ */
+static inline void kfifo_reset(struct kfifo *fifo)
+{
+    fifo->in = fifo->out = 0;
+}
+```
+
+### 撤销队列的实现
+
+```c
+/**
+ * kfifo_free - frees the FIFO internal buffer
+ * @fifo: the fifo to be freed.
+ */
+void kfifo_free(struct kfifo *fifo)
+{
+    kfree(fifo->buffer);
+    _kfifo_init(fifo, NULL, 0);
+}
+EXPORT_SYMBOL(kfifo_free);
+```
