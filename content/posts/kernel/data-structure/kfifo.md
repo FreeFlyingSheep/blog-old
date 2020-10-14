@@ -159,7 +159,11 @@ struct kfifo {
 };
 ```
 
-显然，内核队列是一个循环队列。
+显然，内核队列是一个循环队列。下面我们把 `in` 称为队尾指针，`out` 称为队头指针，`buffer` 视为缓冲区数组。
+
+传统的队列存储的数据类型往往是已知的，入队、出队一个元素对应缓冲区数组下标加减 `1`。而为了通用性，内核队列把缓冲区数组申明为 `char` 类型，对应的入队、出队需要通过元素的大小来计算下标的值 (如 `int` 类型的一个元素入队、出队对应缓冲区数组下标加减 `4`)。
+
+既然是循环队列，就存在区分队满和队空的情况，传统的解决方法就几种：一是记录队列的元素个数或记录队列的总大小；二是牺牲一个存储单元来用作判断；三是通过一个额外的标志来判断队满或队空。此处采用了第一种方法，用 `size` 记录了缓冲区数组的大小。
 
 ### 帮助函数/宏的实现
 
@@ -247,7 +251,84 @@ static inline void __kfifo_out_data(struct kfifo *fifo,
 }
 ```
 
-`__kfifo_initializer` 被用于静态初始化，
+- `__kfifo_initializer()`：静态初始化队列。
+- `__kfifo_add_out()`：增加队头指针。
+- `__kfifo_add_in()`：增加队尾指针。
+- `__kfifo_off()`：计算 `in % size` 或 `out % size`。
+- `__kfifo_in_data()`：从 `from` 拷贝 `len` 大小的数据到队列头部偏移 `off` 的位置。
+- `__kfifo_out_data()`：从队列头部偏移 `off` 的位置拷贝 `len` 大小的数据到 `to`。
+
+这里先忽略 `smp_` 开头的函数，它们是内存屏障，我把内核队列作为介绍内存屏障的例子，放在[屏障](/posts/kernel/synchronization/barrier)中介绍。
+
+对于 `__kfifo_off()` 中的计算，其实是用了这么一个结论：如果 `m` 是 `2` 的幂，那么 `n % m` 等价于 `n & (m - 1)`。这个结论其实不难理解，我们来看一个简单的例子。假设所有的数占用 `8` 位，取 `m` 为 `4`，那么 `m` 的二进制为 `0000 0100`，`m - 1` 的二进制为 `0000 0011` 。取 `n` 为 `3`，即 `n` 的二进制为 `0000 0011`，那么 `n & (m - 1)` 的结果为 `0000 0011`。取 `n` 为 `5`，即 `n` 的二进制为 `0000 0101`，那么 `n & (m - 1)` 的结果为 `0000 0001`。不难发现 `n & (m - 1)` 的意义是把 `n` 的高位清零且低位不变，这和 `n % m` 是等价的 (具体的数学证明显然不属于本学习笔记的范畴)。通过使用与运算来代替模运算，可以有效缩短运算时间。
+
+`__kfifo_in_data()` 和 `__kfifo_out_data()` 相对复杂一些。因为是循环队列，所以更要注意要缓冲区数组边界的判断。对于 `__kfifo_in_data()`，先是拷贝数据到队尾指针偏移处，若拷贝至数组尾部仍然不够，再拷贝剩下的内容到数组头部。对于 `__kfifo_out_data()`，先是从队头指针偏移处拷贝数据，若拷贝至数组尾部仍然不够，再从数组头部拷贝剩下的内容。此处的实现考虑了的偏移 `off` 和数据大小 `len`，而对应常规的入队、出队单个元素的操作，偏移 `off` 总为 `0`，且 `len` 总为单个元素的大小，这点可以从下面的[插入队列数据的实现](#插入队列数据的实现)和[摘取队列数据的实现](#摘取队列数据的实现)中看到。
+
+### 获取队列长度的实现
+
+```c
+/**
+ * kfifo_size - returns the size of the fifo in bytes
+ * @fifo: the fifo to be used.
+ */
+static inline __must_check unsigned int kfifo_size(struct kfifo *fifo)
+{
+    return fifo->size;
+}
+
+/**
+ * kfifo_len - returns the number of used bytes in the FIFO
+ * @fifo: the fifo to be used.
+ */
+static inline unsigned int kfifo_len(struct kfifo *fifo)
+{
+    register unsigned int out;
+
+    out = fifo->out;
+    smp_rmb();
+    return fifo->in - out;
+}
+
+/**
+ * kfifo_is_empty - returns true if the fifo is empty
+ * @fifo: the fifo to be used.
+ */
+static inline __must_check int kfifo_is_empty(struct kfifo *fifo)
+{
+    return fifo->in == fifo->out;
+}
+
+/**
+ * kfifo_is_full - returns true if the fifo is full
+ * @fifo: the fifo to be used.
+ */
+static inline __must_check int kfifo_is_full(struct kfifo *fifo)
+{
+    return kfifo_len(fifo) == kfifo_size(fifo);
+}
+
+/**
+ * kfifo_avail - returns the number of bytes available in the FIFO
+ * @fifo: the fifo to be used.
+ */
+static inline __must_check unsigned int kfifo_avail(struct kfifo *fifo)
+{
+    return kfifo_size(fifo) - kfifo_len(fifo);
+}
+```
+
+### 重置队列的实现
+
+```c
+/**
+ * kfifo_reset - removes the entire FIFO contents
+ * @fifo: the fifo to be emptied.
+ */
+static inline void kfifo_reset(struct kfifo *fifo)
+{
+    fifo->in = fifo->out = 0;
+}
+```
 
 ### 创建队列的实现
 
@@ -412,72 +493,6 @@ unsigned int kfifo_out_peek(struct kfifo *fifo, void *to, unsigned int len,
     return len;
 }
 EXPORT_SYMBOL(kfifo_out_peek);
-```
-
-### 获取队列长度的实现
-
-```c
-/**
- * kfifo_size - returns the size of the fifo in bytes
- * @fifo: the fifo to be used.
- */
-static inline __must_check unsigned int kfifo_size(struct kfifo *fifo)
-{
-    return fifo->size;
-}
-
-/**
- * kfifo_len - returns the number of used bytes in the FIFO
- * @fifo: the fifo to be used.
- */
-static inline unsigned int kfifo_len(struct kfifo *fifo)
-{
-    register unsigned int out;
-
-    out = fifo->out;
-    smp_rmb();
-    return fifo->in - out;
-}
-
-/**
- * kfifo_is_empty - returns true if the fifo is empty
- * @fifo: the fifo to be used.
- */
-static inline __must_check int kfifo_is_empty(struct kfifo *fifo)
-{
-    return fifo->in == fifo->out;
-}
-
-/**
- * kfifo_is_full - returns true if the fifo is full
- * @fifo: the fifo to be used.
- */
-static inline __must_check int kfifo_is_full(struct kfifo *fifo)
-{
-    return kfifo_len(fifo) == kfifo_size(fifo);
-}
-
-/**
- * kfifo_avail - returns the number of bytes available in the FIFO
- * @fifo: the fifo to be used.
- */
-static inline __must_check unsigned int kfifo_avail(struct kfifo *fifo)
-{
-    return kfifo_size(fifo) - kfifo_len(fifo);
-}
-```
-
-### 重置队列的实现
-
-```c
-/**
- * kfifo_reset - removes the entire FIFO contents
- * @fifo: the fifo to be emptied.
- */
-static inline void kfifo_reset(struct kfifo *fifo)
-{
-    fifo->in = fifo->out = 0;
-}
 ```
 
 ### 撤销队列的实现

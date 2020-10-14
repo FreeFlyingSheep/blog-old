@@ -1,7 +1,7 @@
 ---
 title: "GCC 扩展语法"
 date: 2020-09-28
-lastmod: 2020-09-28
+lastmod: 2020-10-14
 tags: [Linux 内核, GCC 扩展语法]
 categories: [Kernel]
 draft: false
@@ -94,7 +94,17 @@ int fun(int n)
 #define asmlinkage CPP_ASMLINKAGE __attribute__((regparm(0)))
 ```
 
-在 x86-32 平台上，`regparm(number)` 指定以寄存器传递参数的个数。`regparm(0)` 即不使用寄存器传递参数。
+在 x86-32 平台上，`regparm(number)` 用于指定以寄存器传递参数的个数。`regparm(0)` 即不使用寄存器传递参数。
+
+### `warn_unused_result`
+
+`include/linux/compiler-gcc4.h`：
+
+```c
+#define __must_check __attribute__((warn_unused_result))
+```
+
+`warn_unused_result` 用于指定函数返回值必须被调用者使用，否则会产生警告。该属性主要用于不检查函数返回值会导致安全问题或者造成 bug 的情况。
 
 ## 内联汇编
 
