@@ -23,14 +23,16 @@ draft: false
 
 在阅读源码的过程中，可能需要查询下列手册/官方文档：
 
-- [GCC 在线文档 (包括 GCC、CPP 等)](https://gcc.gnu.org/onlinedocs/)
-- [GNU Binutils 在线文档 (包括 ld、as 等)](https://sourceware.org/binutils/index.html)
-- [GNU 在线文档 (除了上述两个，还包括 Make 等)](https://www.gnu.org/manual/manual.html)
+- [GCC 在线文档](https://gcc.gnu.org/onlinedocs/) (包括 GCC、CPP 等)
+- [GNU Binutils 在线文档](https://sourceware.org/binutils/index.html) (包括 ld、as 等)
+- [GNU 在线文档](https://www.gnu.org/manual/manual.html) (除了上述两个，还包括 Make 等)
+- [Linux Kernel 在线文档](https://www.kernel.org/doc/html/latest/)
 
 下面是我根据手册部分章节整理的知识点：
 
 - [宏的陷阱和使用技巧](/posts/tips/macros-pitfalls)
 - [预定义宏](/posts/tips/predefined-macros)
+- [动态调试](/posts/tips/dynamic-debug)
 
 ## 目录
 
@@ -47,6 +49,21 @@ draft: false
 - [Linux 内核基础](/posts/kernel/introduction/basis)
 - [Linux 内核常见函数/宏](/posts/kernel/introduction/common)
 
+### 内核开发
+
+1. LKD3 第 2 章：从内核出发
+2. LKD3 第 18 章：调试
+3. LKD3 第 19 章：可移植性
+4. LKD3 第 20 章：补丁、开发和社区
+5. PLKA 附录 A：体系结构相关知识
+6. PLKA 附录 B：使用源代码
+7. PLKA 附录 F：内核开发过程
+
+- [内核编译](/posts/kernel/build/build)
+- [内核调试](/posts/kernel/build/debug)
+- [体系结构相关知识](/posts/kernel/develop/arch)
+- [内核开发相关知识](/posts/kernel/develop/develop)
+
 ### GCC 扩展语法和内核数据结构
 
 1. LKD3 第 6 章：内核数据结构
@@ -59,24 +76,6 @@ draft: false
 - 内核基数树
 - 内核红黑树
 - 内核映射
-
-### 内核编译、调试
-
-1. LKD3 第 2 章：从内核出发
-2. LKD3 第 18 章：调试
-3. PLKA 附录 B：使用源代码
-
-- 编译内核
-- Kbuild 简介
-- 动态调试
-- KGDB 简介
-
-### 内核开发
-
-1. LKD3 第 19 章：可移植性
-2. LKD3 第 20 章：补丁、开发和社区
-3. PLKA 附录 A：体系结构相关知识
-4. PLKA 附录 F：内核开发过程
 
 ### 进程管理
 
