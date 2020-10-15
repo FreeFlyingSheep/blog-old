@@ -1,7 +1,7 @@
 ---
 title: "内核链表"
 date: 2020-09-28
-lastmod: 2020-10-14
+lastmod: 2020-10-15
 tags: [Linux 内核, 内核数据结构, 链表]
 categories: [Kernel]
 draft: false
@@ -60,11 +60,11 @@ void add_rabbit(struct rabbit *list, struct rabbit *r)
 
 我们希望实现一个更加通用的方案，针对链表的操作应该对所有情况都适用 (比如上面的 `fox` 和 `rabbit`)。显然传统的链表是无法解决这一问题的，因而与传统的方式相反，内核把链表节点塞入其他数据结构，实现了一种独特解法。
 
-内核链表是一个独特的双向循环链表，下面我们先展示内核链表的用法，再介绍其具体实现。内核也定义了单向链表，单向链表本身就比双向链表简单，这里就不介绍了。
+内核链表是一个独特的双向循环链表，下面我们先展示内核链表的用法，再介绍其具体实现。
 
 ## 内核链表的使用
 
-内核链表实现了通用的链表操作，仍然以 `fox` 结构体为例，下面展示内核链表的常见用法。
+内核链表实现称为 `list`，它实现了通用的链表操作，仍然以 `fox` 结构体为例，下面展示内核链表的常见用法。
 
 ### 定义链表
 
@@ -181,6 +181,58 @@ static inline void INIT_LIST_HEAD(struct list_head *list)
 {
     list->next = list;
     list->prev = list;
+}
+```
+
+### 相关判断的实现
+
+```c
+/**
+ * list_is_last - tests whether @list is the last entry in list @head
+ * @list: the entry to test
+ * @head: the head of the list
+ */
+static inline int list_is_last(const struct list_head *list,
+                               const struct list_head *head)
+{
+    return list->next == head;
+}
+
+/**
+ * list_empty - tests whether a list is empty
+ * @head: the list to test.
+ */
+static inline int list_empty(const struct list_head *head)
+{
+    return head->next == head;
+}
+
+/**
+ * list_empty_careful - tests whether a list is empty and not being modified
+ * @head: the list to test
+ *
+ * Description:
+ * tests whether a list is empty _and_ checks that no other CPU might be
+ * in the process of modifying either member (next or prev)
+ *
+ * NOTE: using list_empty_careful() without synchronization
+ * can only be safe if the only activity that can happen
+ * to the list entry is list_del_init(). Eg. it cannot be used
+ * if another CPU could re-list_add() it.
+ */
+static inline int list_empty_careful(const struct list_head *head)
+{
+    struct list_head *next = head->next;
+    return (next == head) && (next == head->prev);
+}
+
+/**
+ * list_is_singular - tests whether a list has just one entry.
+ * @head: the list to test.
+ */
+static inline int list_is_singular(const struct list_head *head)
+{
+    return !list_empty(head) && (head->next == head->prev);
 }
 ```
 
@@ -336,58 +388,6 @@ static inline void list_rotate_left(struct list_head *head)
 ```
 
 其中，`list_rotate_left()` 函数用于将链表的第一个节点移动至末尾。
-
-### 相关判断的实现
-
-```c
-/**
- * list_is_last - tests whether @list is the last entry in list @head
- * @list: the entry to test
- * @head: the head of the list
- */
-static inline int list_is_last(const struct list_head *list,
-                               const struct list_head *head)
-{
-    return list->next == head;
-}
-
-/**
- * list_empty - tests whether a list is empty
- * @head: the list to test.
- */
-static inline int list_empty(const struct list_head *head)
-{
-    return head->next == head;
-}
-
-/**
- * list_empty_careful - tests whether a list is empty and not being modified
- * @head: the list to test
- *
- * Description:
- * tests whether a list is empty _and_ checks that no other CPU might be
- * in the process of modifying either member (next or prev)
- *
- * NOTE: using list_empty_careful() without synchronization
- * can only be safe if the only activity that can happen
- * to the list entry is list_del_init(). Eg. it cannot be used
- * if another CPU could re-list_add() it.
- */
-static inline int list_empty_careful(const struct list_head *head)
-{
-    struct list_head *next = head->next;
-    return (next == head) && (next == head->prev);
-}
-
-/**
- * list_is_singular - tests whether a list has just one entry.
- * @head: the list to test.
- */
-static inline int list_is_singular(const struct list_head *head)
-{
-    return !list_empty(head) && (head->next == head->prev);
-}
-```
 
 ### 拆分链表的实现
 

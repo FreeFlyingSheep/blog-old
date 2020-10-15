@@ -54,8 +54,8 @@ draft: false
 
 - [GCC 扩展语法](/posts/kernel/data-structure/expansion)
 - [内核链表](/posts/kernel/data-structure/list)
+- [内核散列表](/posts/kernel/data-structure/hlist)
 - [内核队列](/posts/kernel/data-structure/kfifo)
-- 内核散列表
 - 内核基数树
 - 内核红黑树
 - 内核映射
