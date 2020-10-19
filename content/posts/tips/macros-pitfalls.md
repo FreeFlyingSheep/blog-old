@@ -140,7 +140,7 @@ Linux 2.6.34 内核中的 `include/linux/compiler-gcc.h` 文件中包含如下�
 2. 第二次扫描 `gcc_header(4)`，扩展为 `_gcc_header(4)`。
 3. 第一次扫描 `_gcc_header(4)`，发现 `##`，不扩展。
 4. 第二次扫描 `_gcc_header(4)`，扩展为 `__gcc_header(linux/compiler-gcc4.h)`。
-5. 第一次扫描 `__gcc_header(linux/。compiler-gcc4.h)`，发现 `#`，不扩展
+5. 第一次扫描 `__gcc_header(linux/compiler-gcc4.h)`，发现 `#`，不扩展
 6. 第二次扫描`__gcc_header(linux/compiler-gcc4.h)`，扩展为 `"linux/compiler-gcc4.h"`。
 
 注意，`_gcc_header` 宏是必要的，考虑下面的写法：

@@ -59,8 +59,7 @@ draft: false
 6. PLKA 附录 B：使用源代码
 7. PLKA 附录 F：内核开发过程
 
-- [内核编译](/posts/kernel/build/build)
-- [内核调试](/posts/kernel/build/debug)
+- [内核编译和调试](/posts/kernel/build/build)
 - [体系结构相关知识](/posts/kernel/develop/arch)
 - [内核开发相关知识](/posts/kernel/develop/develop)
 
@@ -77,6 +76,13 @@ draft: false
 - 内核红黑树
 - 内核映射
 
+### 内存管理
+
+1. LKD3 第 12 章：内存管理
+2. ULK3 第 二 章：内存寻址
+3. ULK3 第 八 章：内存管理
+4. PLKA 第 3 章：内存管理
+
 ### 进程管理
 
 1. LKD3 第 3 章：进程管理
@@ -84,13 +90,6 @@ draft: false
 3. ULK3 第 三 章：进程
 4. ULK3 第 七 章：进程调度
 5. PLKA 第 2 章：进程管理和调度
-
-### 内存管理
-
-1. LKD3 第 12 章：内存管理
-2. ULK3 第 二 章：内存寻址
-3. ULK3 第 八 章：内存管理
-4. PLKA 第 3 章：内存管理
 
 ### 进程地址空间
 

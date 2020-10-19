@@ -182,8 +182,8 @@ theme = "LoveIt"
         enable = true
         owner = "FreeFlyingSheep"
         repo = "FreeFlyingSheep.github.io"
-        clientId = "61d73e15f63c9c39de68"
-        clientSecret = "57a3c5c87113ba262cdd06801cb7630ed72d1a3d"
+        clientId = ""
+        clientSecret = ""
 
 [menu]
   [[menu.main]]
