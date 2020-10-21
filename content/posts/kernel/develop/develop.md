@@ -1,7 +1,7 @@
 ---
 title: "内核开发相关知识"
-date: 2020-10-19
-lastmod: 2020-10-19
+date: 2020-10-21
+lastmod: 2020-10-21
 tags: [Linux 内核, 内核开发]
 categories: [Kernel]
 draft: false

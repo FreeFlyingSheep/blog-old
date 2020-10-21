@@ -1,7 +1,7 @@
 ---
 title: "安装 Arch Linux"
-date: 2020-10-19
-lastmod: 2020-10-19
+date: 2020-10-20
+lastmod: 2020-10-21
 tags: [Arch Linux]
 categories: [Linux]
 draft: false
@@ -377,4 +377,52 @@ XMODIFIERS    DEFAULT=\@im=fcitx
 
 ### 配置开机动画
 
-TODO
+参考 [Plymouth](https://wiki.archlinux.org/index.php/Plymouth)。
+
+安装 Plymouth：
+
+```bash
+sudo pacman -S plymouth
+```
+
+修改 `/etc/mkinitcpio.conf`：
+
+```text
+MODULES=(i915 ...)
+...
+HOOKS=(base udev plymouth ...)
+```
+
+修改 `/etc/default/grub`：
+
+```text
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=3 rd.udev.log_priority=3 vt.global_cursor_default=0"
+```
+
+重新生成 GRUB 配置文件：
+
+```bash
+sudo grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+安装 Plymouth 主题：
+
+```bash
+yay -S plymouth-theme-arch-glow
+sudo plymouth-set-default-theme -R arch-glow
+```
+
+设置平滑过渡：
+
+```bash
+sudo systemctl disable sddm
+sudo systemctl enable sddm-plymouth
+```
+
+重启计算机查看开机动画。
+
+### 配置 GRUB 主题
+
+安装 [Vimix](https://github.com/vinceliuice/grub2-themes/) 主题。
+
+重启查看效果。
