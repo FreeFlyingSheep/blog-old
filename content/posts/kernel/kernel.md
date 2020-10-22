@@ -1,7 +1,7 @@
 ---
 title: "Linux 内核学习笔记"
 date: 2020-09-25
-lastmod: 2020-09-28
+lastmod: 2020-10-22
 tags: [Linux 内核]
 categories: [Kernel]
 draft: false
@@ -11,7 +11,7 @@ draft: false
 
 ## 引言
 
-本文将作为 Linux 内核相关学习笔记的目录。**我计划用一年时间，初步阅读这三本书籍，逐渐完善相关学习笔记。**
+本文将作为 Linux 内核学习笔记系列的目录。**我计划用一年时间，初步阅读这三本书籍，逐渐完善相关学习笔记——这是一个 flag，人是有惰性的（逃。**
 
 这三本讲解 Linux 内核的经典书籍，都基于 Linux 2.6 版本的内核。ULK3 基于 Linux 2.6.11 版本，LKD3 基于 Linux 2.6.34 版本，PLKA 基于 Linux 2.6.24 版本。
 
@@ -182,3 +182,15 @@ draft: false
 
 1. PLKA 第 12 章：网络
 2. PLKA 第 19 章：审计
+
+## 旧的学习笔记
+
+旧的学习笔记暂时移动到了 `/posts/kernel/old` 路径，文章中的部分链接可能已经失效，以后会重新整理到该学习笔记系列中。
+
+- [Linux/MIPS 启动](/posts/kernel/old/boot)
+- [Linux 内存管理 (基础部分)](/posts/kernel/old/basis)
+- [Linux 内存管理 (管理区分配器)](/posts/kernel/old/zone-allocator)
+- [Linux 内存管理 (伙伴系统)](/posts/kernel/old/buddy-system)
+- [Linux 内存管理 (per-CPU 页框高速缓存)](/posts/kernel/old/per-cpu)
+- [Linux 内存管理 (slab 分配器)](/posts/kernel/old/slab)
+- [Linux 内存管理 (补充内容)](/posts/kernel/old/supplement)
