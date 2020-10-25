@@ -2,14 +2,14 @@
 # Update the project.
 set -e
 
-echo "Update public..."
+echo "Updating public..."
 cd public
 git pull --rebase
 
-echo "Update LoveIt..."
+echo "Updating LoveIt..."
 cd ../themes/LoveIt
 git pull --rebase
 
-echo "Update Blog..."
+echo "Updating Blog..."
 cd ../
 git pull --rebase
