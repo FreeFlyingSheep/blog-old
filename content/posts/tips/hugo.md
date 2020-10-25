@@ -128,12 +128,15 @@ git push --recurse-submodules=check origin master
 使用 `git pull --rebase --recurse-submodules` 命令更新会让子模块位于分离头指针的状态，分别更新它们：
 
 ```bash
+echo "Update public..."
 cd public
 git pull --rebase
 
+echo "Update LoveIt..."
 cd ../themes/LoveIt
 git pull --rebase
 
+echo "Update Blog..."
 cd ../
 git pull --rebase
 ```
