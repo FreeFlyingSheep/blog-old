@@ -2,4 +2,10 @@
 # Update the project.
 set -e
 
-git pull --rebase --recurse-submodules
+git pull --rebase
+
+cd public
+git pull --rebase
+
+cd ../themes/LoveIt
+git pull --rebase

@@ -1,7 +1,7 @@
 ---
 title: "使用 Hugo 搭建个人博客"
 date: 2020-09-23
-lastmod: 2020-09-24
+lastmod: 2020-10-25
 tags: [Hugo, Github Pages]
 categories: [Tips]
 draft: false
@@ -125,8 +125,14 @@ git push --recurse-submodules=check origin master
 
 ### 一键更新
 
-使用如下命令即可：
+使用 `git pull --rebase --recurse-submodules` 命令更新会让子模块位于分离头指针的状态，分别更新它们：
 
 ```bash
-git pull --rebase --recurse-submodules
+git pull --rebase
+
+cd public
+git pull --rebase
+
+cd ../themes/LoveIt
+git pull --rebase
 ```
