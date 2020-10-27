@@ -1,13 +1,13 @@
 ---
 title: "Linux 内核常见函数/宏"
 date: 2020-10-14
-lastmod: 2020-10-14
+lastmod: 2020-10-27
 tags: [Linux 内核, 内核简介]
 categories: [Kernel]
 draft: false
 ---
 
-[Linux 内核学习笔记系列](/posts/kernel/kernel)，内核简介部分，简单介绍 Linux 内核常见的函数及其作用，具体实现将在后续笔记记录。
+[Linux 内核学习笔记系列](/posts/kernel/kernel)，内核简介部分，简单介绍 Linux 内核常见的函数及其作用。
 
 <!--more-->
 
@@ -87,3 +87,55 @@ int printk(const char *fmt, ...);
 #define KERN_INFO    "<6>" /* informational                    */
 #define KERN_DEBUG   "<7>" /* debug-level messages             */
 ```
+
+### 缓存对齐
+
+`include/linux/cache.h`：
+
+```c
+#ifndef ____cacheline_aligned
+#define ____cacheline_aligned __attribute__((__aligned__(SMP_CACHE_BYTES)))
+#endif
+
+#ifndef ____cacheline_aligned_in_smp
+#ifdef CONFIG_SMP
+#define ____cacheline_aligned_in_smp ____cacheline_aligned
+#else
+#define ____cacheline_aligned_in_smp
+#endif /* CONFIG_SMP */
+#endif
+
+#ifndef __cacheline_aligned
+#define __cacheline_aligned                       \
+  __attribute__((__aligned__(SMP_CACHE_BYTES),    \
+         __section__(".data.cacheline_aligned")))
+#endif /* __cacheline_aligned */
+
+#ifndef __cacheline_aligned_in_smp
+#ifdef CONFIG_SMP
+#define __cacheline_aligned_in_smp __cacheline_aligned
+#else
+#define __cacheline_aligned_in_smp
+#endif /* CONFIG_SMP */
+#endif
+
+/*
+ * The maximum alignment needed for some critical structures
+ * These could be inter-node cacheline sizes/L3 cacheline
+ * size etc.  Define this in asm/cache.h for your arch
+ */
+#ifndef INTERNODE_CACHE_SHIFT
+#define INTERNODE_CACHE_SHIFT L1_CACHE_SHIFT
+#endif
+
+#if !defined(____cacheline_internodealigned_in_smp)
+#if defined(CONFIG_SMP)
+#define ____cacheline_internodealigned_in_smp \
+    __attribute__((__aligned__(1 << (INTERNODE_CACHE_SHIFT))))
+#else
+#define ____cacheline_internodealigned_in_smp
+#endif
+#endif
+```
+
+正如这些宏的字面意思，可以简单理解为按高速缓存行对齐。

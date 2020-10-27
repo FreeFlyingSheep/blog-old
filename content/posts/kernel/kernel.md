@@ -1,13 +1,15 @@
 ---
 title: "Linux 内核学习笔记"
 date: 2020-09-25
-lastmod: 2020-10-22
+lastmod: 2020-10-27
 tags: [Linux 内核]
 categories: [Kernel]
 draft: false
 ---
 
-整理《深入理解 Linux 内核》(第三版，以下简称 ULK3)、《Linux 内核设计与实现》(原书第 3 版，以下简称 LKD3) 和《深入 Linux 内核架构》(以下简称 PLKA) 相关章节的联系以及个人理解。
+[Linux 内核学习笔记系列](/posts/kernel/kernel)，整理《深入理解 Linux 内核》(第三版，以下简称 ULK3)、《Linux 内核设计与实现》(原书第 3 版，以下简称 LKD3) 和《深入 Linux 内核架构》(以下简称 PLKA) 相关章节的联系以及个人理解。
+
+<!--more-->
 
 ## 引言
 
@@ -82,6 +84,8 @@ draft: false
 2. ULK3 第 二 章：内存寻址
 3. ULK3 第 八 章：内存管理
 4. PLKA 第 3 章：内存管理
+
+- [内存模型](/posts/kernel/memory/model)
 
 ### 进程管理
 
@@ -194,3 +198,4 @@ draft: false
 - [Linux 内存管理 (per-CPU 页框高速缓存)](/posts/kernel/old/per-cpu)
 - [Linux 内存管理 (slab 分配器)](/posts/kernel/old/slab)
 - [Linux 内存管理 (补充内容)](/posts/kernel/old/supplement)
+- [TODO 列表](/posts/kernel/old/todo)
