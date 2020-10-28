@@ -71,6 +71,7 @@ draft: false
 2. PLKA 附录 C：有关 C 语言的注记
 
 - [GCC 扩展语法](/posts/kernel/data-structure/expansion)
+- [内核位图](/posts/kernel/data-structure/bitmap)
 - [内核链表](/posts/kernel/data-structure/list)
 - [内核散列表](/posts/kernel/data-structure/hlist)
 - [内核队列](/posts/kernel/data-structure/kfifo)
@@ -86,6 +87,15 @@ draft: false
 4. PLKA 第 3 章：内存管理
 
 - [内存模型](/posts/kernel/memory/model)
+- 内存寻址
+- 内存管理初始化
+- 伙伴系统
+- per-CPU 高速缓存
+- 连续页框的管理
+- 内存映射
+- 不连续页框的管理
+- slab 分配器
+- 内存管理总结
 
 ### 进程管理
 

@@ -1,7 +1,7 @@
 ---
 title: "内存模型"
 date: 2020-10-27
-lastmod: 2020-10-27
+lastmod: 2020-10-28
 tags: [Linux 内核, 内存管理, 内存模型]
 categories: [Kernel]
 draft: false
@@ -53,7 +53,7 @@ typedef struct pglist_data {
 ```
 
 - `node_zones`：包含节点中区数据结构的数组。若区没有那么多，其余项用 `0` 填充。
-- `node_zonelists`：备用节点及内存区域列表，以便在当前节点没有可用空间时，在备用节点分配内存。
+- `node_zonelists`：备用节点及内存区域列表，以便在当前节点没有可用空间时，在备用节点分配内存，见 [TODO](/posts/kernel/old/todo)。
 - `nr_zones`：不同区的数目。
 - `node_mem_map`：指向页实例的指针，包含了当前节点所有区的页。
 - `bdata`：指向自举内存分配器实例的指针，见[内存管理初始化](/posts/kernel/memory/init)。
@@ -321,4 +321,84 @@ void zone_clear_flag(struct zone *zone, zone_flags_t flag);
 
 ### 页数据结构
 
-TODO
+页的数据结构在较新的内核中由 `include/linux/mm.h` 移到了 `include/linux/mm_types.h`：
+
+```c
+struct page {
+    unsigned long flags;                /* Atomic flags, some possibly
+                                         * updated asynchronously */
+    atomic_t _count;                    /* Usage count, see below. */
+    union {
+        atomic_t _mapcount;             /* Count of ptes mapped in mms,
+                                         * to show when page is mapped
+                                         * & limit reverse map searches.
+                                         */
+        struct {                        /* SLUB */
+            u16 inuse;
+            u16 objects;
+        };
+    };
+    union {
+        struct {
+            unsigned long private;          /* Mapping-private opaque data:
+                                             * usually used for buffer_heads
+                                             * if PagePrivate set; used for
+                                             * swp_entry_t if PageSwapCache;
+                                             * indicates order in the buddy
+                                             * system if PG_buddy is set.
+                                             */
+            struct address_space *mapping;  /* If low bit clear, points to
+                                             * inode address_space, or NULL.
+                                             * If page mapped as anonymous
+                                             * memory, low bit is set, and
+                                             * it points to anon_vma object:
+                                             * see PAGE_MAPPING_ANON below.
+                                             */
+        };
+        ...
+        struct kmem_cache *slab;        /* SLUB: Pointer to slab */
+        struct page *first_page;        /* Compound tail pages */
+    };
+    union {
+        pgoff_t index;                  /* Our offset within mapping. */
+        void *freelist;                 /* SLUB: freelist req. slab lock */
+    };
+    struct list_head lru;               /* Pageout list, eg. active_list
+                                         * protected by zone->lru_lock !
+                                         */
+
+#if defined(WANT_PAGE_VIRTUAL)
+    void *virtual;                      /* Kernel virtual address (NULL if
+                                           not kmapped, ie. highmem) */
+#endif /* WANT_PAGE_VIRTUAL */
+    ...
+};
+```
+
+- `flags`：存储体系结构无关的标志，用于描述页的属性，相关标志位于 `include/linux/page-flags.h`。
+- `_count`：使用计数，表示内核中引用该页的次数。在其值为 `0` 时，内核知道 `page` 实例当前不使用，因此可以删除。
+- `_mapcount`：表示在页表中有多少项指向该页。
+- `inuse`、`objects`、`slab` 和 `freelist`：用于 slub 分配器，见 [TODO](/posts/kernel/old/todo)。
+- `private`：指向“私有”数据的指针，这里不准备展开介绍。
+- `mapping` 和 `index`：分部指定了页框所在的地址空间和页框在映射内部的偏移量。特别地，若 `mapping` 的低位被置 `1`，则该指针不指向 `address_space` 实例，而是指向 `anon_vma`，实现匿名页的逆向映射，见 [TODO](/posts/kernel/old/todo)。
+- `first_page`：指向首页的指针。内核可以将多个连续的页合并成较大的复合页 (compound page)，分组中的第一个页被称为首页 (head page)，其余各页称为尾页 (tail page)。
+- `lru`：用于在各种链表上维护该页，以便将页按不同类别分组。一个重要的例子是活动页和不活动页，见 [TODO](/posts/kernel/old/todo)。
+- `virtual`：存储高端内存区域中页的虚拟地址。
+
+用联合体的原因是，某些字段只会被内核的特定部分使用，对于其他部分是多余的，而 C 语言的联合体刚好能解决这一问题。例如，若某一页被用于 slub 分配器，则可以确保该页只被内核使用，那映射计数信息 (`_mapcount`) 就是多余的，该字段可以被用来存储 slub 分配器相关的信息 (`inuse` 和 `objects`)。
+
+值得注意的是，`mapping` 指向的 `address_space` 实例总是对齐到 `sizeof(long)`，因此该指针的低位总是 `0`，可以用于存储额外的信息。内核中很多地方利用了这种方式，来尽可能地节约内存使用，但这种方式从可读性角度来看，确实是很糟糕的，正如书上说的，这是一种近乎“肆无忌惮”的技巧。
+
+## 个人理解
+
+内核开发者试图在可读性与高效间权衡，在希望节省关键数据结构占用的空间时，他们尽可能复用现有的字段，甚至不想看到任何一个多余的字段。而在复用字段时，由于内核不同的部分需要的字段类型可能不同，他们不能接受用同一个类型来表示不同的数据类型，因此使用联合体来解决这一问题，如上面的 `_mapcount`、`inuse` 和 `objects`。但对于一些字段，如上面的 `private`，因为不同内核部分使用时需要的类型相同，都是 `unsigned long`，所以就没用到联合体。而对于一些特定的数据，如上面的指针 `mapping`，因为低位总是 `0`，所以低位可以用于存储额外的信息，进一步节省内存占用。如果说用联合体是为了可读性，复用字段是为了高效 (降低内存占用)，`page` 结构体则是这两者结合的产物。
+
+既然是为了可读性和高效，那思考下面的问题：
+
+- 从可读性角度出发，就如上面的 `private`，为何不用联合体来为不同内核部分定义不同的字段名？
+- 从高效角度出发，对于其他指针，为何不复用它们的低位存储其他信息，来进一步减少内存空间的使用？
+- 可读性和高效间的度谁来权衡，怎么权衡？
+
+这究竟是不是一种好的编程技巧呢？或许与大部分人的想法背道而驰，我认为这种代码是“糟糕的”而不是“巧妙的”，这更像是高手的“任性”，尽管这种技巧确实为内核节省了很多空间。
+
+我认为学习内核，重要的学习它的设计思想和实用的编程技巧。而上面用到的一些编程技巧，个人认为并不“实用”。在平时开发过程中，如果不是遇到一些极端的情况，比如需要尽可能压榨内存的使用等等，完全没必要做到这种程度，滥用这些编程技巧的危害往往更大。
