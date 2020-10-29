@@ -1,7 +1,7 @@
 ---
 title: "Linux 内核学习笔记"
 date: 2020-09-25
-lastmod: 2020-10-27
+lastmod: 2020-10-29
 tags: [Linux 内核]
 categories: [Kernel]
 draft: false
@@ -87,7 +87,7 @@ draft: false
 4. PLKA 第 3 章：内存管理
 
 - [内存模型](/posts/kernel/memory/model)
-- 内存寻址
+- [内存寻址](/posts/kernel/memory/address)
 - 内存管理初始化
 - 伙伴系统
 - per-CPU 高速缓存
@@ -192,7 +192,7 @@ draft: false
 1. ULK3 附录 一：系统启动
 2. PLKA 附录 D：系统启动
 
-### 补充内容
+### 其他内容
 
 1. PLKA 第 12 章：网络
 2. PLKA 第 19 章：审计
