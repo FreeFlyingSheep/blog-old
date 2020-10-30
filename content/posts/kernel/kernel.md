@@ -1,7 +1,7 @@
 ---
 title: "Linux 内核学习笔记"
 date: 2020-09-25
-lastmod: 2020-10-29
+lastmod: 2020-10-30
 tags: [Linux 内核]
 categories: [Kernel]
 draft: false
@@ -75,8 +75,8 @@ draft: false
 - [内核链表](/posts/kernel/data-structure/list)
 - [内核散列表](/posts/kernel/data-structure/hlist)
 - [内核队列](/posts/kernel/data-structure/kfifo)
-- 内核基数树
 - 内核红黑树
+- 内核基数树
 - 内核映射
 
 ### 内存管理
@@ -86,8 +86,8 @@ draft: false
 3. ULK3 第 八 章：内存管理
 4. PLKA 第 3 章：内存管理
 
-- [内存模型](/posts/kernel/memory/model)
 - [内存寻址](/posts/kernel/memory/address)
+- [内存模型](/posts/kernel/memory/model)
 - 内存管理初始化
 - 伙伴系统
 - per-CPU 高速缓存
