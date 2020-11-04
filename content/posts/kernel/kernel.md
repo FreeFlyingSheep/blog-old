@@ -1,7 +1,7 @@
 ---
 title: "Linux 内核学习笔记"
 date: 2020-09-25
-lastmod: 2020-10-30
+lastmod: 2020-11-04
 tags: [Linux 内核]
 categories: [Kernel]
 draft: false
@@ -75,7 +75,7 @@ draft: false
 - [内核链表](/posts/kernel/data-structure/list)
 - [内核散列表](/posts/kernel/data-structure/hlist)
 - [内核队列](/posts/kernel/data-structure/kfifo)
-- 内核红黑树
+- [内核红黑树](/posts/kernel/data-structure/rbtree)
 - 内核基数树
 - 内核映射
 

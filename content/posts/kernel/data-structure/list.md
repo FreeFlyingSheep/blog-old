@@ -25,7 +25,7 @@ struct fox {
 };
 ```
 
-我们会在 `fox` 结构体添加该结构体的指针，这样 `fox` 数据结构 (即链表的节点) 就能被塞入链表。
+我们会在 `fox` 结构体添加该结构体的指针，这样 `fox` 数据结构 (即链表的结点) 就能被塞入链表。
 
 然后我们针对 `fox` 结构体实现相关的链表操作，比如添加狐狸：
 
@@ -58,13 +58,13 @@ void add_rabbit(struct rabbit *list, struct rabbit *r)
 
 这时候就有人提出了，我们已经为 `fox` 结构体定义过了相关的操作，但为了 `rabbit` 结构体我们需要再次实现几乎完全一样的功能，这是重复劳动。
 
-我们希望实现一个更加通用的方案，针对链表的操作应该对所有情况都适用 (比如上面的 `fox` 和 `rabbit`)。显然传统的链表是无法解决这一问题的，因而与传统的方式相反，内核把链表节点塞入其他数据结构，实现了一种独特解法。
+我们希望实现一个更加通用的方案，针对链表的操作应该对所有情况都适用 (比如上面的 `fox` 和 `rabbit`)。显然传统的链表是无法解决这一问题的，因而与传统的方式相反，内核把链表结点塞入其他数据结构，实现了一种独特解法。
 
 内核链表是一个独特的双向循环链表，下面我们先展示内核链表的用法，再介绍其具体实现。
 
 ## 内核链表的使用
 
-内核链表实现称为 `list`，它实现了通用的链表操作，仍然以 `fox` 结构体为例，下面展示内核链表的常见用法。
+内核链表实现称为 `list`，头文件为 `linux/list.h`。它实现了通用的链表操作，仍然以 `fox` 结构体为例，下面展示内核链表的常见用法。
 
 ### 定义链表
 
@@ -106,21 +106,21 @@ struct fox f = {
 static LIST_HEAD(fox_list);
 ```
 
-### 添加节点
+### 添加结点
 
-#### 在头部添加节点
+#### 在头部添加结点
 
 ```c
 list_add(&f->list, &fox_list);
 ```
 
-#### 在尾部添加节点
+#### 在尾部添加结点
 
 ```c
 list_add_tail(&f->list, &fox_list);
 ```
 
-### 删除节点
+### 删除结点
 
 ```c
 list_del(&f->list);
@@ -236,7 +236,7 @@ static inline int list_is_singular(const struct list_head *head)
 }
 ```
 
-### 添加节点的实现
+### 添加结点的实现
 
 ```c
 static inline void __list_add(struct list_head *new,
@@ -277,7 +277,7 @@ static inline void list_add_tail(struct list_head *new, struct list_head *head)
 
 ```
 
-### 删除节点的实现
+### 删除结点的实现
 
 ```c
 /*
@@ -342,11 +342,11 @@ static inline void list_del_init(struct list_head *entry)
 #define LIST_POISON2 ((void *) 0x00200200 + POISON_POINTER_DELTA)
 ```
 
-根据注释，设置这两个值是为了在循环中遍历到 `entry` 时触发页面异常，这相当于加了一道保险，毕竟不应该出现遍历已经删除了的节点的情况。
+根据注释，设置这两个值是为了在循环中遍历到 `entry` 时触发页面异常，这相当于加了一道保险，毕竟不应该出现遍历已经删除了的结点的情况。
 
 与 `list_del()` 形成对比，`list_del_init()` 在删除 `entry` 后，重新初始化 `entry`，这是为了能再次使用包含 `entry` 的数据结构，比如需要把该数据结构重新添加到链表中 (正如刚刚说的，如果使用 `list_add()` 添加 `list_del()` 后的 `entry`，遍历时会发生页面异常)。
 
-### 移动节点的实现
+### 移动结点的实现
 
 ```c
 /**
@@ -387,7 +387,7 @@ static inline void list_rotate_left(struct list_head *head)
 }
 ```
 
-其中，`list_rotate_left()` 函数用于将链表的第一个节点移动至末尾。
+其中，`list_rotate_left()` 函数用于将链表的第一个结点移动至末尾。
 
 ### 拆分链表的实现
 
@@ -508,7 +508,7 @@ static inline void list_splice_tail_init(struct list_head *list,
 }
 ```
 
-### 获取包含节点的数据结构
+### 获取包含结点的数据结构
 
 ```c
 /**

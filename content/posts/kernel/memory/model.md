@@ -13,21 +13,21 @@ draft: false
 
 ## 内存模型简介
 
-简单概括，内存被划分为若干个节点，每个节点又被划分为若干个区，而每个区又包含若干页框。
+简单概括，内存被划分为若干个结点，每个结点又被划分为若干个区，而每个区又包含若干页框。
 
-## 节点 (Node)
+## 结点 (Node)
 
-### 节点简介
+### 结点简介
 
 我们习惯上认为计算机内存是一种均匀、共享的资源，即在忽略硬件高速缓存作用的情况下，任意 CPU 对任意内存单元的访问都需要相同时间。这种模型被称为**一致访问内存 (UMA)** 模型。IBM 兼容 PC 一般都采用这种模型。
 
 但对于某些体系结构，如 ALpha 或 MIPS，这种假设不成立。它们使用**非一致访问内存 (NUMA)** 模型。
 
-Linux 支持 NUMA 模型，它通过把物理内存划分为多个节点，来保证对于每个节点，给定的 CPU 访问页面需要的时间相同。这样对于每个 CPU，内核可以试图把耗时节点的访问次数减到最小。
+Linux 支持 NUMA 模型，它通过把物理内存划分为多个结点，来保证对于每个结点，给定的 CPU 访问页面需要的时间相同。这样对于每个 CPU，内核可以试图把耗时结点的访问次数减到最小。
 
-在配置不使用 NUMA 的情况下，Linux 还是会使用一个单独的节点，包括所有的物理内存。
+在配置不使用 NUMA 的情况下，Linux 还是会使用一个单独的结点，包括所有的物理内存。
 
-### 节点数据结构
+### 结点数据结构
 
 `include/linux/mm_types.h`：
 
@@ -52,18 +52,18 @@ typedef struct pglist_data {
 } pg_data_t;
 ```
 
-- `node_zones`：包含节点中区数据结构的数组。若区没有那么多，其余项用 `0` 填充。
-- `node_zonelists`：备用节点及内存区域列表，以便在当前节点没有可用空间时，在备用节点分配内存，见 [TODO](/posts/kernel/old/todo)。
+- `node_zones`：包含结点中区数据结构的数组。若区没有那么多，其余项用 `0` 填充。
+- `node_zonelists`：备用结点及内存区域列表，以便在当前结点没有可用空间时，在备用结点分配内存，见 [TODO](/posts/kernel/old/todo)。
 - `nr_zones`：不同区的数目。
-- `node_mem_map`：指向页实例的指针，包含了当前节点所有区的页。
+- `node_mem_map`：指向页实例的指针，包含了当前结点所有区的页。
 - `bdata`：指向自举内存分配器实例的指针，见[内存管理初始化](/posts/kernel/memory/init)。
-- `node_start_pfn`：当前节点第一个页帧的逻辑编号，系统中所有页帧是依次编号的，因此每个页帧的号码都是全局唯一的。特别地，在 UMA 系统中，因为只有一个节点，所以该值总为 `0`。
-- `node_present_pages`：当前节点中页帧的数目。
+- `node_start_pfn`：当前结点第一个页帧的逻辑编号，系统中所有页帧是依次编号的，因此每个页帧的号码都是全局唯一的。特别地，在 UMA 系统中，因为只有一个结点，所以该值总为 `0`。
+- `node_present_pages`：当前结点中页帧的数目。
 - `node_spanned_pages`：以页帧为单位计算的长度。
-- `node_id`：全局节点编号，从 `0` 开始。
+- `node_id`：全局结点编号，从 `0` 开始。
 - `kswapd_wait`、`kswapd` 和 `kswapd_max_order`：交换守护进程 (swap daemon) 相关的内容，见 [TODO](/posts/kernel/old/todo)。
 
-### 节点状态管理
+### 结点状态管理
 
 `include/linux/nodemask.h`：
 
@@ -84,7 +84,7 @@ enum node_states {
 
 `N_POSSIBLE`、`N_ONLINE` 和 `N_NORMAL_MEMORY` 用于内存热插拔，这部分内容不属于该系列学习笔记的范畴。
 
-设置和清除节点的特定位使用 `void node_set_state(int node, enum node_states state)` 和 `void node_clear_state(int node, enum node_states state)` 函数。
+设置和清除结点的特定位使用 `void node_set_state(int node, enum node_states state)` 和 `void node_clear_state(int node, enum node_states state)` 函数。
 
 ## 区 (内存域，Zone)
 
@@ -95,7 +95,7 @@ enum node_states {
 - 一些硬件只能用某些特定的内存地址来执行 DMA。
 - 一些体系结构的内存的物理地址范围比虚拟地址范围大得多，线性地址空间太小导致 CPU 不能直接访问所有的物理内存。
 
-对内存的每个节点，Linux 分了 3 个区来解决这些限制：
+对内存的每个结点，Linux 分了 3 个区来解决这些限制：
 
 - `ZONE_DMA`：执行 DMA 操作的页框。
 - `ZONE_NORMAL`：能正常映射的页框。
