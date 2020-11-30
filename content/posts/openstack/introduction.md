@@ -67,31 +67,31 @@ OpenStack 的部署相对比较复杂，可以根据官网的教程。如果只�
 
 AMQP (Advanced Message Queuing Protocol，高级消息队列协议) 是为 MOM (Message-oriented middleware，面向消息中间件) 设计的开放标准应用层协议。
 
-更多内容可以参考博客 [RabbitMQ（一）：RabbitMQ快速入门](https://www.cnblogs.com/sgh1023/p/11217017.html)。
+更多内容可以参考 [RabbitMQ（一）：RabbitMQ快速入门](https://www.cnblogs.com/sgh1023/p/11217017.html)。
 
 ### REST
 
 REST (Representational State Transfer，表述性状态传递) 是一种软件架构风格，可以降低开发的复杂性，提高系统的可伸缩性。
 
-更多内容可以参考博客 [rest api 介绍](https://www.jianshu.com/p/75389ea9a90b)。
+更多内容可以参考 [rest api 介绍](https://www.jianshu.com/p/75389ea9a90b)。
 
 ### RPC
 
 RPC (Remote Procedure Call，远程过程调用) 是相对于本地过程调用而言的，能像调用本地函数一样调用远程函数的协议。
 
-更多内容可以参考知乎上[谁能用通俗的语言解释一下什么是 RPC 框架？ - 洪春涛的回答](https://www.zhihu.com/question/25536695/answer/221638079)。
+更多内容可以参考[谁能用通俗的语言解释一下什么是 RPC 框架？ - 洪春涛的回答](https://www.zhihu.com/question/25536695/answer/221638079)。
 
 ### ETCD
 
 ETCD 是一个高可用的 Key/Value 存储系统，主要用于分享配置和服务发现。
 
-更多内容可以参考博客 [ETCD 简介 + 使用](https://blog.csdn.net/bbwangj/article/details/82584988)。
+更多内容可以参考 [ETCD 简介 + 使用](https://blog.csdn.net/bbwangj/article/details/82584988)。
 
 ### Django
 
 Django 是一个 Python Web 框架，采用了 MVT 的软件设计模式，即模型 (Model)，视图 (View) 和模板 (Template)，被 Horizon 组件所使用。
 
-更多内容可以参考菜鸟教程 [Django 教程](https://www.runoob.com/django/django-tutorial.html)。
+更多内容可以参考 [Django 教程](https://www.runoob.com/django/django-tutorial.html)。
 
 ## 个人理解
 
