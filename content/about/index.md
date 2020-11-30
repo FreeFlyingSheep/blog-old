@@ -16,6 +16,7 @@ comment:
 - Kernel：Linux 内核相关的学习笔记
 - Linux：不同 Linux 发行版的使用记录
 - Mips：Mips 体系结构相关的学习笔记
+- OpenStack：OpenStack 相关的学习笔记
 - Tips：零散的知识点
 
 ## 联系方式
