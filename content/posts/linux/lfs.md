@@ -1,7 +1,7 @@
 ---
 title: "构建 LFS 系统"
 date: 2020-09-21
-lastmod: 2020-09-21
+lastmod: 2020-12-01
 tags: [LFS]
 categories: [Linux]
 draft: false
@@ -99,4 +99,4 @@ LFS 项目主要是从源码一步一步构建一个定制的 Linux 系统。具
 
 本人基于官方手册，抱着写着玩的心态，写了一个自动构建 LFS 的项目，该项目使用 shell 脚本编写，可以自动构建 `LFS systemd 10.0` 到一个虚拟磁盘文件，项目地址如下：<https://github.com/FreeFlyingSheep/lfs>。
 
-后续本人考虑用 Python 重构一个更智能、功能更多的脚本，但不可能做到 ALFS 项目那种自动解析官方手册的程度，而是基于手动写的配置文件来生成自动构建的 shell 脚本，完善相关功能 (视情况可能暂时鸽了)。
+原本准备用 Python 重构一个脚本，但感觉实际意义不大，又耗时，就鸽了……

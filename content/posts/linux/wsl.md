@@ -132,10 +132,10 @@ wsl --set-version Debian 1
 
 更多颜色主题可以参考 <https://windowsterminalthemes.dev/>。
 
-如果希望打开终端时路径是家目录，将 WSL 对应的 `source` 改为 `commandline`，并添加 `startingDirectory`，以 Ubuntu 20.04 为例，本人的家目录是 `/home/fyang`，修改配置如下：
+如果希望打开终端时路径是家目录，将 WSL 对应的 `source` 改为 `commandline`，并添加 `startingDirectory`，以 Ubuntu 20.04 为例，本人的家目录是 `/home/chris`，修改配置如下：
 
 ```json
 // "source": "Windows.Terminal.Wsl"
 "commandline": "ubuntu2004",
-"startingDirectory": "/home/fyang"
+"startingDirectory": "/home/chris"
 ```
