@@ -337,6 +337,19 @@ Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
 sudo pacman -S archlinuxcn-keyring
 ```
 
+如果出现密钥无法部署的问题，可以参考 <https://www.archlinuxcn.org/gnupg-2-1-and-the-pacman-keyring/>，进行如下操作：
+
+```bash
+pacman -Syu haveged
+systemctl start haveged
+systemctl enable haveged
+
+rm -fr /etc/pacman.d/gnupg
+pacman-key --init
+pacman-key --populate archlinux
+pacman-key --populate archlinuxcn
+```
+
 ### 使用 AUR
 
 我选择安装 yay：
