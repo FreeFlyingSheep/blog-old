@@ -1,7 +1,7 @@
 ---
 title: "使用 Zsh"
 date: 2020-09-23
-lastmod: 2020-09-23
+lastmod: 2021-01-04
 tags: [Zsh, oh my zsh]
 categories: [Tips]
 draft: false
@@ -34,3 +34,18 @@ sh -c "$(wget https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O 
 修改家目录下的 `.zshrc` 文件，将 `ZSH_THEME` 修改为想要的主题，如 `ZSH_THEME="agnoster"`。
 
 某些主题会提示计算机名，如果不希望在当前用户下提示计算机名，可以在 `.zshrc` 文件的末尾添加 `DEFAULT_USER="$(whoami)"`。
+
+## 安装插件和其他主题
+
+安装教程可以参考对应网站上的教程，下面推荐几个插件和主题。
+
+推荐四个插件：
+
+- [额外的命令补全](https://github.com/zsh-users/zsh-completions)
+- [代码提示](https://github.com/zsh-users/zsh-autosuggestions)
+- [语法高亮](https://github.com/zsh-users/zsh-syntax-highlighting)
+- [历史记录的子字符串搜索](https://github.com/zsh-users/zsh-history-substring-search)
+
+推荐一个主题：
+
+- [Powerlevel10k](https://github.com/romkatv/powerlevel10k)
