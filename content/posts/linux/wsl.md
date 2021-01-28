@@ -1,7 +1,7 @@
 ---
 title: "安装 WSL"
 date: 2020-09-21
-lastmod: 2020-09-23
+lastmod: 2021-01-28
 tags: [WSL]
 categories: [Linux]
 draft: false
@@ -96,46 +96,69 @@ wsl --set-version Debian 1
 
 若想把 WSL 设为默认启动的终端，将 `defaultProfile` 设置为 WSL 的 `guid`，默认为 PowerShell。
 
+如果要指定终端启动时的大小，在 `defaultProfile` 之后加入如下配置 (配置文件提供的注释已经很友好了)：
+
+```json
+// You can add more global application settings here.
+// To learn more about global settings, visit https://aka.ms/terminal-global-settings
+"initialCols": 80,
+"initialRows": 24,
+```
+
 在 `profiles` 的 `defaults` 中加入通用的配置，如：
 
 ```json
+// Put settings here that you want to apply to all profiles.
 "fontFace": "Jetbrains Mono",
 "fontSize": 14,
 "colorScheme": "idleToes"
 ```
 
-若使用自定义主题，需要在 `schemes` 中加入与 `colorScheme` 对应的颜色主题配置：
+若使用自定义主题 (如上面的 `idleToes`)，需要在 `schemes` 中加入与 `colorScheme` 对应的颜色主题配置：
 
 ```json
-{
-    "name": "idleToes",
-    "black": "#323232",
-    "red": "#d25252",
-    "green": "#7fe173",
-    "yellow": "#ffc66d",
-    "blue": "#4099ff",
-    "purple": "#f680ff",
-    "cyan": "#bed6ff",
-    "white": "#eeeeec",
-    "brightBlack": "#535353",
-    "brightRed": "#f07070",
-    "brightGreen": "#9dff91",
-    "brightYellow": "#ffe48b",
-    "brightBlue": "#5eb7f7",
-    "brightPurple": "#ff9dff",
-    "brightCyan": "#dcf4ff",
-    "brightWhite": "#ffffff",
-    "background": "#323232",
-    "foreground": "#ffffff"
-}
+// Add custom color schemes to this array.
+// To learn more about color schemes, visit https://aka.ms/terminal-color-schemes
+"schemes": [
+    {
+        "name": "idleToes",
+        "black": "#323232",
+        "red": "#d25252",
+        "green": "#7fe173",
+        "yellow": "#ffc66d",
+        "blue": "#4099ff",
+        "purple": "#f680ff",
+        "cyan": "#bed6ff",
+        "white": "#eeeeec",
+        "brightBlack": "#535353",
+        "brightRed": "#f07070",
+        "brightGreen": "#9dff91",
+        "brightYellow": "#ffe48b",
+        "brightBlue": "#5eb7f7",
+        "brightPurple": "#ff9dff",
+        "brightCyan": "#dcf4ff",
+        "brightWhite": "#ffffff",
+        "background": "#323232",
+        "foreground": "#ffffff"
+    }
+]
 ```
 
 更多颜色主题可以参考 <https://windowsterminalthemes.dev/>。
 
-如果希望打开终端时路径是家目录，将 WSL 对应的 `source` 改为 `commandline`，并添加 `startingDirectory`，以 Ubuntu 20.04 为例，本人的家目录是 `/home/chris`，修改配置如下：
+如果希望打开终端时路径是家目录，下面介绍两种常见的方式。
+
+第一种方法是很多博客介绍的，将 WSL 对应的 `source` 改为 `commandline`，并添加 `startingDirectory`，以 Ubuntu 20.04 为例，本人的家目录是 `/home/chris`，修改配置如下：
 
 ```json
 // "source": "Windows.Terminal.Wsl"
 "commandline": "ubuntu2004",
 "startingDirectory": "/home/chris"
+```
+
+第二种方法是官方文档里介绍的，只需要添加 `startingDirectory` 选项，以 Debian 为例，修改配置如下：
+
+```json
+"source": "Windows.Terminal.Wsl",
+"startingDirectory": "//wsl$/debian"
 ```
