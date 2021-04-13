@@ -1,13 +1,13 @@
 ---
 title: "使用 Hugo 搭建个人博客"
 date: 2020-09-23
-lastmod: 2020-10-25
+lastmod: 2021-04-13
 tags: [Hugo, Github Pages]
 categories: [Tips]
 draft: false
 ---
 
-使用 [Hugo](https://gohugo.io/) 配合 [Github Pages](https://pages.github.com/) 搭建静态博客。
+使用 [Hugo](https://gohugo.io/) 配合 [Github Pages](https://pages.github.com/) 搭建静态博客，利用 [Github Actions](https://github.com/features/actions) 自动部署。
 
 <!--more-->
 
@@ -83,6 +83,8 @@ git submodule update
 
 建立脚本来简化常用的操作。
 
+注意：现在已经可以利用 Github Actions 自动部署了，见 [自动部署](#自动部署)。
+
 ### 一键预览
 
 通常运行 `hugo serve` 即可，但以 LoveIt 主题为例，希望启用一些生成环境的功能，使用如下脚本：
@@ -140,3 +142,19 @@ echo "Updating Blog..."
 cd ../
 git pull --rebase
 ```
+
+## 自动部署
+
+本博客现在已经采用自动部署的方式。
+
+### Github Actions 配置
+
+TODO
+
+### Github Pages 配置
+
+TODO
+
+### 依赖自动更新
+
+TODO
