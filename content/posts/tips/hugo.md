@@ -56,7 +56,7 @@ git submodule add https://github.com/dillonzq/LoveIt.git themes/LoveIt
 
 ## 设置 Github Pages
 
-在 Github 的 `<username>.github.io` 仓库中设置启用 Github Pages，使用 master 分支以及根路径。
+在 Github 的 `<username>.github.io` 仓库中设置启用 Github Pages，使用 `master` 分支以及根路径。
 
 保存后等待 Github 完成相应的构建，即可访问 `https://<username>.github.io`，查看个人博客。注意，有时候博客已经完成构建，但该网址仍然无法访问，Github 完成网址的映射可能需要几分钟甚至数个小时。
 
@@ -149,12 +149,66 @@ git pull --rebase
 
 ### Github Actions 配置
 
-TODO
+参考 [GitHub Actions for Hugo](https://github.com/peaceiris/actions-hugo)。
+
+新建 `.github\workflows\gh-pages.yml` 文件：
+
+```yaml
+name: Github Pages
+
+on:
+  push:
+    branches:
+      - main  # Set a branch name to trigger deployment
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true  # Fetch Hugo themes (true OR recursive)
+          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 'latest'
+          extended: true    # Use Hugo extended
+
+      - name: Build
+        run: hugo --minify
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          force_orphan: true
+```
+
+现在 Github Actions 会在每次 `push` 后自动编译网站，并将生成的 `public` 文件夹中的内容上传到 `gh-pages` 分支。
 
 ### Github Pages 配置
 
-TODO
+启用 Github Pages，使用 `gh-pages` 分支以及根路径。
 
 ### 依赖自动更新
 
-TODO
+新建 `.github\dependabot.yml` 文件：
+
+```yaml
+version: 2
+updates:
+  # Enable version updates for github-actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    labels:
+      - "dependabot"
+    commit-message:
+      prefix: "github-actions"
+```
+
+现在 [Github Dependabot](https://dependabot.com/) 会每日自动检测 `github-actions` 脚本更新。
