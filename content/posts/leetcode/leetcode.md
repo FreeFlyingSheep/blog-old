@@ -26,5 +26,5 @@ draft: false
 3. 参考其他解答，如果有的话给出优化的解法。
 
 - [163. Missing Ranges](/posts/leetcode/daily/163-missing-ranges)
-- [138. Copy List with Random Pointer](posts/leetcode/daily/168-copy-list-with-random-pointer)
-- [2. Add Two Numbers](posts/leetcode/daily/2-add-two-numbers)
+- [138. Copy List with Random Pointer](/posts/leetcode/daily/168-copy-list-with-random-pointer)
+- [2. Add Two Numbers](/posts/leetcode/daily/2-add-two-numbers)
