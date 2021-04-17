@@ -1,7 +1,7 @@
 ---
 title: "151. Reverse Words in a String"
-date: 2021-04-14
-lastmod: 2021-04-14
+date: 2021-04-16
+lastmod: 2021-04-16
 tags: [Golang, 数据结构与算法]
 categories: [LeetCode]
 draft: false
@@ -72,23 +72,23 @@ Output: "bob like even not does Alice"
 
 ```go
 func reverseWords(s string) string {
-	var words []string
-	l := len(s)
-	for i := 0; i < l; i++ {
-		if s[i] != ' ' {
-			var word string
-			for ; i < l && s[i] != ' '; i++ {
-				word += string(s[i])
-			}
-			words = append(words, string(word))
-		}
-	}
+    var words []string
+    l := len(s)
+    for i := 0; i < l; i++ {
+        if s[i] != ' ' {
+            var word string
+            for ; i < l && s[i] != ' '; i++ {
+                word += string(s[i])
+            }
+            words = append(words, string(word))
+        }
+    }
 
-	var res string
-	for i := len(words) - 1; i >= 0; i-- {
-		res += " " + words[i]
-	}
-	return res[1:]
+    var res string
+    for i := len(words) - 1; i >= 0; i-- {
+        res += " " + words[i]
+    }
+    return res[1:]
 }
 ```
 
@@ -98,12 +98,12 @@ func reverseWords(s string) string {
 
 ```go
 func reverseWords(s string) string {
-	re := regexp.MustCompile(`\w+`)
-	words := re.FindAllString(s, -1)
-	for i, j := 0, len(words)-1; i < j; i, j = i+1, j-1 {
-		words[i], words[j] = words[j], words[i]
-	}
-	return strings.Join(words, " ")
+    re := regexp.MustCompile(`\w+`)
+    words := re.FindAllString(s, -1)
+    for i, j := 0, len(words)-1; i < j; i, j = i+1, j-1 {
+        words[i], words[j] = words[j], words[i]
+    }
+    return strings.Join(words, " ")
 }
 ```
 
