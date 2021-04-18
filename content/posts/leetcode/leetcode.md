@@ -1,7 +1,7 @@
 ---
 title: "LeetCode 刷题笔记"
 date: 2021-04-13
-lastmod: 2021-04-14
+lastmod: 2021-04-18
 tags: [LeetCode]
 categories: [LeetCode]
 draft: false
@@ -31,3 +31,4 @@ draft: false
 - [200. Number of Islands](/posts/leetcode/daily/200-number-of-islands)
 - [151. Reverse Words in a String](/posts/leetcode/daily/151-reverse-words-in-a-string)
 - [54. Spiral Matrix](/posts/leetcode/daily/54-spiral-matrix)
+- [1. Two Sum](/posts/leetcode/daily/1-two-sum)
