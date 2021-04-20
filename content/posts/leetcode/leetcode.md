@@ -34,3 +34,4 @@ draft: false
 - [54. Spiral Matrix](/posts/leetcode/daily/54-spiral-matrix)
 - [1. Two Sum](/posts/leetcode/daily/1-two-sum)
 - [146. LRU Cache](/posts/leetcode/daily/146-lru-cache)
+- [42. Trapping Rain Water](/posts/leetcode/daily/42-trapping-rain-water)
