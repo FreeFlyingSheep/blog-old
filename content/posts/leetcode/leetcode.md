@@ -1,11 +1,8 @@
 ---
 title: "LeetCode 刷题笔记"
 date: 2021-04-13
-<<<<<<< HEAD
 lastmod: 2021-04-18
-=======
 lastmod: 2021-04-20
->>>>>>> 7dbef83 (2021.04.20)
 tags: [LeetCode]
 categories: [LeetCode]
 draft: false
