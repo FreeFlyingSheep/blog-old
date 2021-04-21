@@ -1,7 +1,7 @@
 ---
 title: "42. Trapping Rain Water"
 date: 2021-04-20
-lastmod: 2021-04-20
+lastmod: 2021-04-21
 tags: [Golang, 数据结构与算法]
 categories: [LeetCode]
 draft: false
@@ -86,4 +86,44 @@ func trap(height []int) int {
 
 参考官方题解，对应官方的暴力做法，有三种更好的解法思路：动态规划、单调栈、双指针。
 
-这些做法我准备等以后遇到更典型的题目后，再回过头来看（鸽了）。
+这些做法我准备等以后遇到更典型的题目后，再回过头来看（暂时鸽了，以后有心情再补）。
+
+## 双指针法
+
+再次考虑积水问题，这其实是遵循“木桶效应”的：要能积水，必须两边都有方块，而最短的方块决定能积多少水。
+
+现在我们需要考虑左右两个方向的方块高度，因此我们先定义两个指针（数组下标） `left` 和 `right` 来从两边向中间逼近。
+
+如果左边的高度小于等于右边，那左边的高度将决定能积多少水，此时我们保持右指针边不动，将左指针向右逼近；反之同理。
+
+考虑左指针往右逼近的情况，如果逼近后，当前的高度比左边最大高度低，那么说明能够积水，此时能积的水等于左边最大高度与当前高度的差值；右指针向左逼近的情况同理。
+
+每次左右指针向中间逼近的时候，将能积的水累加，当两指针汇合时（或者左指针不比右指针小的时候，这样能把空数组的特例也放进去），得到的总和就是总共能积的水。
+
+最后用 Golang 的实现如下：
+
+```go
+func trap(height []int) int {
+    left, right := 0, len(height)-1
+    maxLeft, maxRight := 0, 0
+    total := 0
+    for left < right {
+        if height[left] <= height[right] {
+            if height[left] < maxLeft {
+                total += maxLeft - height[left]
+            } else {
+                maxLeft = height[left]
+            }
+            left++
+        } else {
+            if height[right] < maxRight {
+                total += maxRight - height[right]
+            } else {
+                maxRight = height[right]
+            }
+            right--
+        }
+    }
+    return total
+}
+```
