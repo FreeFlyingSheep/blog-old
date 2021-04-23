@@ -7,6 +7,8 @@ categories: [LeetCode]
 draft: false
 ---
 
+力扣（LeetCode）[第 253 题](https://leetcode-cn.com/problems/meeting-rooms-ii)的题解。
+
 <!--more-->
 
 ## 题目
