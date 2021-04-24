@@ -2,7 +2,7 @@
 title: "LeetCode 刷题笔记"
 date: 2021-04-13
 lastmod: 2021-04-18
-lastmod: 2021-04-23
+lastmod: 2021-04-24
 tags: [LeetCode]
 categories: [LeetCode]
 draft: false
@@ -38,3 +38,4 @@ draft: false
 - [5. Longest Palindromic Substring](/posts/leetcode/daily/5-longest-palindromic-substring)
 - [253. Meeting Rooms II](/posts/leetcode/daily/253-meeting-rooms-ii)
 - [273. Integer to English Words](/posts/leetcode/daily/273-integer-to-english-words)
+- [8. String to Integer (atoi)](/posts/leetcode/daily/8-string-to-integer-atoi)
