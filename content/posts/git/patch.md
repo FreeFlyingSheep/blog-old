@@ -19,7 +19,7 @@ draft: false
 git diff <branch1>[:<file1>] <branch2>[:<file2>] > <patch>
 ```
 
-使用 `git diff` 导出的补丁，不包含提交 (commit) 信息。
+使用 `git diff` 导出的补丁，不包含提交（commit）信息。
 
 ### `git format-patch`
 
@@ -115,7 +115,7 @@ git revert <commit1>..<commit2>
 
 ### 获取项目
 
-首先，从指定地址克隆项目 (修改过的 linux 内核)。
+首先，从指定地址克隆项目（修改过的 linux 内核）。
 
 ```bash
 git clone ...
@@ -157,7 +157,7 @@ a804eddbca6c MIPS: Fix restart of indirect syscalls
 
 ### 导出相应补丁
 
-把从 `8ac8e9653550` 开始 (不包括 `8ac8e9653550`) 的提交以补丁形式导出到上级目录的 `patch` 文件夹。
+把从 `8ac8e9653550` 开始（不包括 `8ac8e9653550`）的提交以补丁形式导出到上级目录的 `patch` 文件夹。
 
 ```bash
 git format-patch 8ac8e965355 -o ../patch

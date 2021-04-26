@@ -23,7 +23,7 @@ draft: false
 
 ### 设置键盘布局
 
-我采用默认布局 (美式键盘)。
+我采用默认布局（美式键盘）。
 
 ### 验证引导模式
 
@@ -318,7 +318,7 @@ pacman -S wqy-microhei wqy-bitmapfont wqy-zenhei
 
 ### 设置图形界面显示中文
 
-修改 `System Settings -> Personalization -> Regional Settings -> Language`，添加简体中文到顶部 (可能显示的是部分乱码，暂时不用管)。
+修改 `System Settings -> Personalization -> Regional Settings -> Language`，添加简体中文到顶部（可能显示的是部分乱码，暂时不用管）。
 
 现在重启计算机，进入桌面后应该是中文环境，且没有乱码，之后可以完成的其他个性化配置。
 

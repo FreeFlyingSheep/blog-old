@@ -15,13 +15,13 @@ draft: false
 
 简单概括，内存被划分为若干个结点，每个结点又被划分为若干个区，而每个区又包含若干页框。
 
-## 结点 (Node)
+## 结点（Node）
 
 ### 结点简介
 
-我们习惯上认为计算机内存是一种均匀、共享的资源，即在忽略硬件高速缓存作用的情况下，任意 CPU 对任意内存单元的访问都需要相同时间。这种模型被称为**一致访问内存 (UMA)** 模型。IBM 兼容 PC 一般都采用这种模型。
+我们习惯上认为计算机内存是一种均匀、共享的资源，即在忽略硬件高速缓存作用的情况下，任意 CPU 对任意内存单元的访问都需要相同时间。这种模型被称为**一致访问内存（UMA）** 模型。IBM 兼容 PC 一般都采用这种模型。
 
-但对于某些体系结构，如 ALpha 或 MIPS，这种假设不成立。它们使用**非一致访问内存 (NUMA)** 模型。
+但对于某些体系结构，如 ALpha 或 MIPS，这种假设不成立。它们使用**非一致访问内存（NUMA）** 模型。
 
 Linux 支持 NUMA 模型，它通过把物理内存划分为多个结点，来保证对于每个结点，给定的 CPU 访问页面需要的时间相同。这样对于每个 CPU，内核可以试图把耗时结点的访问次数减到最小。
 
@@ -53,7 +53,7 @@ typedef struct pglist_data {
 ```
 
 - `node_zones`：包含结点中区数据结构的数组。若区没有那么多，其余项用 `0` 填充。
-- `node_zonelists`：备用结点及内存区域列表，以便在当前结点没有可用空间时，在备用结点分配内存，见 [TODO](/posts/kernel/old/todo)。
+- `node_zonelists`：备用结点及内存区域列表，以便在当前结点没有可用空间时，在备用结点分配内存，见 [TODO](/posts/kernel/todo)。
 - `nr_zones`：不同区的数目。
 - `node_mem_map`：指向页实例的指针，包含了当前结点所有区的页。
 - `bdata`：指向自举内存分配器实例的指针，见[内存管理初始化](/posts/kernel/memory/init)。
@@ -61,7 +61,7 @@ typedef struct pglist_data {
 - `node_present_pages`：当前结点中页帧的数目。
 - `node_spanned_pages`：以页帧为单位计算的长度。
 - `node_id`：全局结点编号，从 `0` 开始。
-- `kswapd_wait`、`kswapd` 和 `kswapd_max_order`：交换守护进程 (swap daemon) 相关的内容，见 [TODO](/posts/kernel/old/todo)。
+- `kswapd_wait`、`kswapd` 和 `kswapd_max_order`：交换守护进程（swap daemon）相关的内容，见 [TODO](/posts/kernel/todo)。
 
 ### 结点状态管理
 
@@ -86,7 +86,7 @@ enum node_states {
 
 设置和清除结点的特定位使用 `void node_set_state(int node, enum node_states state)` 和 `void node_clear_state(int node, enum node_states state)` 函数。
 
-## 区 (内存域，Zone)
+## 区（内存域，Zone）
 
 ### 区简介
 
@@ -130,7 +130,7 @@ enum zone_type {
 };
 ```
 
-其中，`ZONE_MOVABLE` 是伪内存区域，用于防止内存碎片的机制，见 [TODO](/posts/kernel/old/todo)。`__MAX_NR_ZONES` 在构建过程中会生成 `include/generated/bounds.h` 中的 `MAX_NR_ZONES` 宏 (具体生成过程涉及 Kbuild，已经不属于本系列学习笔记的范畴)，充当结束标记。
+其中，`ZONE_MOVABLE` 是伪内存区域，用于防止内存碎片的机制，见 [TODO](/posts/kernel/todo)。`__MAX_NR_ZONES` 在构建过程中会生成 `include/generated/bounds.h` 中的 `MAX_NR_ZONES` 宏（具体生成过程涉及 Kbuild，已经不属于本系列学习笔记的范畴），充当结束标记。
 
 ### 区数据结构
 
@@ -241,11 +241,11 @@ enum zone_watermarks {
 - `pages_low`：若空闲页低于该值，则内核开始讲页换出到硬盘。
 - `pages_min`：若空闲页低于该值，那么页回收工作的压力较大，内存急需空闲页。
 
-`lowmem_reserve` 数组代表每个区必须保留的页框数目，见 [TODO](/posts/kernel/old/todo)。
+`lowmem_reserve` 数组代表每个区必须保留的页框数目，见 [TODO](/posts/kernel/todo)。
 
-`pageset` 用于实现每个 CPU 的冷/热页帧列表，见 [TODO](/posts/kernel/old/todo)。
+`pageset` 用于实现每个 CPU 的冷/热页帧列表，见 [TODO](/posts/kernel/todo)。
 
-`free_area` 用于实现伙伴系统，见 [TODO](/posts/kernel/old/todo)。
+`free_area` 用于实现伙伴系统，见 [TODO](/posts/kernel/todo)。
 
 #### 第二部分
 
@@ -272,7 +272,7 @@ enum lru_list {
 
 较早的版本没有使用 `lru` 数组，而是用 `struct list_head active_list` 表示活动页的集合，`struct list_head inactive_list` 表示不活动页的集合，`unsigned long nr_scan_active` 和 `unsigned long nr_scan_inactive` 指定在回收内存时需要扫描的活动页和不活动页的数目，后面的内容针对的是较新的版本。
 
-`pages_scanned` 指定了上次换出一页以来，有多少页未能成功扫描，见 [TODO](/posts/kernel/old/todo)。
+`pages_scanned` 指定了上次换出一页以来，有多少页未能成功扫描，见 [TODO](/posts/kernel/todo)。
 
 `flags` 描述当前区的状态：
 
@@ -293,13 +293,13 @@ void zone_clear_flag(struct zone *zone, zone_flags_t flag);
 
 `vm_stat` 维护了当前区的统计信息。可以使用辅助函数 `unsigned long zone_page_state(struct zone *zone, enum zone_stat_item item)` 来读取其中的信息，该函数定义于 `include/linux/vmstat.h`。
 
-`prev_priority` 存储了上一次扫描操作扫描当前区的优先级，见 [TODO](/posts/kernel/old/todo)。
+`prev_priority` 存储了上一次扫描操作扫描当前区的优先级，见 [TODO](/posts/kernel/todo)。
 
 #### 第三部分
 
 最后来看该结构体的第三部分，很少使用或大多数情况下只读的字段。
 
-`wait_table`、`wait_table_hash_nr_entries` 和 `wait_table_bits` 实现了一个等待队列，可用于等待某一页变为可用进程。可以简单理解为进程排成一一个队列，等待某些条件，在条件变为真时，内核会通知进程恢复工作。具体原理见 [TODO](/posts/kernel/old/todo)。
+`wait_table`、`wait_table_hash_nr_entries` 和 `wait_table_bits` 实现了一个等待队列，可用于等待某一页变为可用进程。可以简单理解为进程排成一一个队列，等待某些条件，在条件变为真时，内核会通知进程恢复工作。具体原理见 [TODO](/posts/kernel/todo)。
 
 `zone_pgdat` 指向对应的 `pg_list_data` 实例，建立了区和父结点之间的关联。
 
@@ -311,13 +311,13 @@ void zone_clear_flag(struct zone *zone, zone_flags_t flag);
 
 `name` 是一个字符串，保存当前区的惯用名称。
 
-## 页 (Page)
+## 页（Page）
 
 ### 页和页框简介
 
 页框是系统内存的最小单位，对内存中的每个页，内核都会创建一个 `struct page` 实例。
 
-注意区分术语“页”和“页框”。操作系统为了方便管理存储器，把数据分成固定大小的区块，这些区块被称为页 (页面，page)。处理器的分页单元会根据页的大小把物理内存划分为若干个物理块，这些物理块就是页框 (页帧，page frame)。页存放于页框中，而 `struct page` 是页对应的描述符。
+注意区分术语“页”和“页框”。操作系统为了方便管理存储器，把数据分成固定大小的区块，这些区块被称为页（页面，page）。处理器的分页单元会根据页的大小把物理内存划分为若干个物理块，这些物理块就是页框（页帧，page frame）。页存放于页框中，而 `struct page` 是页对应的描述符。
 
 ### 页数据结构
 
@@ -378,20 +378,20 @@ struct page {
 - `flags`：存储体系结构无关的标志，用于描述页的属性，相关标志位于 `include/linux/page-flags.h`。
 - `_count`：使用计数，表示内核中引用该页的次数。在其值为 `0` 时，内核知道 `page` 实例当前不使用，因此可以删除。
 - `_mapcount`：表示在页表中有多少项指向该页。
-- `inuse`、`objects`、`slab` 和 `freelist`：用于 slub 分配器，见 [TODO](/posts/kernel/old/todo)。
+- `inuse`、`objects`、`slab` 和 `freelist`：用于 slub 分配器，见 [TODO](/posts/kernel/todo)。
 - `private`：指向“私有”数据的指针，这里不准备展开介绍。
-- `mapping` 和 `index`：分部指定了页框所在的地址空间和页框在映射内部的偏移量。特别地，若 `mapping` 的低位被置 `1`，则该指针不指向 `address_space` 实例，而是指向 `anon_vma`，实现匿名页的逆向映射，见 [TODO](/posts/kernel/old/todo)。
-- `first_page`：指向首页的指针。内核可以将多个连续的页合并成较大的复合页 (compound page)，分组中的第一个页被称为首页 (head page)，其余各页称为尾页 (tail page)。
-- `lru`：用于在各种链表上维护该页，以便将页按不同类别分组。一个重要的例子是活动页和不活动页，见 [TODO](/posts/kernel/old/todo)。
+- `mapping` 和 `index`：分部指定了页框所在的地址空间和页框在映射内部的偏移量。特别地，若 `mapping` 的低位被置 `1`，则该指针不指向 `address_space` 实例，而是指向 `anon_vma`，实现匿名页的逆向映射，见 [TODO](/posts/kernel/todo)。
+- `first_page`：指向首页的指针。内核可以将多个连续的页合并成较大的复合页（compound page），分组中的第一个页被称为首页（head page），其余各页称为尾页（tail page）。
+- `lru`：用于在各种链表上维护该页，以便将页按不同类别分组。一个重要的例子是活动页和不活动页，见 [TODO](/posts/kernel/todo)。
 - `virtual`：存储高端内存区域中页的虚拟地址。
 
-用联合体的原因是，某些字段只会被内核的特定部分使用，对于其他部分是多余的，而 C 语言的联合体刚好能解决这一问题。例如，若某一页被用于 slub 分配器，则可以确保该页只被内核使用，那映射计数信息 (`_mapcount`) 就是多余的，该字段可以被用来存储 slub 分配器相关的信息 (`inuse` 和 `objects`)。
+用联合体的原因是，某些字段只会被内核的特定部分使用，对于其他部分是多余的，而 C 语言的联合体刚好能解决这一问题。例如，若某一页被用于 slub 分配器，则可以确保该页只被内核使用，那映射计数信息（`_mapcount`）就是多余的，该字段可以被用来存储 slub 分配器相关的信息（`inuse` 和 `objects`）。
 
 值得注意的是，`mapping` 指向的 `address_space` 实例总是对齐到 `sizeof(long)`，因此该指针的低位总是 `0`，可以用于存储额外的信息。内核中很多地方利用了这种方式，来尽可能地节约内存使用，但这种方式从可读性角度来看，确实是很糟糕的，正如书上说的，这是一种近乎“肆无忌惮”的技巧。
 
 ## 个人理解
 
-内核开发者试图在可读性与高效间权衡，在希望节省关键数据结构占用的空间时，他们尽可能复用现有的字段，甚至不想看到任何一个多余的字段。而在复用字段时，由于内核不同的部分需要的字段类型可能不同，他们不能接受用同一个类型来表示不同的数据类型，因此使用联合体来解决这一问题，如上面的 `_mapcount`、`inuse` 和 `objects`。但对于一些字段，如上面的 `private`，因为不同内核部分使用时需要的类型相同，都是 `unsigned long`，所以就没用到联合体。而对于一些特定的数据，如上面的指针 `mapping`，因为低位总是 `0`，所以低位可以用于存储额外的信息，进一步节省内存占用。如果说用联合体是为了可读性，复用字段是为了高效 (降低内存占用)，`page` 结构体则是这两者结合的产物。
+内核开发者试图在可读性与高效间权衡，在希望节省关键数据结构占用的空间时，他们尽可能复用现有的字段，甚至不想看到任何一个多余的字段。而在复用字段时，由于内核不同的部分需要的字段类型可能不同，他们不能接受用同一个类型来表示不同的数据类型，因此使用联合体来解决这一问题，如上面的 `_mapcount`、`inuse` 和 `objects`。但对于一些字段，如上面的 `private`，因为不同内核部分使用时需要的类型相同，都是 `unsigned long`，所以就没用到联合体。而对于一些特定的数据，如上面的指针 `mapping`，因为低位总是 `0`，所以低位可以用于存储额外的信息，进一步节省内存占用。如果说用联合体是为了可读性，复用字段是为了高效（降低内存占用），`page` 结构体则是这两者结合的产物。
 
 既然是为了可读性和高效，那思考下面的问题：
 

@@ -25,7 +25,7 @@ struct fox {
 };
 ```
 
-我们会在 `fox` 结构体添加该结构体的指针，这样 `fox` 数据结构 (即链表的结点) 就能被塞入链表。
+我们会在 `fox` 结构体添加该结构体的指针，这样 `fox` 数据结构（即链表的结点）就能被塞入链表。
 
 然后我们针对 `fox` 结构体实现相关的链表操作，比如添加狐狸：
 
@@ -58,7 +58,7 @@ void add_rabbit(struct rabbit *list, struct rabbit *r)
 
 这时候就有人提出了，我们已经为 `fox` 结构体定义过了相关的操作，但为了 `rabbit` 结构体我们需要再次实现几乎完全一样的功能，这是重复劳动。
 
-我们希望实现一个更加通用的方案，针对链表的操作应该对所有情况都适用 (比如上面的 `fox` 和 `rabbit`)。显然传统的链表是无法解决这一问题的，因而与传统的方式相反，内核把链表结点塞入其他数据结构，实现了一种独特解法。
+我们希望实现一个更加通用的方案，针对链表的操作应该对所有情况都适用（比如上面的 `fox` 和 `rabbit`）。显然传统的链表是无法解决这一问题的，因而与传统的方式相反，内核把链表结点塞入其他数据结构，实现了一种独特解法。
 
 内核链表是一个独特的双向循环链表，下面我们先展示内核链表的用法，再介绍其具体实现。
 
@@ -344,7 +344,7 @@ static inline void list_del_init(struct list_head *entry)
 
 根据注释，设置这两个值是为了在循环中遍历到 `entry` 时触发页面异常，这相当于加了一道保险，毕竟不应该出现遍历已经删除了的结点的情况。
 
-与 `list_del()` 形成对比，`list_del_init()` 在删除 `entry` 后，重新初始化 `entry`，这是为了能再次使用包含 `entry` 的数据结构，比如需要把该数据结构重新添加到链表中 (正如刚刚说的，如果使用 `list_add()` 添加 `list_del()` 后的 `entry`，遍历时会发生页面异常)。
+与 `list_del()` 形成对比，`list_del_init()` 在删除 `entry` 后，重新初始化 `entry`，这是为了能再次使用包含 `entry` 的数据结构，比如需要把该数据结构重新添加到链表中（正如刚刚说的，如果使用 `list_add()` 添加 `list_del()` 后的 `entry`，遍历时会发生页面异常）。
 
 ### 移动结点的实现
 
@@ -572,9 +572,9 @@ static inline void list_splice_tail_init(struct list_head *list,
 2. `((type *)0)->member`：获取 `type` 类型结构体的成员 `member`。
 3. `typeof( ((type *)0)->member )`：获取 `member` 的类型，记为 `T`。
 4. `const typeof( ((type *)0)->member ) *__mptr = (ptr);`：定义一个 `const T *` 类型的变量 `__mptr`，并赋值为 `ptr`。
-5. `(char *)__mptr`：将 `__mptr` 强制转换成 `char *` 类型 (`char *` 指针加 `1` 的语义是增加 `1` 字节)。
+5. `(char *)__mptr`：将 `__mptr` 强制转换成 `char *` 类型（`char *` 指针加 `1` 的语义是增加 `1` 字节）。
 6. `(char *)__mptr - offsetof(type, member)`：把 `__mptr` 的地址减去 `member` 在 `type` 类型结构体中的偏移量，计算结果为 `type` 类型结构体的首地址。
-7. `(type *)( (char *)__mptr - offsetof(type, member) );`：把计算结果 (结构体的首地址) 强制转换为 `type *` 类型。
+7. `(type *)( (char *)__mptr - offsetof(type, member) );`：把计算结果（结构体的首地址）强制转换为 `type *` 类型。
 
 其中，`typeof` 关键字是 GCC 扩展语法，`typeof(exp) var` 能获取表达式 `exp` 的计算结果的类型，并声明该类型的变量 `var`。比如 `typeof(1 + 1) a;`，因为表达式 `1 + 1` 的结果是 `int` 类型，所以变量 `a` 也是 `int` 类型。
 

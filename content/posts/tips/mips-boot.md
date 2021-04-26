@@ -2,8 +2,8 @@
 title: "Linux/MIPS 启动"
 date: 2020-07-17
 lastmod: 2020-07-22
-tags: [Linux 内核, MIPS, 启动]
-categories: [Kernel]
+tags: [Linux 内核, MIPS]
+categories: [Tips]
 draft: false
 ---
 

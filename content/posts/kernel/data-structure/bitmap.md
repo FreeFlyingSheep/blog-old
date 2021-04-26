@@ -152,11 +152,11 @@ set_bit(unsigned int nr, volatile unsigned long *addr)
 }
 ```
 
-`LOCK_PREFIX` 的实现原理涉及锁，见 [TODO](/posts/kernel/old/todo)。
+`LOCK_PREFIX` 的实现原理涉及锁，见 [TODO](/posts/kernel/todo)。
 
-查阅[相关手册](https://gcc.gnu.org/onlinedocs/gcc/Machine-Constraints.html#Machine-Constraints)，可以知道这里 `q` 修饰符代表使用 8 位寄存器 (例如 `al`、`bl` 等)。
+查阅[相关手册](https://gcc.gnu.org/onlinedocs/gcc/Machine-Constraints.html#Machine-Constraints)，可以知道这里 `q` 修饰符代表使用 8 位寄存器（例如 `al`、`bl` 等）。
 
-`bts` 指令 (Bit Test and Set) 是位测试并置位指令，此处 `bts %1,%0` 即先测试 `%0` 内存处的 `%1` 位的值，存入 `CF` 标志寄存器，再将该位置 `1`。
+`bts` 指令（Bit Test and Set）是位测试并置位指令，此处 `bts %1,%0` 即先测试 `%0` 内存处的 `%1` 位的值，存入 `CF` 标志寄存器，再将该位置 `1`。
 
 ### 清除位的实现
 
@@ -186,7 +186,7 @@ clear_bit(int nr, volatile unsigned long *addr)
 }
 ```
 
-`btr` 指令 (Bit Test and Reset) 是位测试并复位指令。
+`btr` 指令（Bit Test and Reset）是位测试并复位指令。
 
 ### 改变位的实现
 
@@ -214,7 +214,7 @@ static inline void change_bit(int nr, volatile unsigned long *addr)
 }
 ```
 
-`btc` 指令 (Bit Test and Complement) 是位测试并取反指令。
+`btc` 指令（Bit Test and Complement）是位测试并取反指令。
 
 ### 测试并设置位的实现
 
@@ -322,4 +322,4 @@ static int test_bit(int nr, const volatile unsigned long *addr);
      : variable_test_bit((nr), (addr)))
 ```
 
-`bt` 指令 (Bit Test) 是位测试指令。
+`bt` 指令（Bit Test）是位测试指令。

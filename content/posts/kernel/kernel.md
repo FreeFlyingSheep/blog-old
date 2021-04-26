@@ -1,19 +1,19 @@
 ---
 title: "Linux 内核学习笔记"
 date: 2020-09-25
-lastmod: 2020-11-04
+lastmod: 2021-04-26
 tags: [Linux 内核]
 categories: [Kernel]
 draft: false
 ---
 
-[Linux 内核学习笔记系列](/posts/kernel/kernel)，整理《深入理解 Linux 内核》(第三版，以下简称 ULK3)、《Linux 内核设计与实现》(原书第 3 版，以下简称 LKD3) 和《深入 Linux 内核架构》(以下简称 PLKA) 相关章节的联系以及个人理解。
+[Linux 内核学习笔记系列](/posts/kernel/kernel)，整理《深入理解 Linux 内核》（第三版，以下简称 ULK3）、《Linux 内核设计与实现》（原书第 3 版，以下简称 LKD3）和《深入 Linux 内核架构》（以下简称 PLKA）相关章节的联系以及个人理解。
 
 <!--more-->
 
 ## 引言
 
-本文将作为 Linux 内核学习笔记系列的目录。**我计划用一年时间，初步阅读这三本书籍，逐渐完善相关学习笔记——这是一个 flag，人是有惰性的（逃。**
+本文将作为 Linux 内核学习笔记系列的目录。**原计划用一年时间，初步阅读这三本书籍，逐渐完善相关学习笔记。现在正式宣告计划破产，之后不定期填坑（逃**
 
 这三本讲解 Linux 内核的经典书籍，都基于 Linux 2.6 版本的内核。ULK3 基于 Linux 2.6.11 版本，LKD3 基于 Linux 2.6.34 版本，PLKA 基于 Linux 2.6.24 版本。
 
@@ -25,22 +25,22 @@ draft: false
 
 在阅读源码的过程中，可能需要查询下列手册/官方文档：
 
-- [GCC 在线文档](https://gcc.gnu.org/onlinedocs/) (包括 GCC、CPP 等)
-- [GNU Binutils 在线文档](https://sourceware.org/binutils/index.html) (包括 ld、as 等)
-- [GNU 在线文档](https://www.gnu.org/manual/manual.html) (除了上述两个，还包括 Make 等)
+- [GCC 在线文档](https://gcc.gnu.org/onlinedocs/)（包括 GCC、CPP 等）
+- [GNU Binutils 在线文档](https://sourceware.org/binutils/index.html)（包括 ld、as 等）
+- [GNU 在线文档](https://www.gnu.org/manual/manual.html)（除了上述两个，还包括 Make 等）
 - [Linux Kernel 在线文档](https://www.kernel.org/doc/html/latest/)
 
 下面是我根据手册部分章节整理的知识点：
 
-- [宏的陷阱和使用技巧](/posts/tips/macros-pitfalls)
-- [预定义宏](/posts/tips/predefined-macros)
-- [动态调试](/posts/tips/dynamic-debug)
+- [宏的陷阱和使用技巧](/posts/kernel/miscellaneous/macros-pitfalls)
+- [预定义宏](/posts/kernel/miscellaneous/predefined-macros)
+- [动态调试](/posts/kernel/miscellaneous/dynamic-debug)
 
 ## 目录
 
-我推荐将这三本书联系起来阅读，先看 LKD3，然后结合着看另外两本，某些章节 ULK3 更容易理解，某些则是 PLKA 更容易理解。
+我倾向于将这三本书联系起来阅读，先看 LKD3，然后结合着看另外两本，某些章节 ULK3 更容易理解，某些则是 PLKA 更容易理解。
 
-下面根据个人理解，列出三本书相关章节的联系以及阅读顺序。其中某些标题具有包含的关系，如”文件系统“包含”虚拟文件系统“，但考虑到其内容较多，所以单独拿出来。不论如何编排，不同章节之间总是存在一定的交叉引用，我一般会在前面的笔记中略过这部分内容，并注明后续介绍相关内容的笔记链接。
+下面根据个人理解，列出三本书相关章节的联系以及阅读顺序。其中某些标题具有包含的关系，如”文件系统“包含”虚拟文件系统“，但考虑到其内容较多，所以单独拿出来。不论按什么顺序阅读，不同章节之间总是存在一定的交叉引用，很无奈。
 
 ### 内核简介
 
@@ -88,14 +88,14 @@ draft: false
 
 - [内存寻址](/posts/kernel/memory/address)
 - [内存模型](/posts/kernel/memory/model)
-- 内存管理初始化
-- 伙伴系统
-- per-CPU 高速缓存
-- 连续页框的管理
-- 内存映射
-- 不连续页框的管理
-- slab 分配器
-- 内存管理总结
+- [伙伴系统](/posts/kernel/memory/buddy-system)
+- [per-CPU 高速缓存](/posts/kernel/memory/per-cpu)
+- [连续页框的管理](posts/kernel/memory/continuous)
+- [内存映射](posts/kernel/memory/map)
+- [非连续页框的管理](posts/kernel/memory/uncontinuous)
+- [slab 分配器](posts/kernel/memory/slab)
+- [内存管理初始化](posts/kernel/memory/initialization)
+- [内存管理补充](posts/kernel/memory/supplement)
 
 ### 进程管理
 
@@ -129,7 +129,7 @@ draft: false
 1. LKD3 第 9 章：内核同步介绍
 2. LKD3 第 10 章：内核同步方法
 3. ULK3 第 五 章：内核同步
-4. PLKA 第 5 章：锁与进程间通信 (5.1 和 5.2)
+4. PLKA 第 5 章：锁与进程间通信（5.1 和 5.2）
 
 ### 时间管理
 
@@ -180,7 +180,7 @@ draft: false
 
 1. ULK3 第 十一 章：信号
 2. ULK3 第 十九章：进程通信
-3. PLKA 第 5 章：锁与进程间通信 (其余部分)
+3. PLKA 第 5 章：锁与进程间通信（其余部分）
 
 ### 程序的执行
 
@@ -197,15 +197,4 @@ draft: false
 1. PLKA 第 12 章：网络
 2. PLKA 第 19 章：审计
 
-## 旧的学习笔记
-
-旧的学习笔记暂时移动到了 `/posts/kernel/old` 路径，文章中的部分链接可能已经失效，以后会重新整理到该学习笔记系列中。
-
-- [Linux/MIPS 启动](/posts/kernel/old/boot)
-- [Linux 内存管理 (基础部分)](/posts/kernel/old/basis)
-- [Linux 内存管理 (管理区分配器)](/posts/kernel/old/zone-allocator)
-- [Linux 内存管理 (伙伴系统)](/posts/kernel/old/buddy-system)
-- [Linux 内存管理 (per-CPU 页框高速缓存)](/posts/kernel/old/per-cpu)
-- [Linux 内存管理 (slab 分配器)](/posts/kernel/old/slab)
-- [Linux 内存管理 (补充内容)](/posts/kernel/old/supplement)
-- [TODO 列表](/posts/kernel/old/todo)
+- [TODO 列表](/posts/kernel/todo)

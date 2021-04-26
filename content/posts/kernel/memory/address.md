@@ -23,11 +23,11 @@ draft: false
 
 ### 逻辑地址
 
-逻辑地址 (logical address) 由一个段 (segment) 和偏移量 (offset 或 displacement) 组成。
+逻辑地址（logical address）由一个段（segment）和偏移量（offset 或 displacement）组成。
 
-### 线性地址 (虚拟地址)
+### 线性地址（虚拟地址）
 
-线性地址 (linear address) 也被称作虚拟地址 (virtual address)，是 `32` 位的无符号整数。
+线性地址（linear address）也被称作虚拟地址（virtual address），是 `32` 位的无符号整数。
 
 ### 物理地址
 
@@ -36,7 +36,7 @@ draft: false
 ### 地址间的关系
 
 ```text
-逻辑地址 <--- 分段单元 ---> 线性地址 (虚拟地址) <--- 分页单元 ---> 物理地址
+逻辑地址 <--- 分段单元 ---> 线性地址（虚拟地址）<--- 分页单元 ---> 物理地址
 ```
 
 再次强调，**线性地址就是虚拟地址**，这两者是完全等价的。
@@ -58,7 +58,7 @@ draft: false
 - [IDT](https://wiki.osdev.org/IDT)。
 - [TSS](https://wiki.osdev.org/TSS)。
 
-相关的代码我准备放到系统启动部分一起介绍，见 [TODO](/posts/kernel/old/todo)。
+相关的代码我准备放到系统启动部分一起介绍，见 [TODO](/posts/kernel/todo)。
 
 ## 分页
 
@@ -68,4 +68,4 @@ Linux 采用了**四级分页模型**，如下图所示：
 
 ![Linux 分页模式](/images/kernel/memory/paging.png)
 
-相关的宏和函数基本位于 `arch/x86/include/asm/pgtable.h`，大部分看名字就能猜测出功能，实现也比较简单，这里不准备展开了。系统启动时涉及的代码也见 [TODO](/posts/kernel/old/todo)。
+相关的宏和函数基本位于 `arch/x86/include/asm/pgtable.h`，大部分看名字就能猜测出功能，实现也比较简单，这里不准备展开了。系统启动时涉及的代码也见 [TODO](/posts/kernel/todo)。

@@ -96,7 +96,7 @@ wsl --set-version Debian 1
 
 若想把 WSL 设为默认启动的终端，将 `defaultProfile` 设置为 WSL 的 `guid`，默认为 PowerShell。
 
-如果要指定终端启动时的大小，在 `defaultProfile` 之后加入如下配置 (配置文件提供的注释已经很友好了)：
+如果要指定终端启动时的大小，在 `defaultProfile` 之后加入如下配置（配置文件提供的注释已经很友好了）：
 
 ```json
 // You can add more global application settings here.
@@ -114,7 +114,7 @@ wsl --set-version Debian 1
 "colorScheme": "idleToes"
 ```
 
-若使用自定义主题 (如上面的 `idleToes`)，需要在 `schemes` 中加入与 `colorScheme` 对应的颜色主题配置：
+若使用自定义主题（如上面的 `idleToes`），需要在 `schemes` 中加入与 `colorScheme` 对应的颜色主题配置：
 
 ```json
 // Add custom color schemes to this array.

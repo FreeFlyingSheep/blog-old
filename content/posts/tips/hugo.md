@@ -46,13 +46,13 @@ git submodule add https://github.com/dillonzq/LoveIt.git themes/LoveIt
 
 静态博客不具备评论功能，使用 [Gitalk](https://github.com/gitalk/gitalk/) 实现评论功能。
 
-由于 LoveIt 主题支持 Gitalk，只需要注册一个 GitHub Application (位于 Settings -> Developer settings -> OAuth Apps)，并在 LoveIt 的配置中设置好相应内容即可启用。
+由于 LoveIt 主题支持 Gitalk，只需要注册一个 GitHub Application（位于 Settings -> Developer settings -> OAuth Apps），并在 LoveIt 的配置中设置好相应内容即可启用。
 
 ## 关联到 Github
 
 使用 `hugo` 命令会生成静态网站，默认在 `public` 文件夹中。需要 Github 展示的是 `public` 文件夹的内容，而不是整个项目的内容。
 
-可以采用子模块的方式管理这两个项目 (生成的 `public` 文件夹下静态网站以及 `Blog` 网站)，将 `public` 文件夹关联到 Github 远程仓库 `<username>.github.io` (`username` 是 Github 账户的用户名)，然后将该项目以子模块的形式添加到本项目 (即 `Blog` 项目)。这样就可以方便地管理这两个项目。
+可以采用子模块的方式管理这两个项目这样就可以方便地管理这两个项目。
 
 ## 设置 Github Pages
 

@@ -3,7 +3,7 @@ title: "动态调试"
 date: 2020-10-15
 lastmod: 2020-10-15
 tags: [Linux 内核, 动态调试]
-categories: [Tips]
+categories: [Kernel]
 draft: false
 ---
 
@@ -13,7 +13,7 @@ draft: false
 
 ## 简介
 
-动态调试 (dyndbg) 的主要功能是允许我们动态地打开或关闭内核代码的各种提示信息，如启用 `pr_debug()` 和 `dev_debug()` 之类的函数。
+动态调试（dyndbg）的主要功能是允许我们动态地打开或关闭内核代码的各种提示信息，如启用 `pr_debug()` 和 `dev_debug()` 之类的函数。
 
 注意，打开动态调试功能需要配置内核 `Kernel hacking -> printk and dmesg options -> Enable dynamic printk() support`。
 
@@ -21,7 +21,7 @@ draft: false
 
 通过往 `debugfs` 文件系统上的一个控制文件写入数据，来控制 `pr_debug()` 和 `dev_debug()` 的行为。
 
-首先，必须挂载 `debugfs` 文件系统 (如果没自动挂载的话)：
+首先，必须挂载 `debugfs` 文件系统（如果没自动挂载的话）：
 
 ```bash
 mount -t debugfs none /sys/kernel/debug
@@ -60,7 +60,7 @@ net/sunrpc/svc_rdma.c:338 [svcxprt_rdma]svc_rdma_init =_ "\011max_requests     :
 
 ### 空白符
 
-多个空白符 (空格和制表符) 和单个空白符是等价的。
+多个空白符（空格和制表符）和单个空白符是等价的。
 
 举个例子，下面三行命令语言是等价的：
 
@@ -155,7 +155,7 @@ line 1600-          // all lines from line 1600 to the end of the file
 
 #### `flags-spec`
 
-`flags-spec` 由一个更改操作符 (change operation) 和标志 (flag characters) 构成。
+`flags-spec` 由一个更改操作符（change operation）和标志（flag characters）构成。
 
 | 更改操作符 | 用途 |
 | :---: | :--- |
@@ -168,18 +168,18 @@ line 1600-          // all lines from line 1600 to the end of the file
 | `f` | 在输出信息中包含函数名称 |
 | `l` | 在输出信息中包含行号 |
 | `m` | 在输出信息中包含模块名 |
-| `t` | 在输出信息中包含线程号 (不是中断上下文产生的线程号) |
+| `t` | 在输出信息中包含线程号（不是中断上下文产生的线程号） |
 | `_` | 不设置标志 |
 
 对于 `print_hex_dump_debug()` 和 `print_hex_dump_bytes()`, 只有 `p` 起作用，其他标志将被忽略。
 
-显示标志的时候，标志前面会带有 `=` (代表当前标志等于什么)。
+显示标志的时候，标志前面会带有 `=`（代表当前标志等于什么）。
 
 要一次性清楚所有标志，使用 `=_` 或 `-flmpt`。
 
 ## 引导过程中的调试信息
 
-要在引导过程中 (甚至在用户空间和 `debugfs` 存在) 为核心代码和内置模块激活调试消息，使用 `dyndbg="QUERY"`、`module.dyndbg="QUERY"`。 `QUERY` 遵循命令语言语法，但不得超过 `1023` 个字符，引导程序可能会施加额外的限制。
+要在引导过程中（甚至在用户空间和 `debugfs` 存在）为核心代码和内置模块激活调试消息，使用 `dyndbg="QUERY"`、`module.dyndbg="QUERY"`。 `QUERY` 遵循命令语言语法，但不得超过 `1023` 个字符，引导程序可能会施加额外的限制。
 
 这些参数是在 `early_initcall` 中 `ddebug` 表处理完之后进行处理的。因此，此引导参数可以启用在 `early_initcall` 之后运行的所有代码中的调试消息。
 

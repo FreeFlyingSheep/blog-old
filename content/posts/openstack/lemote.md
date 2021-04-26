@@ -17,7 +17,7 @@ draft: false
 
 移植所有组件并测试是不现实的，目前只考虑几个核心组件，包括 Nova、Cinder、Neutron、Horizo​​n、Keystone、Glance 和 Placement。
 
-考虑到 OpenStack 是用 Python 编写的，而 Python 环境和大部分系统工具 lemote Fedora 28 系统上已经存在，而且接口是与 x86 一致的，所以不少组件应该是能直接运行的。龙芯平台的 libvirt 和 QEMU/LVM 是修改过的，因此最有可能需要修改的是 OpenStack Nova 组件的代码 (事实证明，确实只需要修改这一个组件)。
+考虑到 OpenStack 是用 Python 编写的，而 Python 环境和大部分系统工具 lemote Fedora 28 系统上已经存在，而且接口是与 x86 一致的，所以不少组件应该是能直接运行的。龙芯平台的 libvirt 和 QEMU/LVM 是修改过的，因此最有可能需要修改的是 OpenStack Nova 组件的代码（事实证明，确实只需要修改这一个组件）。
 
 为了方便部署测试，直接选择使用官方的 [DevStack](https://opendev.org/openstack/devstack) 自动部署脚本。
 
@@ -107,7 +107,7 @@ function is_lemote {
 
 脚本会自动根据系统版本信息来从官方下载 ETCD 包，而官方并未提供 MIPS 版本的 ETCD，所以需要手动编译。
 
-ETCD 的编译比较简单，直接从[官方仓库](https://github.com/etcd-io/etcd)克隆，切换到相应版本 (为了与脚本统一，选择了 3.3.12 版本)，编译并参考其他体系结构的压缩文件打包为 `etcd-v3.3.12-linux-mips64.tar.gz`，之后在脚本中添加 MIPS 体系结构的信息。
+ETCD 的编译比较简单，直接从[官方仓库](https://github.com/etcd-io/etcd)克隆，切换到相应版本（为了与脚本统一，选择了 3.3.12 版本），编译并参考其他体系结构的压缩文件打包为 `etcd-v3.3.12-linux-mips64.tar.gz`，之后在脚本中添加 MIPS 体系结构的信息。
 
 该部分代码位于 `stackrc`。
 
@@ -232,7 +232,7 @@ fi
 
 系统重启后，DevStack 无法正常运行，检查日志和服务信息发现 `httpd` 和 `memcached` 服务没有设置自启。
 
-检查脚本发现没有设置服务自启的封装函数 (可能是我没找仔细？)，参考 `start_service` 函数定义 `_enable_service` 函数 (注意已经存在 `enable_service` 函数了)。该部分代码位于 `functions-common`。
+检查脚本发现没有设置服务自启的封装函数（可能是我没找仔细？），参考 `start_service` 函数定义 `_enable_service` 函数 （注意已经存在 `enable_service` 函数了）。该部分代码位于 `functions-common`。
 
 ```bash
 # Service wrapper to enable services
@@ -327,7 +327,7 @@ function install_libvirt {
 }
 ```
 
-同时，系统只支持 `custom` 模式，模拟 `Loongson-3A4000` (见[修改 CPU 模式](#修改-cpu-模式)部分)。默认的脚本只提供 `none`、`host-model` 和 `host-passthrough` 模式，参考 aarch64 体系结构，添加相关代码。该部分代码位于 `lib/nova_plugins/hypervisor-libvirt`。
+同时，系统只支持 `custom` 模式，模拟 `Loongson-3A4000`（见[修改 CPU 模式](#修改-cpu-模式)部分）。默认的脚本只提供 `none`、`host-model` 和 `host-passthrough` 模式，参考 aarch64 体系结构，添加相关代码。该部分代码位于 `lib/nova_plugins/hypervisor-libvirt`。
 
 ```bash
 # configure_nova_hypervisor - Set config files, create data dirs, etc
@@ -357,7 +357,7 @@ function configure_nova_hypervisor {
 
 查看 nova-compute 配置文件发现 DevStack 默认 CPU 模式设置为 `none`，尝试改为 `host-model` 和 `host-passthrough`，依然报 libvirt 内部错误，但错误内容变为不支持这两种模式。
 
-查看 libvirt 源码，定位报错的位置，发现龙芯平台上的 libvirt 实现并不完全，去把这些接口都实现了显然不现实。考虑到龙芯平台通过修改过的 virt-manager 是能正常创建虚拟机的，就想到比较龙芯平台的 virt-manager 创建虚拟机的参数和 nova-compute 默认创建的参数 (主要比较生成的给 libvirt 使用的 xml 文件)。
+查看 libvirt 源码，定位报错的位置，发现龙芯平台上的 libvirt 实现并不完全，去把这些接口都实现了显然不现实。考虑到龙芯平台通过修改过的 virt-manager 是能正常创建虚拟机的，就想到比较龙芯平台的 virt-manager 创建虚拟机的参数和 nova-compute 默认创建的参数（主要比较生成的给 libvirt 使用的 xml 文件）。
 
 对比发现，virt-manager 生成的 xml 文件中，使用的是 `custom` 模式，模拟 `Loongson-3A4000`。修改 nova-compute 的配置文件，设置这两个参数，错误变为了没有使用 PCIe。
 
@@ -420,7 +420,7 @@ def _configure_guest_by_virt_type(self, guest, virt_type, caps, instance,
 
 重启 Nova 服务，发现虚拟机成功创建，并运行，但控制台界面卡在了加载内核。
 
-### 修改显示模式 (后来又改回去了)
+### 修改显示模式（后来又改回去了）
 
 查看日志，发现并没有任何报错。思考了一会，推测是内核其实已经成功启动，但没正常显示。
 
@@ -519,7 +519,7 @@ disable_service n-novnc n-xvnc
 
 根据网上资料手动创建 LVM 卷，复现了报错信息，只要是使用 `thin` 模式，创建卷就会报错，这应该是系统中相关的软件包存在问题，暂时将 cinder 的 LVM 模式更换为 `default`，绕过了这个问题，成功创建了卷。
 
-还有一些问题，但暂时没想到解决办法。比如内核没有输出日志信息，检查 xml 确定已经重定向到了 `console.log`，内核启动也添加了相关参数。还有从 ISO 文件创建虚拟机时会报找不到设备等问题 (由于系统的 QEMU/KVM 只支持龙芯的镜像，所以必须使用提前准备好的镜像)。
+还有一些问题，但暂时没想到解决办法。比如内核没有输出日志信息，检查 xml 确定已经重定向到了 `console.log`，内核启动也添加了相关参数。还有从 ISO 文件创建虚拟机时会报找不到设备等问题（由于系统的 QEMU/KVM 只支持龙芯的镜像，所以必须使用提前准备好的镜像）。
 
 对于 DevStack，最终的 `local.conf` 配置如下：
 

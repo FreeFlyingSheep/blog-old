@@ -22,7 +22,7 @@ draft: false
 3. 如果一个结点是红色的，那么它的子结点必须是黑色的。
 4. 从一个结点到一个叶结点的每一条路径必须包含相同数目的黑色结点。
 
-以上条件保证了红黑树最深的叶结点深度不会大于两倍的最浅叶结点深度 (最长路径不会超过最短路径的两倍)。注意，叶结点不存储数据，都是 `NULL` 指针。
+以上条件保证了红黑树最深的叶结点深度不会大于两倍的最浅叶结点深度（最长路径不会超过最短路径的两倍）。注意，叶结点不存储数据，都是 `NULL` 指针。
 
 红黑树的优点是插入、删除、搜索元素都可以在对数时间内完成，缺点是实现复杂。
 
@@ -42,7 +42,7 @@ struct rb_root root = RB_ROOT;
 
 ### 红黑树的搜索
 
-下面是一个搜索的例子，`rb_search_page_cache` 函数实现了在页高速缓存中搜索一个文件区 (由一个 i 结点和一个偏移量共同描述)。每个 i 结点都有自己的 `rbtree`，以关联在文件中的页偏移。该函数将搜索给定 i 结点的 `rbtree`，以寻找匹配的偏移值：
+下面是一个搜索的例子，`rb_search_page_cache` 函数实现了在页高速缓存中搜索一个文件区（由一个 i 结点和一个偏移量共同描述）。每个 i 结点都有自己的 `rbtree`，以关联在文件中的页偏移。该函数将搜索给定 i 结点的 `rbtree`，以寻找匹配的偏移值：
 
 ```c
 static inline struct page *rb_search_page_cache(struct inode * inode,
@@ -68,7 +68,7 @@ static inline struct page *rb_search_page_cache(struct inode * inode,
 
 辅助宏 `rb_entry` 和内核链表的 `list_entry` 相似，获取包含结点的数据结构。
 
-查找特定的 (前一个/后一个/第一个/最后一个) 结点可以使用如下函数：
+查找特定的（前一个/后一个/第一个/最后一个）结点可以使用如下函数：
 
 ```c
 struct rb_node *rb_next(const struct rb_node *node);
