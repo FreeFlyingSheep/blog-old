@@ -90,12 +90,12 @@ draft: false
 - [内存模型](/posts/kernel/memory/model)
 - [伙伴系统](/posts/kernel/memory/buddy-system)
 - [per-CPU 高速缓存](/posts/kernel/memory/per-cpu)
-- [连续页框的管理](posts/kernel/memory/continuous)
-- [内存映射](posts/kernel/memory/map)
-- [非连续页框的管理](posts/kernel/memory/uncontinuous)
-- [slab 分配器](posts/kernel/memory/slab)
-- [内存管理初始化](posts/kernel/memory/initialization)
-- [内存管理补充](posts/kernel/memory/supplement)
+- [连续页框的管理](/posts/kernel/memory/continuous)
+- [内存映射](/posts/kernel/memory/map)
+- [非连续页框的管理](/posts/kernel/memory/uncontinuous)
+- [slab 分配器](/posts/kernel/memory/slab)
+- [内存管理初始化](/posts/kernel/memory/initialization)
+- [内存管理补充](/posts/kernel/memory/supplement)
 
 ### 进程管理
 
