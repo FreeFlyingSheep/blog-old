@@ -41,4 +41,4 @@ draft: false
 - [8. String to Integer (atoi)](/posts/leetcode/daily/8-string-to-integer-atoi)
 - [4. Median of Two Sorted Arrays](/posts/leetcode/daily/4-median-of-two-sorted-arrays)
 - [10. Regular Expression Matching](/posts/leetcode/daily/10-regular-expression-matching)
-- [1448. Count Good Nodes in Binary Tree](/posts/leetcode/daily/1448-count-good-nodes-in-binary-tree.md)
+- [1448. Count Good Nodes in Binary Tree](/posts/leetcode/daily/1448-count-good-nodes-in-binary-tree)

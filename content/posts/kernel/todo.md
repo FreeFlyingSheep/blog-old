@@ -1,7 +1,7 @@
 ---
 title: "TODO 列表"
 date: 2020-10-27
-lastmod: 2021-04-26
+lastmod: 2021-04-27
 tags: [Linux 内核]
 categories: [Kernel]
 draft: false
@@ -28,3 +28,4 @@ draft: false
 - [内存模型](/posts/kernel/memory/model) 385 行，活动页和不活动页相关内容。
 - [连续页框的管理](/posts/kernel/memory/continuous) 532 行，块设备驱动程序相关内容。
 - [slab 分配器](/posts/kernel/memory/slab) 448 行，内核同步相关内容。
+- [非连续页框的管理](/posts/kernel/memory/uncontinuous) 26 行，内存初始化相关内容。
