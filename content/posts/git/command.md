@@ -623,11 +623,10 @@ git checkout --recurse-submodules <branch>
 
 ### 删除子模块
 
-1. 执行 `git rm --cached <submodule>` 删除子模块缓存。
-2. 执行 `git rm -rf <submodule>` 删除子模块目录。
-3. 编辑 `.gitmodules` 删除子模块相关内容。
-4. 编辑 `.git/config` 删除子模块相关内容。
-5. 执行 `git commit -am <message>` 提交更新。
+1. 执行 `git rm <submodule>` 删除子模块目录。
+2. 删除 `.git/modules` 下子模块相关内容。
+3. 编辑 `.git/config` 删除子模块相关内容。
+4. 执行 `git commit` 提交更新。
 
 ## 贮藏
 
