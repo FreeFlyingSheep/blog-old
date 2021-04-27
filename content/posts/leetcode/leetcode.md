@@ -2,7 +2,7 @@
 title: "LeetCode 刷题笔记"
 date: 2021-04-13
 lastmod: 2021-04-18
-lastmod: 2021-04-26
+lastmod: 2021-04-27
 tags: [LeetCode]
 categories: [LeetCode]
 draft: false
@@ -41,3 +41,4 @@ draft: false
 - [8. String to Integer (atoi)](/posts/leetcode/daily/8-string-to-integer-atoi)
 - [4. Median of Two Sorted Arrays](/posts/leetcode/daily/4-median-of-two-sorted-arrays)
 - [10. Regular Expression Matching](/posts/leetcode/daily/10-regular-expression-matching)
+- [1448. Count Good Nodes in Binary Tree](/posts/leetcode/daily/1448-count-good-nodes-in-binary-tree.md)
