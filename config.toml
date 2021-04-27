@@ -1,39 +1,126 @@
 baseURL = "http://freeflyingsheep.github.io/"
-# [en, zh-cn, fr, ...] determines default content language
+# [en, zh-cn, fr, pl, ...] determines default content language
 defaultContentLanguage = "zh-cn"
-# website language, only here CN should be capitalized
-languageCode = "zh-CN"
-# whether to include Chinese, Japanese and Korean characters
-hasCJKLanguage = true
+# theme
+theme = "uBlogger"
+# themes directory
+themesDir = "themes"
+
 # website title
 title = "FreeFlyingSheep 的小站"
 
-# Change the default theme to be use when building the site with Hugo
-theme = "LoveIt"
+# whether to use robots.txt
+enableRobotsTXT = true
+# whether to use git commit log
+enableGitInfo = false
+# whether to use emoji code
+enableEmoji = true
+
+[languages]
+  [languages.zh-cn]
+    weight = 1
+    # language code, only here CN should be capitalized
+    languageCode = "zh-CN"
+    # language name
+    languageName = "Simplified Chinese"
+    # whether to include Chinese/Japanese/Korean
+    hasCJKLanguage = true
+    # default amount of posts in each pages
+    paginate = 12
+    # copyright description used only for seo schema
+    copyright = "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License."
+    # Menu config
+    [languages.zh-cn.menu]
+      [[languages.zh-cn.menu.main]]
+        identifier = "posts"
+        # you can add extra information before the name (HTML format is supported), such as icons
+        pre = ""
+        # you can add extra information after the name (HTML format is supported), such as icons
+        post = ""
+        name = "文章"
+        url = "/posts/"
+        # title will be shown when you hover on this menu link.
+        title = ""
+        weight = 1
+      [[languages.zh-cn.menu.main]]
+        identifier = "tags"
+        pre = ""
+        post = ""
+        name = "标签"
+        url = "/tags/"
+        title = ""
+        weight = 2
+      [[languages.zh-cn.menu.main]]
+        identifier = "categories"
+        pre = ""
+        post = ""
+        name = "分类"
+        url = "/categories/"
+        title = ""
+        weight = 3
+      [[languages.zh-cn.menu.main]]
+        identifier = "about"
+        pre = ""
+        post = ""
+        name = "关于"
+        url = "/about/"
+        title = ""
+        weight = 4
+    [languages.zh-cn.params]
+      # site description
+      description = "FreeFlyingSheep 的小站"
+      # site keywords
+      keywords = ["Blog", "Hugo"]
+      # Search config
+      [languages.zh-cn.params.search]
+        enable = true
+        # type of search engine ("lunr", "algolia")
+        type = "lunr"
+        # max index length of the chunked content
+        contentLength = 4000
+        # placeholder of the search bar
+        placeholder = ""
+        # max number of results length
+        maxResultLength = 10
+        # snippet length of the result
+        snippetLength = 30
+        # HTML tag name of the highlight part in results
+        highlightTag = "em"
+        # whether to use the absolute URL based on the baseURL in search index
+        absoluteURL = false
+      # Home page config
+      [languages.zh-cn.params.home]
+        # amount of RSS pages
+        rss = 10
+        # Home page profile
+        [languages.zh-cn.params.home.profile]
+          enable = true
+          # URL of avatar shown in home page
+          avatarURL = "/avatar.png"
+          # title shown in home page (HTML format is supported)
+          title = "FreeFlyingSheep | 神采飞扬"
+          # subtitle shown in home page (HTML format is supported)
+          subtitle = "FreeFlyingSheep 的小站"
+          # whether to show social links
+          social = true
+        # Home page posts
+        [languages.zh-cn.params.home.posts]
+          enable = true
+          # special amount of posts in each home posts page
+          paginate = 6
+      # Social config in home page
+      [languages.zh-cn.params.social]
+        GitHub = "FreeFlyingSheep"
+        Email = "chris.chenfeiyang@outlook.com"
+        RSS = true
 
 [params]
-  # LoveIt theme version
-  version = "0.2.X"
+  # uBlogger theme version
+  version = "2.0.X"
   # site default theme ("light", "dark", "auto")
   defaultTheme = "light"
-
-  # Search config
-  [params.search]
-    enable = true
-    # type of search engine ("lunr", "algolia")
-    type = "lunr"
-    # max index length of the chunked content
-    contentLength = 4000
-    # placeholder of the search bar
-    placeholder = "搜索文章标题或内容……"
-    # max number of results length
-    maxResultLength = 10
-    # snippet length of the result
-    snippetLength = 30
-    # HTML tag name of the highlight part in results
-    highlightTag = "em"
-    # whether to use the absolute URL based on the baseURL in search index
-    absoluteURL = false
+  # date format
+  dateFormat = "2006-01-02"
 
   # Header config
   [params.header]
@@ -45,8 +132,6 @@ theme = "LoveIt"
     [params.header.title]
       # title name
       name = "FreeFlyingSheep 的小站"
-      # whether to use typeit animation for title name
-      typeit = false
 
   # Footer config
   [params.footer]
@@ -57,10 +142,10 @@ theme = "LoveIt"
     copyright = true
     # whether to show the author
     author = false
-    # Site creation time
+    # site creation time
     since = 2020
     # license info (HTML format is supported)
-    license = '<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="/license.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。'
+    license= '<a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a>'
 
   # Section (all posts) page config
   [params.section]
@@ -80,36 +165,9 @@ theme = "LoveIt"
     # amount of RSS pages
     rss = 10
 
-  # Home page config
-  [params.home]
-    # amount of RSS pages
-    rss = 10
-    # Home page profile
-    [params.home.profile]
-      enable = true
-      # URL of avatar shown in home page
-      avatarURL = "/avatar.png"
-      # title shown in home page (HTML format is supported)
-      title = ""
-      # subtitle shown in home page
-      subtitle = "FreeFlyingSheep · 神采飞扬"
-      # whether to use typeit animation for subtitle
-      typeit = true
-      # whether to show social links
-      social = true
-    # Home page posts
-    [params.home.posts]
-      enable = true
-      # special amount of posts in each home posts page
-      paginate = 10
-
-  # Social config about the author
-  [params.social]
-    GitHub = "FreeFlyingSheep"
-    # Stackoverflow = "13645603/freeflyingsheep"
-    # Bilibili = "186403082"
-    Email = "chris.chenfeiyang@outlook.com"
-    RSS = true
+  # Comment config
+  [params.comment]
+    enable = false
 
   # Page config
   [params.page]
@@ -130,7 +188,7 @@ theme = "LoveIt"
       # whether to show the copy button of the code block
       copy = true
       # the maximum number of lines of displayed code by default
-      maxShownLines = 200
+      maxShownLines = 10
     # KaTeX mathematical formulas config (KaTeX https://katex.org/)
     [params.page.math]
       enable = true
@@ -144,82 +202,9 @@ theme = "LoveIt"
       copyTex = true
       # KaTeX extension mhchem
       mhchem = true
-    # social share links in post page
+    # Social share links in post page
     [params.page.share]
       enable = false
-      Twitter = false
-      Facebook = false
-      Linkedin = false
-      Whatsapp = false
-      Pinterest = false
-      Tumblr = false
-      HackerNews = false
-      Reddit = false
-      VK = false
-      Buffer = false
-      Xing = false
-      Line = false
-      Instapaper = false
-      Pocket = false
-      Digg = false
-      Stumbleupon = false
-      Flipboard = false
-      Weibo = false
-      Renren = false
-      Myspace = false
-      Blogger = false
-      Baidu = false
-      Odnoklassniki = false
-      Evernote = false
-      Skype = false
-      Trello = false
-      Mix = false
-    # Comment config
-    [params.page.comment]
-      enable = false
-      # Gitalk comment config (https://github.com/gitalk/gitalk)
-      [params.page.comment.gitalk]
-        enable = true
-        owner = "FreeFlyingSheep"
-        repo = "FreeFlyingSheep.github.io"
-        clientId = ""
-        clientSecret = ""
-
-[menu]
-  [[menu.main]]
-    identifier = "posts"
-    # you can add extra information before the name (HTML format is supported), such as icons
-    pre = ""
-    post = ""
-    name = "文章"
-    url = "/posts/"
-    # title will be shown when you hover on this menu link
-    title = ""
-    weight = 1
-  [[menu.main]]
-    identifier = "tags"
-    pre = ""
-    post = ""
-    name = "标签"
-    url = "/tags/"
-    title = ""
-    weight = 2
-  [[menu.main]]
-    identifier = "categories"
-    pre = ""
-    post = ""
-    name = "分类"
-    url = "/categories/"
-    title = ""
-    weight = 3
-  [[menu.main]]
-    identifier = "about"
-    pre = ""
-    post = ""
-    name = "关于"
-    url = "/about/"
-    title = ""
-    weight = 4
 
 # Markup related configuration in Hugo
 [markup]
@@ -229,7 +214,6 @@ theme = "LoveIt"
     guessSyntax = true
     lineNos = true
     lineNumbersInTable = true
-    # false is a necessary configuration (https://github.com/dillonzq/LoveIt/issues/158)
     noClasses = false
   # Goldmark is from Hugo 0.60 the default library used for Markdown
   [markup.goldmark]
@@ -249,10 +233,21 @@ theme = "LoveIt"
     startLevel = 2
     endLevel = 6
 
-# Author config
-[author]
-  name = "FreeFlyingSheep"
+# Options to make output .md files
+[mediaTypes]
+  [mediaTypes."text/plain"]
+    suffixes = ["md"]
+
+# Options to make output .md files
+[outputFormats.MarkDown]
+  mediaType = "text/plain"
+  isPlainText = true
+  isHTML = false
 
 # Options to make hugo output files
 [outputs]
   home = ["HTML", "RSS", "JSON"]
+  page = ["HTML", "MarkDown"]
+  section = ["HTML", "RSS"]
+  taxonomy = ["HTML", "RSS"]
+  taxonomyTerm = ["HTML"]
