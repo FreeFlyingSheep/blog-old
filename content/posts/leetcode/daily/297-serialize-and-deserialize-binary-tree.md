@@ -81,11 +81,7 @@ func (this *Codec) serialize(root *TreeNode) string {
     queue := []*TreeNode{root}
     for len(queue) > 0 {
         node := queue[0]
-        if len(queue) > 1 {
-            queue = queue[1:]
-        } else {
-            queue = queue[:0]
-        }
+        queue = queue[1:]
         if node != nil {
             queue = append(queue, node.Left)
             queue = append(queue, node.Right)
@@ -110,11 +106,7 @@ func (this *Codec) deserialize(data string) *TreeNode {
     queue := []*TreeNode{root}
     for n < len(this.nodes) {
         node := queue[0]
-        if len(queue) > 1 {
-            queue = queue[1:]
-        } else {
-            queue = queue[:0]
-        }
+        queue = queue[1:]
         if this.nodes[n] != "null" {
             val, _ := strconv.Atoi(this.nodes[n])
             left := &TreeNode{val, nil, nil}

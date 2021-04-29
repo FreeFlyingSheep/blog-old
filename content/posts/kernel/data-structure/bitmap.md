@@ -13,7 +13,7 @@ draft: false
 
 ## 内核位图的使用
 
-下面只列举常用的内核位图函数/宏，头文件为 `linux/bitops.h`。
+下面只列举常用的内核位图函数/宏，头文件为 `include/linux/bitops.h`。
 
 ### 创建位图
 

@@ -13,7 +13,7 @@ draft: false
 
 ## 内核队列的使用
 
-内核通用队列的实现称为 `kfifo`，头文件为 `linux/kfifo.h`。
+内核通用队列的实现称为 `kfifo`，头文件为 `include/linux/kfifo.h`。
 
 ### 创建队列
 

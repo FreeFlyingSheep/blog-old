@@ -64,7 +64,7 @@ void add_rabbit(struct rabbit *list, struct rabbit *r)
 
 ## 内核链表的使用
 
-内核链表实现称为 `list`，头文件为 `linux/list.h`。它实现了通用的链表操作，仍然以 `fox` 结构体为例，下面展示内核链表的常见用法。
+内核链表实现称为 `list`，头文件为 `include/linux/list.h`。它实现了通用的链表操作，仍然以 `fox` 结构体为例，下面展示内核链表的常见用法。
 
 ### 定义链表
 

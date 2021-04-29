@@ -13,7 +13,7 @@ draft: false
 
 ## 内核散列表的使用
 
-内核散列表的实现称为 `hlist`，头文件为 `linux/list.h`。它的操作和内核链表基本一致，只是把函数名中的 `list`（`LIST`）替换成了 `hlist`（`HLIST`）。
+内核散列表的实现称为 `hlist`，头文件为 `include/linux/list.h`。它的操作和内核链表基本一致，只是把函数名中的 `list`（`LIST`）替换成了 `hlist`（`HLIST`）。
 
 内核散列表的使用可以参考[内核链表](/posts/kernel/data-structure/list)的用法，下面直接介绍其具体实现。
 

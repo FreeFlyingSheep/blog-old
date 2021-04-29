@@ -2,7 +2,7 @@
 title: "LeetCode 刷题笔记"
 date: 2021-04-13
 lastmod: 2021-04-18
-lastmod: 2021-04-28
+lastmod: 2021-04-29
 tags: [LeetCode]
 categories: [LeetCode]
 draft: false
@@ -43,3 +43,4 @@ draft: false
 - [10. Regular Expression Matching](/posts/leetcode/daily/10-regular-expression-matching)
 - [1448. Count Good Nodes in Binary Tree](/posts/leetcode/daily/1448-count-good-nodes-in-binary-tree)
 - [297. Serialize and Deserialize Binary Tree](/posts/leetcode/daily/297-serialize-and-deserialize-binary-tree)
+- [23. Merge k Sorted Lists](/posts/leetcode/daily/23-merge-k-sorted-lists)
