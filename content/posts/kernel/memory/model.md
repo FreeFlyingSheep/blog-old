@@ -1,7 +1,7 @@
 ---
 title: "内存模型"
 date: 2020-10-27
-lastmod: 2020-10-28
+lastmod: 2021-04-30
 tags: [Linux 内核, 内存管理, 内存模型]
 categories: [Kernel]
 draft: false
@@ -241,11 +241,11 @@ enum zone_watermarks {
 - `pages_low`：若空闲页低于该值，则内核开始讲页换出到硬盘。
 - `pages_min`：若空闲页低于该值，那么页回收工作的压力较大，内存急需空闲页。
 
-`lowmem_reserve` 数组代表每个区必须保留的页框数目，见 [TODO](/posts/kernel/todo)。
+`lowmem_reserve` 数组代表每个区必须保留的页框数目，见[保留的页框池](/posts/kernel/memory/continuous#保留的页框池)。
 
-`pageset` 用于实现每个 CPU 的冷/热页帧列表，见 [TODO](/posts/kernel/todo)。
+`pageset` 用于实现每个 CPU 的冷/热页帧列表，见 [per-CPU 高速缓存](/posts/kernel/memory/per-cpu)。
 
-`free_area` 用于实现伙伴系统，见 [TODO](/posts/kernel/todo)。
+`free_area` 用于实现伙伴系统，见[伙伴系统](/posts/kernel/memory/buddy-system)。
 
 #### 第二部分
 
@@ -378,7 +378,7 @@ struct page {
 - `flags`：存储体系结构无关的标志，用于描述页的属性，相关标志位于 `include/linux/page-flags.h`。
 - `_count`：使用计数，表示内核中引用该页的次数。在其值为 `0` 时，内核知道 `page` 实例当前不使用，因此可以删除。
 - `_mapcount`：表示在页表中有多少项指向该页。
-- `inuse`、`objects`、`slab` 和 `freelist`：用于 slub 分配器，见 [TODO](/posts/kernel/todo)。
+- `inuse`、`objects`、`slab` 和 `freelist`：用于 slub 分配器，这部分内容不属于该学习笔记的范畴。
 - `private`：指向“私有”数据的指针，这里不准备展开介绍。
 - `mapping` 和 `index`：分部指定了页框所在的地址空间和页框在映射内部的偏移量。特别地，若 `mapping` 的低位被置 `1`，则该指针不指向 `address_space` 实例，而是指向 `anon_vma`，实现匿名页的逆向映射，见 [TODO](/posts/kernel/todo)。
 - `first_page`：指向首页的指针。内核可以将多个连续的页合并成较大的复合页（compound page），分组中的第一个页被称为首页（head page），其余各页称为尾页（tail page）。
