@@ -1,7 +1,7 @@
 ---
 title: "21. Merge Two Sorted Lists"
-date: 2021-04-29
-lastmod: 2021-04-29
+date: 2021-05-01
+lastmod: 2021-05-01
 tags: [Golang, 数据结构与算法]
 categories: [LeetCode]
 draft: false
