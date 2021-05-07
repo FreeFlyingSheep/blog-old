@@ -7,7 +7,7 @@ categories: [LeetCode]
 draft: false
 ---
 
-力扣（LeetCode）[第 88 题](https://leetcode-cn.com/problems/search-in-rotated-sorted-array)的题解。
+力扣（LeetCode）[第 33 题](https://leetcode-cn.com/problems/search-in-rotated-sorted-array)的题解。
 
 <!--more-->
 
