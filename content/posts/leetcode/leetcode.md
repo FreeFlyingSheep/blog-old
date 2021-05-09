@@ -1,7 +1,7 @@
 ---
 title: "LeetCode 刷题笔记"
 date: 2021-04-13
-lastmod: 2021-05-08
+lastmod: 2021-05-09
 tags: [LeetCode]
 categories: [LeetCode]
 draft: false
@@ -52,3 +52,4 @@ draft: false
 - [88. Merge Sorted Array](/posts/leetcode/daily/88-merge-sorted-array)
 - [33. Search in Rotated Sorted Array](/posts/leetcode/daily/33-search-in-rotated-sorted-array)
 - [103. Binary Tree Zigzag Level Order Traversal](/posts/leetcode/daily/103-binary-tree-zigzag-level-order-traversal)
+- [206. Reverse Linked List](/posts/leetcode/daily/206-reverse-linked-list)
