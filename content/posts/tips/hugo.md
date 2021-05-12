@@ -2,7 +2,7 @@
 title: "使用 Hugo 搭建个人博客"
 date: 2020-09-23
 lastmod: 2021-04-27
-tags: [Hugo, Github Pages]
+tags: [Hugo, Github Actions, Github Pages]
 categories: [Tips]
 draft: false
 ---
