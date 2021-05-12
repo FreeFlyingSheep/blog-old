@@ -63,7 +63,7 @@ contact_links:
 
 该项目新建 Issue 的页面如下：
 
-![ProGit2 新建 Issue](images/tips/progit2-issue.png)
+![ProGit2 新建 Issue](/images/tips/progit2-issue.png)
 
 ### Pull request 模板
 
