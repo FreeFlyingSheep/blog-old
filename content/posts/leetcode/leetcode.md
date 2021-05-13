@@ -1,7 +1,7 @@
 ---
 title: "LeetCode 刷题笔记"
 date: 2021-04-13
-lastmod: 2021-05-12
+lastmod: 2021-05-13
 tags: [LeetCode]
 categories: [LeetCode]
 draft: false
@@ -56,3 +56,4 @@ draft: false
 - [3. Longest Substring Without Repeating Characters](/posts/leetcode/daily/3-longest-substring-without-repeating-characters)
 - [56. Merge Intervals](/posts/leetcode/daily/56-merge-intervals)
 - [116. Populating Next Right Pointers in Each Node](/posts/leetcode/daily/116-populating-next-right-pointers-in-each-node)
+- [49. Group Anagrams](/posts/leetcode/daily/49-group-anagrams)
