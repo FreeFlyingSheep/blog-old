@@ -1,7 +1,7 @@
 ---
 title: "LeetCode 刷题笔记"
 date: 2021-04-12
-lastmod: 2021-05-15
+lastmod: 2021-05-16
 tags: [LeetCode]
 categories: [LeetCode]
 draft: false
@@ -55,3 +55,4 @@ draft: false
 32. [49. Group Anagrams](/posts/leetcode/daily/49-group-anagrams)
 33. [98. Validate Binary Search Tree](/posts/leetcode/daily/98-validate-binary-search-tree)
 34. [348. Design Tic-Tac-Toe](/posts/leetcode/daily/348-design-tic-tac-toe)
+35. [20. Valid Parentheses](/posts/leetcode/daily/20-valid-parentheses)
