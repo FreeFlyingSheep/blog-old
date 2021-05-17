@@ -591,7 +591,7 @@ static void __init mm_init(void)
 
 ### `setup_per_cpu_pageset()`
 
-`setup_per_cpu_pageset()` 函数位于 ``，用于分配并初始化 pageset：
+`setup_per_cpu_pageset()` 函数位于 `mm/page_alloc.c`，用于分配并初始化 pageset：
 
 ```c
 /*

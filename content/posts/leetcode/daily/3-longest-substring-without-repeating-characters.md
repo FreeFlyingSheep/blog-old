@@ -7,7 +7,7 @@ categories: [LeetCode]
 draft: false
 ---
 
-力扣（LeetCode）[第 3 题](https://leetcode-cn.com/problems/longest-substring-without-repeating-characters)的题解。
+[LeetCode 刷题笔记系列](/posts/leetcode/leetcode)，力扣（LeetCode）[第 3 题](https://leetcode-cn.com/problems/longest-substring-without-repeating-characters)的题解。
 
 <!--more-->
 

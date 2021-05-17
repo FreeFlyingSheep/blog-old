@@ -1,13 +1,13 @@
 ---
 title: "LeetCode 刷题笔记"
 date: 2021-04-12
-lastmod: 2021-05-16
+lastmod: 2021-05-17
 tags: [LeetCode]
 categories: [LeetCode]
 draft: false
 ---
 
-一个新坑，记录刷过的 [LeetCode](https://leetcode-cn.com/) 题目。
+[LeetCode 刷题笔记系列](/posts/leetcode/leetcode)，一个新坑，记录刷过的 [LeetCode](https://leetcode-cn.com/) 题目。
 
 <!--more-->
 

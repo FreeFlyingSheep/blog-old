@@ -7,7 +7,7 @@ categories: [LeetCode]
 draft: false
 ---
 
-力扣（LeetCode）[第 240 题](https://leetcode-cn.com/problems/search-a-2d-matrix-ii)的题解。
+[LeetCode 刷题笔记系列](/posts/leetcode/leetcode)，力扣（LeetCode）[第 240 题](https://leetcode-cn.com/problems/search-a-2d-matrix-ii)的题解。
 
 <!--more-->
 

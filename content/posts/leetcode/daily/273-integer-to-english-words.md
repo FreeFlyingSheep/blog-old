@@ -7,7 +7,7 @@ categories: [LeetCode]
 draft: false
 ---
 
-力扣（LeetCode）[第 273 题](https://leetcode-cn.com/problems/integer-to-english-words)的题解。
+[LeetCode 刷题笔记系列](/posts/leetcode/leetcode)，力扣（LeetCode）[第 273 题](https://leetcode-cn.com/problems/integer-to-english-words)的题解。
 
 <!--more-->
 

@@ -7,7 +7,7 @@ categories: [LeetCode]
 draft: false
 ---
 
-力扣（LeetCode）[第 206 题](https://leetcode-cn.com/problems/reverse-linked-lists)的题解。
+[LeetCode 刷题笔记系列](/posts/leetcode/leetcode)，力扣（LeetCode）[第 206 题](https://leetcode-cn.com/problems/reverse-linked-lists)的题解。
 
 <!--more-->
 
