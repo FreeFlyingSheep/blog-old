@@ -1,7 +1,7 @@
 ---
 title: "内存寻址"
 date: 2020-10-29
-lastmod: 2020-10-30
+lastmod: 2021-05-17
 tags: [Linux 内核, 内存管理, 内存寻址]
 categories: [Kernel]
 draft: false
@@ -68,4 +68,4 @@ Linux 采用了**四级分页模型**，如下图所示：
 
 ![Linux 分页模式](/images/kernel/memory/paging.png)
 
-相关的宏和函数基本位于 `arch/x86/include/asm/pgtable.h`，大部分看名字就能猜测出功能，实现也比较简单，这里不准备展开了。系统启动时涉及的代码也见 [TODO](/posts/kernel/todo)。
+相关的宏和函数基本位于 `arch/x86/include/asm/pgtable.h`，大部分看名字就能猜测出功能，实现也比较简单，这里不准备展开了。

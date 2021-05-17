@@ -95,6 +95,7 @@ draft: false
 - [非连续页框的管理](/posts/kernel/memory/uncontinuous)
 - [slab 分配器](/posts/kernel/memory/slab)
 - [内存管理初始化](/posts/kernel/memory/initialization)
+- [bootmem 分配器](/posts/kernel/memory/bootmem)
 - [内存管理补充](/posts/kernel/memory/supplement)
 
 ### 进程管理

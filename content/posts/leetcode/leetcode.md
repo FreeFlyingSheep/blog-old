@@ -56,3 +56,4 @@ draft: false
 33. [98. Validate Binary Search Tree](/posts/leetcode/daily/98-validate-binary-search-tree)
 34. [348. Design Tic-Tac-Toe](/posts/leetcode/daily/348-design-tic-tac-toe)
 35. [20. Valid Parentheses](/posts/leetcode/daily/20-valid-parentheses)
+36. [105. Construct Binary Tree from Preorder and Inorder Traversal](/posts/leetcode/daily/105-construct-binary-tree-from-preorder-and-inorder-traversal)

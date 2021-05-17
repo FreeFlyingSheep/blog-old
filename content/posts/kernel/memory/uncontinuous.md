@@ -1,7 +1,7 @@
 ---
 title: "非连续页框的管理"
 date: 2021-04-26
-lastmod: 2021-04-27
+lastmod: 2021-05-17
 tags: [Linux 内核, 内存管理, 非连续页框的管理]
 categories: [Kernel]
 draft: false
@@ -25,7 +25,32 @@ draft: false
 # define VMALLOC_END    (PKMAP_BASE - 2 * PAGE_SIZE)
 ```
 
-`high_memory` 对应直接映射的物理内存的末尾（见[TODO](/posts/kernel/todo)），`VMALLOC_OFFSET` 是一个 `8MB` 的安全空间，用于与直接映射的物理内存区域隔开。`PKMAP_BASE` 开始是永久内核映射的线性地址，`VMALLOC_END` 与之隔了个 `8KB` 的安全空间（默认页大小是 `4KB`）。
+`high_memory` 对应直接映射的物理内存的末尾，`VMALLOC_OFFSET` 是一个 `8MB` 的安全空间，用于与直接映射的物理内存区域隔开。`PKMAP_BASE` 开始是永久内核映射的线性地址，`VMALLOC_END` 与之隔了个 `8KB` 的安全空间（默认页大小是 `4KB`）。
+
+高端内存的布局大致如下（`arch/x86/include/asm/highmem.h` 中的注释）：
+
+```c
+/*
+ * Right now we initialize only a single pte table. It can be extended
+ * easily, subsequent pte tables have to be allocated in one physical
+ * chunk of RAM.
+ */
+/*
+ * Ordering is:
+ *
+ * FIXADDR_TOP
+ *                      fixed_addresses
+ * FIXADDR_START
+ *                      temp fixed addresses
+ * FIXADDR_BOOT_START
+ *                      Persistent kmap area
+ * PKMAP_BASE
+ * VMALLOC_END
+ *                      Vmalloc area
+ * VMALLOC_START
+ * high_memory
+ */
+```
 
 ## 非连续内存区的描述符
 

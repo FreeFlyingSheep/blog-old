@@ -53,7 +53,7 @@ typedef struct pglist_data {
 ```
 
 - `node_zones`：包含结点中区数据结构的数组。若区没有那么多，其余项用 `0` 填充。
-- `node_zonelists`：备用结点及内存区域列表，以便在当前结点没有可用空间时，在备用结点分配内存，见 [TODO](/posts/kernel/todo)。
+- `node_zonelists`：备用结点及内存区域列表，以便在当前结点没有可用空间时，在备用结点分配内存。
 - `nr_zones`：不同区的数目。
 - `node_mem_map`：指向页实例的指针，包含了当前结点所有区的页。
 - `bdata`：指向自举内存分配器实例的指针，见[内存管理初始化](/posts/kernel/memory/init)。

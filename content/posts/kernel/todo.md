@@ -1,7 +1,7 @@
 ---
 title: "TODO 列表"
 date: 2020-10-27
-lastmod: 2021-04-30
+lastmod: 2021-05-17
 tags: [Linux 内核]
 categories: [Kernel]
 draft: false
@@ -15,8 +15,6 @@ draft: false
 - [内核队列](/posts/kernel/data-structure/kfifo) 261 行，屏障相关内容。
 - [内核基数树](/posts/kernel/data-structure/radix-tree) 247 行，RCU 相关的内容。
 - [内存寻址](/posts/kernel/memory/address) 61 行，系统启动相关内容。
-- [内存寻址](/posts/kernel/memory/address) 71 行，系统启动相关内容。
-- [内存模型](/posts/kernel/memory/model) 56 行，内存初始化相关内容。
 - [内存模型](/posts/kernel/memory/model) 68 行，交换守护进程相关内容。
 - [内存模型](/posts/kernel/memory/model) 141 行，避免碎片相关内容。
 - [内存模型](/posts/kernel/memory/model) 279 和 300 行，内存扫描相关内容。
@@ -25,4 +23,3 @@ draft: false
 - [内存模型](/posts/kernel/memory/model) 385 行，活动页和不活动页相关内容。
 - [连续页框的管理](/posts/kernel/memory/continuous) 532 行，块设备驱动程序相关内容。
 - [slab 分配器](/posts/kernel/memory/slab) 448 行，内核同步相关内容。
-- [非连续页框的管理](/posts/kernel/memory/uncontinuous) 26 行，内存初始化相关内容。
