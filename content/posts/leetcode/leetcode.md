@@ -1,7 +1,7 @@
 ---
 title: "LeetCode 刷题笔记"
 date: 2021-04-12
-lastmod: 2021-05-17
+lastmod: 2021-05-18
 tags: [LeetCode]
 categories: [LeetCode]
 draft: false
@@ -57,3 +57,4 @@ draft: false
 34. [348. Design Tic-Tac-Toe](/posts/leetcode/daily/348-design-tic-tac-toe)
 35. [20. Valid Parentheses](/posts/leetcode/daily/20-valid-parentheses)
 36. [105. Construct Binary Tree from Preorder and Inorder Traversal](/posts/leetcode/daily/105-construct-binary-tree-from-preorder-and-inorder-traversal)
+37. [41. First Missing Positive](/posts/leetcode/daily/41-first-missing-positive)
