@@ -17,7 +17,7 @@ Given two integer arrays `preorder` and `inorder` where `preorder` is the preord
 
 **Example 1:**
 
-![Example 1](images/leetcode/daily/105-construct-binary-tree-from-preorder-and-inorder-traversal/tree.jpg)
+![Example 1](/images/leetcode/daily/105-construct-binary-tree-from-preorder-and-inorder-traversal/tree.jpg)
 
 ```text
 Input: preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]

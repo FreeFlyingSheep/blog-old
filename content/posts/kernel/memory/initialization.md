@@ -17,7 +17,7 @@ draft: false
 
 初始化相关的操作总是从 `start_kernel()` 开始看起，与内存管理初始化相关的流程如下（图片来源于 PLKA）：
 
-![`start_kernel()`](images/kernel/memory/start_kernel.png)
+![`start_kernel()`](/images/kernel/memory/start_kernel.png)
 
 `start_kernel()` 函数位于 `init/main.c`。
 
@@ -25,7 +25,7 @@ draft: false
 
 `setup_arch()` 的流程如下（图片来源于 PLKA）：
 
-![`setup_arch()`](images/kernel/memory/setup_arch.png)
+![`setup_arch()`](/images/kernel/memory/setup_arch.png)
 
 `setup_arch()` 函数位于 `arch/x86/kernel/setup.c`。
 
