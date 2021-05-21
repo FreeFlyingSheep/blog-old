@@ -1,7 +1,7 @@
 ---
 title: "LeetCode 刷题笔记"
 date: 2021-04-12
-lastmod: 2021-05-19
+lastmod: 2021-05-21
 tags: [LeetCode]
 categories: [LeetCode]
 draft: false
@@ -59,3 +59,5 @@ draft: false
 36. [105. Construct Binary Tree from Preorder and Inorder Traversal](/posts/leetcode/daily/105-construct-binary-tree-from-preorder-and-inorder-traversal)
 37. [41. First Missing Positive](/posts/leetcode/daily/41-first-missing-positive)
 38. [277. Find the Celebrity](/posts/leetcode/daily/277-find-the-celebrity)
+39. [25. Reverse Nodes in k-Group](/posts/leetcode/daily/25-reverse-nodes-in-k-group)
+40. [295. Find Median from Data Stream](/posts/leetcode/daily/295-find-median-from-data-stream)
