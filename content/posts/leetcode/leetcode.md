@@ -1,7 +1,7 @@
 ---
 title: "LeetCode 刷题笔记"
 date: 2021-04-12
-lastmod: 2021-05-21
+lastmod: 2021-05-24
 tags: [LeetCode]
 categories: [LeetCode]
 draft: false
@@ -61,3 +61,6 @@ draft: false
 38. [277. Find the Celebrity](/posts/leetcode/daily/277-find-the-celebrity)
 39. [25. Reverse Nodes in k-Group](/posts/leetcode/daily/25-reverse-nodes-in-k-group)
 40. [295. Find Median from Data Stream](/posts/leetcode/daily/295-find-median-from-data-stream)
+41. [236. Lowest Common Ancestor of a Binary Tree](/posts/leetcode/daily/236-lowest-common-ancestor-of-a-binary-tree)
+42. [79. Word Search](/posts/leetcode/daily/79-word-search)
+43. [445. Add Two Numbers II](/posts/leetcode/daily/445-add-two-numbers-ii)
