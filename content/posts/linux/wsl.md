@@ -1,7 +1,7 @@
 ---
 title: "安装 WSL"
 date: 2020-09-21
-lastmod: 2021-01-28
+lastmod: 2021-05-25
 tags: [WSL]
 categories: [Linux]
 draft: false
@@ -162,3 +162,28 @@ wsl --set-version Debian 1
 "source": "Windows.Terminal.Wsl",
 "startingDirectory": "//wsl$/debian"
 ```
+
+## WSL2 和部分 VPN 冲突
+
+使用 WSL2 时出现“参考的对象类型不支持尝试的操作”的提示，可能是因为开启了 VPN，解决方案如下：
+
+>Thanks for the info.
+>
+>We have reproduced this issue.
+>Apparently, wsl.exe displays this error if Winsock LSP DLL gets loaded into its process.
+>
+>The easiest solution is to use WSCSetApplicationCategory WinAPI call for wsl.exe to prevent >this.
+>Under the hood the call creates an entry for wsl.exe at >HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WinSock2\Parameters\AppId_Catalog
+>This tells Windows not to load LSP DLLs into wsl.exe process.
+>
+>We have a tool that can make this call:
+>www.proxifier.com/tmp/Test20200228/NoLsp.exe
+>
+>Please just run as admin with the full path to wsl.exe as the parameter:
+>NoLsp.exe c:\windows\system32\wsl.exe
+>
+>This has fixed the problem in my case.
+>
+>Please let me know how it works for you.
+
+上述内容来源于 <https://github.com/microsoft/WSL/issues/4177#issuecomment-597736482>。
