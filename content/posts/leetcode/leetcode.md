@@ -1,7 +1,7 @@
 ---
 title: "LeetCode 刷题笔记"
 date: 2021-04-12
-lastmod: 2021-05-26
+lastmod: 2021-05-28
 tags: [LeetCode]
 categories: [LeetCode]
 draft: false
@@ -66,3 +66,5 @@ draft: false
 43. [445. Add Two Numbers II](/posts/leetcode/daily/445-add-two-numbers-ii)
 44. [238. Product of Array Except Self](/posts/leetcode/daily/238-product-of-array-except-self)
 45. [73. Set Matrix Zeroes](/posts/leetcode/daily/73-set-matrix-zeroes)
+46. [344. Reverse String](/posts/leetcode/daily/344-reverse-string)
+47. [212. Word Search II](/posts/leetcode/daily/212-word-search-ii)
