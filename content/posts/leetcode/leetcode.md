@@ -1,7 +1,7 @@
 ---
 title: "LeetCode 刷题笔记"
 date: 2021-04-12
-lastmod: 2021-06-02
+lastmod: 2021-06-05
 tags: [LeetCode]
 categories: [LeetCode]
 draft: false
@@ -73,3 +73,6 @@ draft: false
 50. [127. Word Ladder](/posts/leetcode/daily/127-word-ladder)
 51. [443. String Compression](/posts/leetcode/daily/443-string-compression)
 52. [139. Word Break](/posts/leetcode/daily/139-word-break)
+53. [22. Generate Parentheses](/posts/leetcode/daily/22-generate-parentheses)
+54. [15. 3Sum](/posts/leetcode/daily/15-3sum)
+55. [24. Swap Nodes in Pairs](/posts/leetcode/daily/24-swap-nodes-in-pairs)
