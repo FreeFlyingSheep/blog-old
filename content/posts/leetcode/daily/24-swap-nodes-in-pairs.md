@@ -7,7 +7,7 @@ categories: [LeetCode]
 draft: false
 ---
 
-[LeetCode 刷题笔记系列](/posts/leetcode/leetcode)，力扣（LeetCode）[第 15 题](https://leetcode-cn.com/problems/swap-nodes-in-pairs)的题解。
+[LeetCode 刷题笔记系列](/posts/leetcode/leetcode)，力扣（LeetCode）[第 24 题](https://leetcode-cn.com/problems/swap-nodes-in-pairs)的题解。
 
 <!--more-->
 
