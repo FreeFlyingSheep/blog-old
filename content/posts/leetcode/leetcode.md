@@ -1,7 +1,7 @@
 ---
 title: "LeetCode 刷题笔记"
 date: 2021-04-12
-lastmod: 2021-06-05
+lastmod: 2021-06-06
 tags: [LeetCode]
 categories: [LeetCode]
 draft: false
@@ -76,3 +76,4 @@ draft: false
 53. [22. Generate Parentheses](/posts/leetcode/daily/22-generate-parentheses)
 54. [15. 3Sum](/posts/leetcode/daily/15-3sum)
 55. [24. Swap Nodes in Pairs](/posts/leetcode/daily/24-swap-nodes-in-pairs)
+56. [7. Reverse Integer](/posts/leetcode/daily/7-reverse-integer)

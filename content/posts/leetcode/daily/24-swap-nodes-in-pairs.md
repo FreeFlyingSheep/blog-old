@@ -1,6 +1,6 @@
 ---
 title: "24. Swap Nodes in Pairs"
-date: 2021-06-04
+date: 2021-06-05
 lastmod: 2021-06-05
 tags: [Golang, 数据结构与算法]
 categories: [LeetCode]
