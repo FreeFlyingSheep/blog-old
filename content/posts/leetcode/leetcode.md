@@ -1,7 +1,7 @@
 ---
 title: "LeetCode 刷题笔记"
 date: 2021-04-12
-lastmod: 2021-06-06
+lastmod: 2021-06-09
 tags: [LeetCode]
 categories: [LeetCode]
 draft: false
@@ -77,3 +77,6 @@ draft: false
 54. [15. 3Sum](/posts/leetcode/daily/15-3sum)
 55. [24. Swap Nodes in Pairs](/posts/leetcode/daily/24-swap-nodes-in-pairs)
 56. [7. Reverse Integer](/posts/leetcode/daily/7-reverse-integer)
+57. [76. Minimum Window Substring](/posts/leetcode/daily/76-minimum-window-substring)
+58. [75. Sort Colors](/posts/leetcode/daily/75-sort-colors)
+59. [171. Excel Sheet Column Number](/posts/leetcode/daily/171-excel-sheet-column-number)

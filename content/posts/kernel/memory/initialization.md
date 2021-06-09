@@ -480,7 +480,7 @@ static void build_zonelists(pg_data_t *pgdat)
         if (order == ZONELIST_ORDER_NODE)
             build_zonelists_in_node_order(pgdat, node);
         else
-            node_order[j++] = node;	/* remember order */
+            node_order[j++] = node;     /* remember order */
     }
 
     if (order == ZONELIST_ORDER_ZONE) {

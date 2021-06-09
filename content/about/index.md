@@ -19,6 +19,7 @@ comment:
 - LoongArch：LoongArch 体系结构相关的学习笔记
 - Mips：Mips 体系结构相关的学习笔记
 - OpenStack：OpenStack 相关的学习笔记
+- Virtualization: 虚拟化相关的学习笔记
 - Tips：零散的知识点
 
 ## 联系方式
