@@ -4,7 +4,7 @@ date: 2021-05-23
 lastmod: 2021-05-23
 tags: [Golang, 数据结构与算法]
 categories: [LeetCode]
-draft: false
+draft: true
 ---
 
 [LeetCode 刷题笔记系列](/posts/leetcode/leetcode)，力扣（LeetCode）[第 79 题](https://leetcode-cn.com/problems/word-search)的题解。

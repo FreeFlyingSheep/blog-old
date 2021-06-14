@@ -4,7 +4,7 @@ date: 2021-05-25
 lastmod: 2021-05-25
 tags: [Golang, 数据结构与算法]
 categories: [LeetCode]
-draft: false
+draft: true
 ---
 
 [LeetCode 刷题笔记系列](/posts/leetcode/leetcode)，力扣（LeetCode）[第 238 题](https://leetcode-cn.com/problems/product-of-array-except-self)的题解。
