@@ -1,10 +1,9 @@
 ---
 title: "内存管理补充"
 date: 2020-07-27
-lastmod: 2021-04-26
-tags: [Linux 内核, 内存管理]
-categories: [Kernel]
-draft: false
+tags: ["Linux 内核", "内存管理"]
+categories: ["Kernel"]
+series: ["Linux 内核学习笔记"]
 ---
 
 [Linux 内核学习笔记系列](/posts/kernel/kernel)，内存管理部分，内存管理的一些补充说明。

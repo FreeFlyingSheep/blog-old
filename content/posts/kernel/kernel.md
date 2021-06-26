@@ -1,10 +1,9 @@
 ---
 title: "Linux 内核学习笔记"
 date: 2020-09-25
-lastmod: 2021-04-28
-tags: [Linux 内核]
-categories: [Kernel]
-draft: false
+tags: ["Linux 内核"]
+categories: ["Kernel"]
+series: ["Linux 内核学习笔记"]
 ---
 
 [Linux 内核学习笔记系列](/posts/kernel/kernel)，整理《深入理解 Linux 内核》（第三版，以下简称 ULK3）、《Linux 内核设计与实现》（原书第 3 版，以下简称 LKD3）和《深入 Linux 内核架构》（以下简称 PLKA）相关章节的联系以及个人理解。

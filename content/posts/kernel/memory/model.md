@@ -1,10 +1,9 @@
 ---
 title: "内存模型"
 date: 2020-10-27
-lastmod: 2021-04-30
-tags: [Linux 内核, 内存管理, 内存模型]
-categories: [Kernel]
-draft: false
+tags: ["Linux 内核", "内存管理", "内存模型"]
+categories: ["Kernel"]
+series: ["Linux 内核学习笔记"]
 ---
 
 [Linux 内核学习笔记系列](/posts/kernel/kernel)，内存管理部分，简单介绍内存模型。

@@ -1,10 +1,8 @@
 ---
 title: "Git 打补丁"
 date: 2020-08-11
-lastmod: 2020-09-29
-tags: [Git]
-categories: [Git]
-draft: false
+tags: ["Git"]
+categories: ["Git"]
 ---
 
 整理使用 Git 打补丁的方法，补充一些常用指令，并给出一个 Git 命令的综合应用实例。

@@ -1,10 +1,9 @@
 ---
 title: "内核红黑树"
 date: 2020-11-04
-lastmod: 2020-11-04
-tags: [Linux 内核, 内核数据结构, 红黑树]
-categories: [Kernel]
-draft: false
+tags: ["Linux 内核", "内核数据结构", "红黑树"]
+categories: ["Kernel"]
+series: ["Linux 内核学习笔记"]
 ---
 
 [Linux 内核学习笔记系列](/posts/kernel/kernel)，GCC 扩展语法和内核数据结构部分，简单介绍 Linux 内核红黑树。

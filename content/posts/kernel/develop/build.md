@@ -1,10 +1,9 @@
 ---
 title: "内核编译和调试"
 date: 2020-10-19
-lastmod: 2020-10-19
-tags: [Linux 内核, 内核开发]
-categories: [Kernel]
-draft: false
+tags: ["Linux 内核", "内核开发"]
+categories: ["Kernel"]
+series: ["Linux 内核学习笔记"]
 ---
 
 [Linux 内核学习笔记系列](/posts/kernel/kernel)，内核开发部分，简单介绍 Linux 内核编译步骤。

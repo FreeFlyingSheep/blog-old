@@ -1,10 +1,9 @@
 ---
 title: "体系结构相关知识"
 date: 2020-10-21
-lastmod: 2020-10-22
-tags: [Linux 内核, 内核开发]
-categories: [Kernel]
-draft: false
+tags: ["Linux 内核", "内核开发"]
+categories: ["Kernel"]
+series: ["Linux 内核学习笔记"]
 ---
 
 [Linux 内核学习笔记系列](/posts/kernel/kernel)，内核开发部分，简单介绍 Linux 内核体系结构和可移植性相关的内容。

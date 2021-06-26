@@ -1,10 +1,8 @@
 ---
 title: "宏的陷阱和使用技巧"
 date: 2020-09-10
-lastmod: 2021-04-26
-tags: [Linux 内核, C 语言]
-categories: [Kernel]
-draft: false
+tags: ["Linux 内核", "C 语言"]
+categories: ["Kernel"]
 ---
 
 根据 GCC CPP 在线文档的 [Macro Pitfalls](https://gcc.gnu.org/onlinedocs/cpp/Macro-Pitfalls.html#Macro-Pitfalls) 章节整理。

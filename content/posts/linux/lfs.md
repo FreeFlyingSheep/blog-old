@@ -1,10 +1,8 @@
 ---
 title: "构建 LFS 系统"
 date: 2020-09-21
-lastmod: 2020-12-01
-tags: [LFS]
-categories: [Linux]
-draft: false
+tags: ["LFS"]
+categories: ["Linux"]
 ---
 
 根据《[Linux From Scratch 版本 20200901-systemd，中文翻译版](https://bf.mengyan1223.wang/lfs/zh_CN/10.0-systemd/)》构建 `LFS systemd 10.0` 的归纳总结。

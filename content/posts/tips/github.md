@@ -1,10 +1,8 @@
 ---
 title: "Github 模板"
 date: 2021-05-12
-lastmod: 2021-05-12
-tags: [Github]
-categories: [Tips]
-draft: false
+tags: ["Github"]
+categories: ["Tips"]
 ---
 
 根据 [Github Issue & PR templates](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests) 相关文档整理。

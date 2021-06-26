@@ -1,10 +1,8 @@
 ---
 title: "安装 Arch Linux"
 date: 2020-10-20
-lastmod: 2020-10-21
-tags: [Arch Linux]
-categories: [Linux]
-draft: false
+tags: ["Arch Linux"]
+categories: ["Linux"]
 ---
 
 根据 [Arch Linux Wiki](https://wiki.archlinux.org/) 整理 Arch Linux 的安装。

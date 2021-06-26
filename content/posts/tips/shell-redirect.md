@@ -1,10 +1,8 @@
 ---
 title: "shell 重定向小技巧"
 date: 2020-09-17
-lastmod: 2020-09-17
-tags: [shell 脚本]
-categories: [Tips]
-draft: false
+tags: ["shell 脚本"]
+categories: ["Tips"]
 ---
 
 通过重定向让 shell 切换环境后继续执行。

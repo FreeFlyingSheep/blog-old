@@ -1,10 +1,8 @@
 ---
 title: "QEMU 简介"
 date: 2021-06-08
-lastmod: 2021-06-09
-tags: [QEMU]
-categories: [Virtualization]
-draft: false
+tags: ["QEMU"]
+categories: ["Virtualization"]
 ---
 
 根据 [QEMU 官方文档](https://qemu-project.gitlab.io/qemu/index.html) 和 [Qemu Detailed Study](https://lists.gnu.org/archive/html/qemu-devel/2011-04/pdfhC5rVdz7U8.pdf) 整理。

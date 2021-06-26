@@ -1,10 +1,8 @@
 ---
 title: "安装 WSL"
 date: 2020-09-21
-lastmod: 2021-05-25
-tags: [WSL]
-categories: [Linux]
-draft: false
+tags: ["WSL"]
+categories: ["Linux"]
 ---
 
 根据微软官方文档 [Windows Subsystem for Linux Installation Guide for Windows 10](https://docs.microsoft.com/en-us/windows/wsl/install-win10) 整理。

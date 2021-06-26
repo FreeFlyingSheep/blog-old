@@ -1,8 +1,11 @@
 ---
 title: "关于本站"
-comment:
-  enable: false
+date: 2020-07-10
 ---
+
+欢迎来到 FreeFlyingSheep 的小站。
+
+<!--more-->
 
 ## 关于我
 

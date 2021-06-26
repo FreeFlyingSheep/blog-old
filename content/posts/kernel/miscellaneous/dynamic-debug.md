@@ -1,10 +1,8 @@
 ---
 title: "动态调试"
 date: 2020-10-15
-lastmod: 2020-10-15
-tags: [Linux 内核, 动态调试]
-categories: [Kernel]
-draft: false
+tags: ["Linux 内核", "动态调试"]
+categories: ["Kernel"]
 ---
 
 根据 Linux Kernel 在线文档 [Dynamic debug](https://www.kernel.org/doc/html/latest/admin-guide/dynamic-debug-howto.html) 整理。

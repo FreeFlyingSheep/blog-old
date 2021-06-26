@@ -1,10 +1,8 @@
 ---
 title: "使用 Zsh"
 date: 2020-09-23
-lastmod: 2021-01-04
-tags: [Zsh, oh my zsh]
-categories: [Tips]
-draft: false
+tags: ["Zsh", "oh my zsh"]
+categories: ["Tips"]
 ---
 
 使用 Zsh 作为默认 shell，安装 Zsh 和 oh my zsh 框架并完成配置。

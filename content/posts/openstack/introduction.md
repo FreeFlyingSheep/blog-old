@@ -1,10 +1,8 @@
 ---
 title: "OpenStack 简介"
 date: 2020-11-26
-lastmod: 2020-11-30
-tags: [OpenStack]
-categories: [OpenStack]
-draft: false
+tags: ["OpenStack"]
+categories: ["OpenStack"]
 ---
 
 根据相关资料整理 OpenStack 的相关概念。

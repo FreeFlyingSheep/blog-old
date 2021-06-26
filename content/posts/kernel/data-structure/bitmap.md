@@ -1,10 +1,9 @@
 ---
 title: "内核位图"
 date: 2020-10-28
-lastmod: 2020-10-28
-tags: [Linux 内核, 内核数据结构, 位图]
-categories: [Kernel]
-draft: false
+tags: ["Linux 内核", "内核数据结构", "位图"]
+categories: ["Kernel"]
+series: ["Linux 内核学习笔记"]
 ---
 
 [Linux 内核学习笔记系列](/posts/kernel/kernel)，GCC 扩展语法和内核数据结构部分，简单介绍 Linux 内核位图。

@@ -1,10 +1,8 @@
 ---
 title: "MIPS 体系结构"
 date: 2020-07-13
-lastmod: 2020-07-30
-tags: [MIPS, 体系结构]
-categories: [MIPS]
-draft: false
+tags: ["MIPS", "体系结构"]
+categories: ["MIPS"]
 ---
 
 根据 *See MIPS Run (Second Edition)*（中文版）整理。

@@ -1,10 +1,8 @@
 ---
 title: "KVM 简介"
 date: 2021-06-09
-lastmod: 2021-06-09
-tags: [KVM, Linux 内核]
-categories: [Virtualization]
-draft: false
+tags: ["KVM", "Linux 内核"]
+categories: ["Virtualization"]
 ---
 
 简单介绍 Linux 内核的 KVM 模块，以 MIPS 体系结构为例，内核源码版本为 5.10.42。

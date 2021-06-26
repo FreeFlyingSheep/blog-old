@@ -1,10 +1,8 @@
 ---
 title: "Linux/MIPS 启动"
 date: 2020-07-17
-lastmod: 2020-07-22
-tags: [Linux 内核, MIPS]
-categories: [Tips]
-draft: false
+tags: ["Linux 内核", "MIPS"]
+categories: ["Tips"]
 ---
 
 阅读 MIPS 启动部分的代码，从内核入口 `kernel_entry` 到 `start_kernel` 的第一个子函数 `lock_kernel`，很多细节我并没理解，所以不进行展开。基于 Linux kernel release 2.6.11.12。由于 Markdown 代码块语法高亮不支持汇编，此处统一用 `C` 标注。

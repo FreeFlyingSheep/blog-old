@@ -1,10 +1,9 @@
 ---
 title: "TODO 列表"
 date: 2020-10-27
-lastmod: 2021-05-17
-tags: [Linux 内核]
-categories: [Kernel]
-draft: false
+tags: ["Linux 内核"]
+categories: ["Kernel"]
+series: ["Linux 内核学习笔记"]
 ---
 
 [Linux 内核学习笔记系列](/posts/kernel/kernel)，TODO 列表，慢慢填坑。

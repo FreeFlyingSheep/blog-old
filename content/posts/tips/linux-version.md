@@ -1,10 +1,8 @@
 ---
 title: "查看 Linux 版本"
 date: 2020-09-21
-lastmod: 2020-09-21
-tags: [Linux]
-categories: [Tips]
-draft: false
+tags: ["Linux"]
+categories: ["Tips"]
 ---
 
 查看 Linux 发行版和内核版本的多种方式。

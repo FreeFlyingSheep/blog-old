@@ -1,10 +1,9 @@
 ---
 title: "per-CPU 高速缓存"
 date: 2020-07-22
-lastmod: 2020-04-26
-tags: [Linux 内核, 内存管理, per-CPU 页框高速缓存]
-categories: [Kernel]
-draft: false
+tags: ["Linux 内核", "内存管理", "per-CPU 页框高速缓存"]
+categories: ["Kernel"]
+series: ["Linux 内核学习笔记"]
 ---
 
 [Linux 内核学习笔记系列](/posts/kernel/kernel)，内存管理部分，简单介绍 per-CPU 高速缓存。

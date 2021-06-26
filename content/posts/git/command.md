@@ -1,10 +1,8 @@
 ---
 title: "Git 常用命令"
 date: 2020-07-16
-lastmod: 2020-08-11
-tags: [Git]
-categories: [Git]
-draft: false
+tags: ["Git"]
+categories: ["Git"]
 ---
 
 根据 *[Pro Git (2nd Edition)](https://git-scm.com/book/zh/v2)*（中文版）整理。
@@ -379,7 +377,7 @@ no changes added to commit (use "git add" and/or "git commit -a")
 
 Git 会在有冲突的文件中加入标准的冲突解决标记，这样你可以打开这些包含冲突的文件然后手动解决冲突。出现冲突的文件会包含一些特殊区段，看起来像下面这个样子：
 
-```html
+```text
 <<<<<<< HEAD:index.html
 <div id="footer">contact : email.support@github.com</div>
 =======

@@ -1,10 +1,8 @@
 ---
 title: "预定义宏"
 date: 2020-10-10
-lastmod: 2020-10-10
-tags: [Linux 内核, C 语言]
-categories: [Kernel]
-draft: false
+tags: ["Linux 内核", "C 语言"]
+categories: ["Kernel"]
 ---
 
 根据 GCC CPP 在线文档的 [Predefined Macros](https://gcc.gnu.org/onlinedocs/cpp/Predefined-Macros.html#Predefined-Macros) 章节整理。

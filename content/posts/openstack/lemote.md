@@ -1,10 +1,8 @@
 ---
 title: "在龙芯上移植 OpenStack"
 date: 2020-11-30
-lastmod: 2020-12-01
-tags: [OpenStack]
-categories: [OpenStack]
-draft: false
+tags: ["OpenStack"]
+categories: ["OpenStack"]
 ---
 
 整理工作中移植 OpenStack Victoria 版本核心组件到龙芯 lemote Fedora 28 系统上的过程。

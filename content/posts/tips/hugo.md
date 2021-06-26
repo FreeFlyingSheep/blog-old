@@ -1,10 +1,8 @@
 ---
 title: "使用 Hugo 搭建个人博客"
 date: 2020-09-23
-lastmod: 2021-04-27
-tags: [Hugo, Github Actions, Github Pages]
-categories: [Tips]
-draft: false
+tags: ["Hugo", "Github Actions", "Github Pages"]
+categories: ["Tips"]
 ---
 
 使用 [Hugo](https://gohugo.io/) 配合 [Github Pages](https://pages.github.com/) 搭建静态博客，利用 [Github Actions](https://github.com/features/actions) 自动部署。
@@ -33,7 +31,7 @@ hugo new site Blog
 
 此处以本人使用的 [LoveIt](https://hugoloveit.com/zh-cn/) 主题为例。
 
-**注意：由于 LoveIt 主题已经不再更新，本博客现在改用 [uBlogger](https://ublogger.netlify.app/) 主题。**
+**注意：由于 LoveIt 主题已经不再更新，本博客现在改用 [PaperMod](https://github.com/adityatelange/hugo-PaperMod) 主题。**
 
 使用如下命令初始化 Git 仓库并添加主题子模块：
 
