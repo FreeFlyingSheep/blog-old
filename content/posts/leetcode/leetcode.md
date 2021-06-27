@@ -96,3 +96,6 @@ series: ["LeetCode 刷题笔记"]
 72. [36. Valid Sudoku](https://leetcode-cn.com/problems/valid-sudoku/)
 73. [234. Palindrome Linked List](https://leetcode-cn.com/problems/palindrome-linked-list/)
 74. [168. Excel Sheet Column Title](https://leetcode-cn.com/problems/excel-sheet-column-title/)
+75. [287. Find the Duplicate Number](https://leetcode-cn.com/problems/find-the-duplicate-number/)
+76. [402. Remove K Digits](https://leetcode-cn.com/problems/remove-k-digits/)
+77. [72. Edit Distance](https://leetcode-cn.com/problems/edit-distance/)
