@@ -1,4 +1,4 @@
-baseURL: "http://freeflyingsheep.github.io/"
+baseURL: "https://freeflyingsheep.github.io/"
 title: "FreeFlyingSheep 的小站"
 paginate: 5
 theme: PaperMod
@@ -45,7 +45,7 @@ outputs:
 
 params:
     env: production # to enable google analytics, opengraph, twitter-cards and schema.
-    description: "FreeFlyingSheep 的小站 - http://freeflyingsheep.github.io/"
+    description: "FreeFlyingSheep 的小站 - https://freeflyingsheep.github.io/"
     author: "FreeFlyingSheep"
     # author: ["Me", "You"] # multiple authors
 
