@@ -477,7 +477,8 @@ git push <remote> --delete <branch>
 git rebase <branch>
 ```
 
-变基的目的是为了确保在向远程分支推送时能保持提交历史的整洁——例如向某个其他人维护的项目贡献代码时。在这种情况下，你首先在自己的分支里进行开发，当开发完成时你需要先将你的代码变基到 `origin/master` 上，然后再向主模块提交修改。这样的话，该项目的维护者就不再需要进行整合工作，只需要快进合并便可。
+变基的目的是为了确保在向远程分支推送时能保持提交历史的整洁——例如向某个其他人维护的项目贡献代码时。在这种情况下，你首先在自己的分支里进行开发，当开发完成时你需要先将你的代码进行变基，然后再向主模块提交修改。
+这样的话，该项目的维护者就不再需要进行整合工作，只需要快进合并便可。
 
 以一个例子说明合并（`merge`）和变基（`rebase`）的区别，假设现在分支如下：
 
@@ -487,11 +488,26 @@ git rebase <branch>
 
 ![把 `experiment` 合并到 `master`](/images/git/merge.png)
 
-把 `experiment` 变基到 `master`：
+对应的操作如下：
 
-![把 `experiment` 变基到 `master`](/images/git/rebase.png)
+```bash
+git checkout master
+git merge experiment
+```
 
-上述例子中完整的变基过程如下：
+可以看到，历史记录**不是一条直线** 。
+
+如果先把 `experiment` 变基到 `master`：
+
+![把 `master` 变基到 `experiment`](/images/git/rebase.png)
+
+然后再进行合并操作：
+
+![把 `experiment` 合并到 `master`](/images/git/merge2.png)
+
+这样历史记录就**是一条直线**了。
+
+对应的操作如下：
 
 ```bash
 git checkout experiment
