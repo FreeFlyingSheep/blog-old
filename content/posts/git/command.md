@@ -15,7 +15,7 @@ categories: ["Git"]
 
 ```bash
 git config --global user.name "FreeFlyingSheep"
-git config --global user.email "fyang.168.hi@163.com"
+git config --global user.email "chris.chenfeiyang@outlook.com"
 ```
 
 ### 代理配置
@@ -505,8 +505,6 @@ git merge experiment
 
 ![把 `experiment` 合并到 `master`](/images/git/merge2.png)
 
-这样历史记录就**是一条直线**了。
-
 对应的操作如下：
 
 ```bash
@@ -516,6 +514,8 @@ git checkout master
 git merge experiment
 ```
 
+这样历史记录就**是一条直线**了。
+
 变基的准则：**如果提交存在于你的仓库之外，而别人可能基于这些提交进行开发，那么不要执行变基。**
 
 ## Github
@@ -523,7 +523,7 @@ git merge experiment
 ### 生成 SSH 公钥
 
 ```bash
-ssh-keygen -t rsa -C "fyang.168.hi@163.com"
+ssh-keygen -t rsa -C "chris.chenfeiyang@outlook.com"
 ```
 
 ### 添加 SSH 公钥
