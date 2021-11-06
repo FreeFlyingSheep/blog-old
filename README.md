@@ -1,5 +1,20 @@
-# 使用 Hugo 构建的个人博客
+# Blog
 
-博客见 <https://freeflyingsheep.github.io>。
+## Clone
 
-搭建方法见[博文](https://freeflyingsheep.github.io/posts/tips/hugo)。
+```bash
+git clone --recurse-submodules git@github.com:FreeFlyingSheep/blog.git
+```
+
+## Update
+
+```bash
+git submodule update --remote --merge
+git pull --rebase
+```
+
+## Publish
+
+```bash
+git push
+```
