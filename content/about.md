@@ -28,4 +28,3 @@ date: 2020-07-10
 ## 联系方式
 
 - 邮箱：chris.chenfeiyang@outlook.com
-- QQ：1458250037（发送好友请求时请备注本人博客地址 <https://freeflyingsheep.github.io/>，否则一律不通过）

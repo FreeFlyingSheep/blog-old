@@ -212,3 +212,58 @@ updates:
 ```
 
 现在 [Github Dependabot](https://dependabot.com/) 会每日自动检测 `github-actions` 脚本更新。
+
+### 自动部署到另一个仓库
+
+**再次更新：现在我是这么干的！**
+
+把博客源码和发布的内容放一个仓库总显得有些难受，大部分情况下我们希望博客源码仓库是私有的。
+
+`.github\workflows\gh-pages.yml` 文件修改如下：
+
+```yaml
+name: Github Pages
+
+on:
+  push:
+    branches:
+      - main  # Set a branch name to trigger deployment
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true  # Fetch Hugo themes (true OR recursive)
+          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 'latest'
+          extended: true    # Use Hugo extended
+
+      - name: Build
+        run: hugo --minify
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          external_repository: FreeFlyingSheep/FreeFlyingSheep.github.io
+          publish_branch: gh-pages
+          publish_dir: ./public
+          force_orphan: true
+```
+
+生成部署用的 ssh key：
+
+```bash
+ssh-keygen -t rsa -b 4096 -C "$(git config user.email)" -f gh-pages -N ""
+```
+
+在博客源码仓库的 `Settings->Deploy keys` 里添加 `gh-pages.pub` 文件的内容，名称随意；
+在要部署的仓库的 `Settings-> Secrets (Actions secrets)` 里添加 `gh-pages` 文件的内容，且名称为 `ACTIONS_DEPLOY_KEY`。
+
+之后每次 `git push` 到博客源码仓库，Github Actions 就会自动推送到发布仓库。
