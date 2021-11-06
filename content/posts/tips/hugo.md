@@ -264,6 +264,6 @@ ssh-keygen -t rsa -b 4096 -C "$(git config user.email)" -f gh-pages -N ""
 ```
 
 在博客源码仓库的 `Settings-> Secrets (Actions secrets)` 里添加 `gh-pages` 文件的内容，且名称为 `ACTIONS_DEPLOY_KEY`。
-在要部署的仓库的 `Settings->Deploy keys` 里添加 `gh-pages.pub` 文件的内容，名称随意。
+在要部署的仓库的 `Settings->Deploy keys` 里添加 `gh-pages.pub` 文件的内容，勾选 `Allow write access`，名称随意。
 
 之后每次 `git push` 到博客源码仓库，Github Actions 就会自动推送到发布仓库。
