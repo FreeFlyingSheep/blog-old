@@ -17,11 +17,53 @@ categories: ["Valgrind"]
 
 ### 工具介绍
 
-TODO
+- Memcheck 是一个内存错误检测器。它可以帮助你使你的程序更加正确，特别是那些用 C 和 C++ 编写的程序。
+- Cachegrind 是一个高速缓存和分支预测分析器。它能帮助你使你的程序运行得更快。
+- Callgrind 是一个生成调用图的缓存分析器。它与 Cachegrind 有一些重叠，但也收集了一些 Cachegrind 所没有的信息。
+- Helgrind 是一个线程错误检测器。它可以帮助你使你的多线程程序更加正确。
+- DRD 也是一个线程错误检测器。它与 Helgrind 相似，但使用不同的分析技术，因此可能会发现不同的问题。
+- Massif 是一个堆分析器。它可以帮助你使你的程序使用更少的内存。
+- DHAT 是一个不同类型的堆分析器。它可以帮助你了解区块寿命、区块利用率和布局效率低下的问题。
+- BBV 是一个实验性的 SimPoint 基本块向量发生器。它对从事计算机结构研究和开发的人很有用。
+- Lackey 是一个例子工具。它说明了一些插桩的基本原理。
+- Nulgrind 是最小的 Valgrind 工具。它不做任何分析或插桩，只对测试有用。
 
 ### 简单使用
 
-TODO
+Valgrind 必须安装到编译时指定的安装目录才能正常使用。
+
+对我来说，我只需要尽可能多地输出信息来帮助我理解、调试（逃。因此常用的参数有下面几个：
+
+- `-h, --help`：显示帮助信息。
+- `--help-debug`：显示调试相关的帮助信息。
+- `--version`：显示版本信息。
+- `-v, --verbose`：在运行程序时输出更多的信息。
+- `-d`：输出更多调试信息。
+- `--tool=<toolname>`：指定工具，对应上面的[工具介绍](#工具介绍)，分别是 `memcheck`、`cachegrind`、`callgrind`、`helgrind`、`drd`、`massif`、`dhat`、`exp-bbv`、`lackey` 和 `none`。不指定的话默认 `--tool=memcheck`。
+- `--log-file=<filename>`：指定日志文件。
+- `--trace-notbelow=<number>, --trace-notabove=<number>`：只输出不低于/不高于指定级别的调试信息。
+- `--trace-flags=<XXXXXXXX>`：打开/关闭追踪标志，与上面的选项结合来输出更多调试信息。
+
+举个例子，这么使用 Valgrind 运行 `hello` 程序能打印足够多的信息给我调试（Valgrind 默认安装位置是 `/usr/local`）：
+
+```bash
+/usr/local/bin/valgrind -v -d --tool=memcheck --trace-flags=11111111 --trace-notbelow=0 --log-file=./log.txt ./hello
+```
+
+输出信息的整体可读性比较强，最左侧 `==12345==` 之类的标识符是当前的进程 ID。
+
+### 编译安装
+
+和大部分软件编译安装的一样，如果是拉源码仓库编译安装就依次执行下面的命令：
+
+```bash
+git clone git://sourceware.org/git/valgrind.git
+cd valgrind
+./autogen.sh
+./configure --prefix=...
+make
+make install
+```
 
 ## Valgrind 源码
 
