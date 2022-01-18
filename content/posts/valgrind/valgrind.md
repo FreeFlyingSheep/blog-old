@@ -41,13 +41,14 @@ Valgrind 必须安装到编译时指定的安装目录才能正常使用。
 - `-d`：输出更多调试信息。
 - `--tool=<toolname>`：指定工具，对应上面的[工具介绍](#工具介绍)，分别是 `memcheck`、`cachegrind`、`callgrind`、`helgrind`、`drd`、`massif`、`dhat`、`exp-bbv`、`lackey` 和 `none`。不指定的话默认 `--tool=memcheck`。
 - `--log-file=<filename>`：指定日志文件。
+- `--trace-syscalls=no|yes`：追踪系统调用。
 - `--trace-notbelow=<number>, --trace-notabove=<number>`：只输出不低于/不高于指定级别的调试信息。
 - `--trace-flags=<XXXXXXXX>`：打开/关闭追踪标志，与上面的选项结合来输出更多调试信息。
 
 举个例子，这么使用 Valgrind 运行 `hello` 程序能打印足够多的信息给我调试（Valgrind 默认安装位置是 `/usr/local`）：
 
 ```bash
-/usr/local/bin/valgrind -v -d --tool=memcheck --trace-flags=11111111 --trace-notbelow=0 --log-file=./log.txt ./hello
+/usr/local/bin/valgrind -v -d --tool=memcheck --trace-syscalls=yes --trace-flags=11111111 --trace-notbelow=0 --log-file=./log.txt ./hello
 ```
 
 输出信息的整体可读性比较强，最左侧 `==12345==` 之类的标识符是当前的进程 ID。
