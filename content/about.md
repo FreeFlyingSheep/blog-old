@@ -1,6 +1,7 @@
 ---
-title: "关于本站"
-date: 2020-07-10
+title: "About"
+url: "/about"
+summary: "about"
 ---
 
 欢迎来到 FreeFlyingSheep 的小站。
@@ -19,7 +20,7 @@ date: 2020-07-10
 - Kernel：Linux 内核相关的学习笔记
 - LeetCode：LeetCode 刷题笔记
 - Linux：不同 Linux 发行版的使用记录
-- LoongArch：LoongArch 体系结构相关的学习笔记
+- LoongArch：LoongArch 相关的学习笔记
 - Mips：Mips 体系结构相关的学习笔记
 - OpenStack：OpenStack 相关的学习笔记
 - Valgrind: Valgrind 相关的学习笔记

@@ -73,12 +73,12 @@ series: ["Linux 内核学习笔记"]
 
 | 函数 | 功能 |
 | --- | --- |
-| `alloc_pages(gfp_mask, order)` | 请求 $2^{order}$ 个连续的页框，成功则返回分配的第一个页框描述符的地址，失败则返回 `NULL`。 |
+| `alloc_pages(gfp_mask, order)` | 请求 2^order 个连续的页框，成功则返回分配的第一个页框描述符的地址，失败则返回 `NULL`。 |
 | `alloc_page(gfp_mask)` | 请求一个单独的页框，成功则返回分配的第一个页框描述符的地址，失败则返回 `NULL`。 |
-| `__get_free_pages(gfp_mask, order)` | 请求 $2^{order}$ 个连续的页框，成功则返回分配的第一个页框的线性地址，失败则返回 `0`。 |
+| `__get_free_pages(gfp_mask, order)` | 请求 2^order 个连续的页框，成功则返回分配的第一个页框的线性地址，失败则返回 `0`。 |
 | `__get_free_page(gfp_mask)` | 请求一个单独的页框，成功则返回分配的第一个页框的线性地址，失败则返回 `0`。 |
 | `get_zeroed_page(gfp_mask)` | 请求一个填满 `0` 的单独的页框，成功则返回分配的第一个页框的线性地址，失败则返回 `0`。 |
-| `__get_dma_pages(gfp_mask, order)` | 请求 $2^{order}$ 个适用于 DMA 的页框，成功则返回分配的第一个页框的线性地址，失败则返回 `0`。 |
+| `__get_dma_pages(gfp_mask, order)` | 请求 2^order 个适用于 DMA 的页框，成功则返回分配的第一个页框的线性地址，失败则返回 `0`。 |
 
 `include/linux/gfp.h`：
 
@@ -250,9 +250,11 @@ EXPORT_SYMBOL(free_pages);
 
 保留内存的数量（以 `KB` 为单位）存放在 `min_free_kbytes` 变量中。管理区描述符的部分字段都会在 `mim_free_kbytes` 初始化时一起完成初始化（`init_per_zone_pages_min()` 函数调用 `setup_per_zone_pages_min()` 函数和 `setup_per_zone_lowmem_reserve()` 函数，这些函数都位于 `mm/page_alloc.c`）。
 
-- `pages_min`：管理区中保留页的数目，被设置为 $\lfloor \sqrt{16 \times 直接映射内存的大小} \rfloor$。
-- `pages_low`：回收页框使用的下界，被设置为 `pages_min` 的 $\frac{5}{4}$。
-- `pages_high`：回收页框使用的上界，被设置为 `pages_min` 的 $\frac{3}{2}$。
+![连续内存分配](/images/kernel/memory/size.png)
+
+- `pages_min`：管理区中保留页的数目，被设置如上图所示的大小。
+- `pages_low`：回收页框使用的下界，被设置为 `pages_min` 的 5/4。
+- `pages_high`：回收页框使用的上界，被设置为 `pages_min` 的 3/2。
 - `lowmem_reserve`：每个管理区必须保留的页框数目，例子代码注释中有，见下。
 
 ```c
@@ -308,7 +310,7 @@ int zone_watermark_ok(struct zone *z, int order, unsigned long mark,
 `zone_watermark_ok()` 是一个辅助函数，在满足如下两个条件时返回 `1`：
 
 - 除了被分配的页框外，内存管理区中至少还有 `min` 个空闲页框（不包括保留的页框）。
-- 除了被分配的页框外，在 `order` 至少为 `o` 的块中，有大于等于 `min` / $2^{o}$ 个空闲页框。
+- 除了被分配的页框外，在 `order` 至少为 `o` 的块中，有大于等于 `min` / 2^o 个空闲页框。
 
 阈值 `min` 的值由 `mask`. `can_try_harder` 和 `gfp_high` 确定：
 

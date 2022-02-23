@@ -1,8 +1,8 @@
 baseURL: "https://freeflyingsheep.github.io/"
-title: "FreeFlyingSheep 的小站"
+title: FreeFlyingSheep 的小站
 paginate: 5
 theme: PaperMod
-defaultContentLanguage: "zh-cn"
+defaultContentLanguage: "zh"
 
 enableInlineShortcodes: true
 enableRobotsTXT: true
@@ -17,8 +17,8 @@ minify:
     # minifyOutput: true
 
 languages:
-    zh-cn:
-        languageName: "Chinese"
+    zh:
+        languageName: "中文"
         weight: 1
         menu:
             main:
@@ -26,16 +26,20 @@ languages:
                   url: archives
                   weight: 5
                 - name: Tags
-                  url: tags
+                  url: tags/
                   weight: 10
                 - name: Categories
-                  url: categories
-                  weight: 10
+                  url: categories/
+                  weight: 15
                 - name: Series
-                  url: series
-                  weight: 10
+                  url: series/
+                  weight: 20
                 - name: About
-                  url: "about"
+                  url: about/
+                  weight: 25
+                - name: Search
+                  url: search/
+                  weight: 30
 
 outputs:
     home:
@@ -46,7 +50,7 @@ outputs:
 params:
     env: production # to enable google analytics, opengraph, twitter-cards and schema.
     description: "FreeFlyingSheep 的小站 - https://freeflyingsheep.github.io/"
-    author: "FreeFlyingSheep"
+    author: FreeFlyingSheep
     # author: ["Me", "You"] # multiple authors
 
     defaultTheme: light
@@ -65,12 +69,11 @@ params:
 
     profileMode:
         enabled: true
-        title: "FreeFlyingSheep 的小站" # optional default will be site title
-        subtitle: "神采飞扬"
-        imageUrl: "/avatar.png" # optional
-        imageTitle: "神采飞扬" # optional
-        imageWidth: 120 # custom size
-        imageHeight: 120 # custom size
+        title: FreeFlyingSheep 的小站
+        imageUrl: "/avatar.png"
+        imageTitle: 神采飞扬
+        imageWidth: 120
+        imageHeight: 120
 
     socialIcons:
         - name: Github
@@ -121,28 +124,28 @@ markup:
             unsafe: true
     highlight:
         # anchorLineNos: true
-        # codeFences: true
-        # guessSyntax: true
+        codeFences: true
+        guessSyntax: true
         lineNos: true
         # noClasses: false
-        # style: monokai
+        style: monokai
 
 privacy:
     vimeo:
-        disabled: false
+        disabled: true
         simple: true
 
     twitter:
-        disabled: false
+        disabled: true
         enableDNT: true
         simple: true
 
     instagram:
-        disabled: false
+        disabled: true
         simple: true
 
     youtube:
-        disabled: false
+        disabled: true
         privacyEnhanced: true
 
 services:

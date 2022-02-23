@@ -49,11 +49,13 @@ TODO
 - `Iop_16Sto64`：`ext.w.h dst, src`
 - `Iop_16Uto64`：`slli.d dst, src, 48; srli.d dst, dst, 48`
 - `Iop_1Sto64`：`slli.d dst, src, 63; srai.d dst, dst, 63`
+- `Iop_1Uto32`：`andi dst, src, 0x1`
 - `Iop_1Uto64`：`andi dst, src, 0x1`
 - `Iop_32Sto64`：`add.w dst, src, $zero`
 - `Iop_32Uto64`：`slli.d dst, src, 32; srli.d dst, dst, 32`
 - `Iop_32to8`：`andi dst, src, 0xff`
 - `Iop_64HIto32`：`srli.d dst, src, 32`
+- `Iop_64to1`：`andi dst, src, 0x1`
 - `Iop_64to32`：`slli.d dst, src, 32; srli.d dst, dst, 32`
 - `Iop_64to8`：`andi dst, src, 0xff`
 - `Iop_8Sto64`：`ext.w.b dst, src`
@@ -61,16 +63,15 @@ TODO
 - `Iop_8Uto64`：`andi dst, src, 0xff`
 - `Iop_Add32`：`add[i].w dst, src1, src2`
 - `Iop_Add64`：`add[i].d dst, src1, src2`
+- `Iop_AddF32`：`fadd.s dst, src1, src2`
+- `Iop_AddF64`：`fadd.d dst, src1, src2`
+- `Iop_And32`：`and[i] dst, src1, src2`
 - `Iop_And64`：`and[i] dst, src1, src2`
-- `Iop_BitReplace32`：`bstrins.w dst, src, msbw, lsbw`
-- `Iop_BitReplace64`：`bstrins.d dst, src, msbd, lsbd`
-- `Iop_BitReverse32In32`：`bitrev.w dst, src`
-- `Iop_BitReverse64In64`：`bitrev.d dst, src`
-- `Iop_BitReverse8In32`：`bitrev.4b dst, src`
-- `Iop_BitReverse8In64`：`bitrev.8b dst, src`
 - `Iop_Clz32`：`clz.w dst, src`
 - `Iop_Clz64`：`clz.d dst, src`
 - `Iop_CmpEQ64`：`xor dst, src1, src2; sltui dst, dst, 1`
+- `Iop_CmpLT32S`：`slli.w src1, src1, 0; slli.w src2, src2, 0; slt dst, src1, src2`
+- `Iop_CmpLT32U`：`slli.w src1, src1, 0; slli.w src2, src2, 0; sltu dst, src1, src2`
 - `Iop_CmpLE64S`：`slt dst, src2, src1; nor dst, src, $zero`
 - `Iop_CmpLE64U`：`sltu dst, src2, src1; nor dst, src, $zero`
 - `Iop_CmpLT64S`：`slt dst, src1, src2`
@@ -87,6 +88,7 @@ TODO
 - `Iop_DivS64`：`div.wu dst, src1, src2`
 - `Iop_DivU32`：`div.d dst, src1, src2`
 - `Iop_DivU64`：`div.du dst, src1, src2`
+- `Iop_F32toF64`：`return src`
 - `Iop_MullS32`：`mulw.d.w dst, src1, src2`
 - `Iop_MullS64`：`mul.d lo, src1, src2; mulh.d hi, src1, src2`
 - `Iop_MullU32`：`mulw.d.wu dst, src1, src2`
@@ -95,12 +97,10 @@ TODO
 - `Iop_Not64`：`nor dst, src, $zero`
 - `Iop_Or32`：`or[i] dst, src1, src2`
 - `Iop_Or64`：`or[i] dst, src1, src2`
-- `Iop_Reverse16In32x2`：`revh.2w dst, src`
-- `Iop_Reverse16In64x1`：`revh.d dst, src`
-- `Iop_Reverse8In16x2`：`revb.2h dst, src`
-- `Iop_Reverse8In16x4`：`revb.4h dst, src`
-- `Iop_Reverse8In32x2`：`revb.w dst, src`
-- `Iop_Reverse8In64x1`：`revb.d dst, src`
+- `Iop_ReinterpF32asI32`：`movfr2gr.s dst, src`
+- `Iop_ReinterpF64asI64`：`movfr2gr.d dst, src`
+- `Iop_ReinterpI32asF32`：`movgr2fr.w dst, src`
+- `Iop_ReinterpI64asF64`：`movgr2fr.d dst, src`
 - `Iop_Sar32`：`sra[i].w dst, src1, src2`
 - `Iop_Sar64`：`sra[i].d dst, src1, src2`
 - `Iop_Shl32`：`sll[i].w dst, src1, src2`
@@ -109,6 +109,7 @@ TODO
 - `Iop_Shr64`：`srl[i].d dst, src1, src2`
 - `Iop_Sub32`：`sub.w dst, src1, src2`
 - `Iop_Sub64`：`sub.d dst, src1, src2`
+- `Iop_Xor32`：`xor[i] dst, src1, src2`
 - `Iop_Xor64`：`xor[i] dst, src1, src2`
 
 用到的表达式：
@@ -116,6 +117,7 @@ TODO
 - `Iex_Binop`：用于表示二元操作符和对应的操作数
 - `Iex_Const`：用于表示常量
 - `Iex_Get`：用于读寄存器
+- `Iex_GSPTR`：用于获取客户机状态
 - `Iex_Load`：用于读内存
 - `Iex_Qop`：用于表示四元操作符和对应的操作数
 - `Iex_RdTmp`：用于表示读取临时变量
@@ -137,6 +139,7 @@ TODO
 用到的语句：
 
 - `Ist_CAS`：用于原子操作（Compare And Swap）
+- `Ist_Dirty`：用于会修改客户机状态的函数调用
 - `Ist_Exit`：用于表示退出
 - `Ist_LLSC`：用于原子操作（`ll`/`sc`）
 - `Ist_MBE`：用于表示内存屏障
