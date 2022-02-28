@@ -27,6 +27,8 @@ TODO
 
 用到的常量：
 
+- `Ico_F32i`：主要用于表示浮点数 `1.0`
+- `Ico_F64i`：主要用于表示浮点数 `1.0`
 - `Ico_U16`：主要用于表示 16 位立即数
 - `Ico_U32`：主要用于表示 32 位立即数
 - `Ico_U64`：主要用于表示 `pc` 寄存器和 64 位立即数
@@ -42,7 +44,7 @@ TODO
 - `Ity_I8`：主要用于整数寄存器的低 8 位和 `fcc` 寄存器
 - `Ity_I1`：主要用于整数寄存器的低 1 位
 
-用到的操作符：
+用到的操作符（浮点指令基本都涉及 `fcsr` 的保存和恢复）：
 
 - `Iop_128HIto64`：`return hi`
 - `Iop_128to64`：`return lo`
@@ -55,12 +57,13 @@ TODO
 - `Iop_32Uto64`：`slli.d dst, src, 32; srli.d dst, dst, 32`
 - `Iop_32to8`：`andi dst, src, 0xff`
 - `Iop_64HIto32`：`srli.d dst, src, 32`
-- `Iop_64to1`：`andi dst, src, 0x1`
 - `Iop_64to32`：`slli.d dst, src, 32; srli.d dst, dst, 32`
 - `Iop_64to8`：`andi dst, src, 0xff`
 - `Iop_8Sto64`：`ext.w.b dst, src`
 - `Iop_8Uto32`：`andi dst, src, 0xff`
 - `Iop_8Uto64`：`andi dst, src, 0xff`
+- `Iop_AbsF32`：`fabs.s dst, src`
+- `Iop_AbsF64`：`fabs.d dst, src`
 - `Iop_Add32`：`add[i].w dst, src1, src2`
 - `Iop_Add64`：`add[i].d dst, src1, src2`
 - `Iop_AddF32`：`fadd.s dst, src1, src2`
@@ -80,6 +83,8 @@ TODO
 - `Iop_CmpNE64`：`xor dst, src1, src2; sltu dst, $zero, dst`
 - `Iop_Ctz32`：`ctz.w dst, src`
 - `Iop_Ctz64`：`ctz.d dst, src`
+- `Iop_DivF32`：`fdiv.s dst, src1, src2`
+- `Iop_DivF64`：`fdiv.d dst, src1, src2`
 - `Iop_DivModS32to32`：`div.w lo, src1, src2; mod.w hi, src1, src2; slli.d hi, hi, 6; or dst, lo, hi`
 - `Iop_DivModS64to64`：`div.d lo, src1, src2; mod.d hi, src1, src2`
 - `Iop_DivModU32to32`：`div.wu lo, src1, src2; mod.wu hi, src1, src2; slli.d hi, hi, 6; or dst, lo, hi`
@@ -88,11 +93,32 @@ TODO
 - `Iop_DivS64`：`div.wu dst, src1, src2`
 - `Iop_DivU32`：`div.d dst, src1, src2`
 - `Iop_DivU64`：`div.du dst, src1, src2`
-- `Iop_F32toF64`：`return src`
+- `Iop_F32toF64`：`fcvt.s.d dst, src`
+- `Iop_F32toI32S`：`ftint.w.s dst, src`
+- `Iop_F32toI64S`：`ftint.l.s dst, src`
+- `Iop_F64toF32`：`fcvt.s.d dst, src`
+- `Iop_F64toI32S`：`ftint.w.d dst, src`
+- `Iop_F64toI64S`：`ftint.l.d dst, src`
+- `Iop_I32StoF32`：`ffint.s.w dst, src`
+- `Iop_I32StoF64`：`ffint.d.w dst, src`
+- `Iop_I64StoF32`：`ffint.s.l dst, src`
+- `Iop_I64StoF64`：`ffint.d.l dst, src`
+- `Iop_MAddF32`：`fmadd.s dst, src1, src2, src3`
+- `Iop_MAddF64`：`fmadd.d dst, src1, src2, src3`
+- `Iop_MSubF32`：`fmsub.s dst, src1, src2, src3`
+- `Iop_MSubF64`：`fmsub.d dst, src1, src2, src3`
+- `Iop_MaxNumF32`：`fmax.s dst, src1, src2`
+- `Iop_MaxNumF64`：`fmax.d dst, src1, src2`
+- `Iop_MinNumF32`：`fmin.s dst, src1, src2`
+- `Iop_MinNumF64`：`fmin.d dst, src1, src2`
+- `Iop_MulF32`：`fmul.s dst, src1, src2`
+- `Iop_MulF64`：`fmul.d dst, src1, src2`
 - `Iop_MullS32`：`mulw.d.w dst, src1, src2`
 - `Iop_MullS64`：`mul.d lo, src1, src2; mulh.d hi, src1, src2`
 - `Iop_MullU32`：`mulw.d.wu dst, src1, src2`
 - `Iop_MullU64`：`mul.d lo, src1, src2; mulh.du hi, src1, src2`
+- `Iop_NegF32`：`fneg.s dst, src`
+- `Iop_NegF64`：`fneg.d dst, src`
 - `Iop_Not32`：`nor dst, src, $zero`
 - `Iop_Not64`：`nor dst, src, $zero`
 - `Iop_Or32`：`or[i] dst, src1, src2`
@@ -101,14 +127,20 @@ TODO
 - `Iop_ReinterpF64asI64`：`movfr2gr.d dst, src`
 - `Iop_ReinterpI32asF32`：`movgr2fr.w dst, src`
 - `Iop_ReinterpI64asF64`：`movgr2fr.d dst, src`
+- `Iop_RoundF32toInt`：`frint.s dst, src`
+- `Iop_RoundF64toInt`：`frint.d dst, src`
 - `Iop_Sar32`：`sra[i].w dst, src1, src2`
 - `Iop_Sar64`：`sra[i].d dst, src1, src2`
 - `Iop_Shl32`：`sll[i].w dst, src1, src2`
 - `Iop_Shl64`：`sll[i].d dst, src1, src2`
 - `Iop_Shr32`：`srl[i].w dst, src1, src2`
 - `Iop_Shr64`：`srl[i].d dst, src1, src2`
+- `Iop_SqrtF32`：`fsqrt.s dst, src`
+- `Iop_SqrtF64`：`fsqrt.s dst, src`
 - `Iop_Sub32`：`sub.w dst, src1, src2`
 - `Iop_Sub64`：`sub.d dst, src1, src2`
+- `Iop_SubF32`：`fsub.s dst, src1, src2`
+- `Iop_SubF64`：`fsub.d dst, src1, src2`
 - `Iop_Xor32`：`xor[i] dst, src1, src2`
 - `Iop_Xor64`：`xor[i] dst, src1, src2`
 
@@ -128,6 +160,7 @@ TODO
 
 - `Ijk_Boring`：用于表示普通的跳转
 - `Ijk_ClientReq`：用于表示需要处理客户端请求（Valgrind 专用）
+- `Ijk_SigFPE`：用于表示当前指令触发 `SIGFPE` 异常
 - `Ijk_INVALID`：用于表示无效（libVEX 本身出现错误）
 - `Ijk_InvalICache`：用于表示需要使指令缓存无效（Valgrind 专用）
 - `Ijk_NoDecode`：用于表示解码失败
