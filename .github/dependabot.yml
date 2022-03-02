@@ -5,7 +5,5 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    labels:
-      - "dependabot"
     commit-message:
       prefix: "github-actions"
