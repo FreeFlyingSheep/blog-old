@@ -33,6 +33,7 @@ TODO
 - `Ico_U32`：主要用于表示 32 位立即数
 - `Ico_U64`：主要用于表示 `pc` 寄存器和 64 位立即数
 - `Ico_U8`：主要用于表示 `ui5`、`ui6`、`sa2`、`sa3`、`msbw`、`lsbw`、`msbd`、`lsbd` 和 8 位立即数
+- `Ico_U1`：主要用于表示比较运算的结果
 
 用到的类型：
 
@@ -53,6 +54,7 @@ TODO
 - `Iop_1Sto64`：`slli.d dst, src, 63; srai.d dst, dst, 63`
 - `Iop_1Uto32`：`andi dst, src, 0x1`
 - `Iop_1Uto64`：`andi dst, src, 0x1`
+- `Iop_1Uto8`：`andi dst, src, 0x1`
 - `Iop_32Sto64`：`add.w dst, src, $zero`
 - `Iop_32Uto64`：`slli.d dst, src, 32; srli.d dst, dst, 32`
 - `Iop_32to8`：`andi dst, src, 0xff`
@@ -72,7 +74,10 @@ TODO
 - `Iop_And64`：`and[i] dst, src1, src2`
 - `Iop_Clz32`：`clz.w dst, src`
 - `Iop_Clz64`：`clz.d dst, src`
+- `Iop_CmpEQ32`：`xor dst, src1, src2; sltui dst, dst, 1`
 - `Iop_CmpEQ64`：`xor dst, src1, src2; sltui dst, dst, 1`
+- `Iop_CmpF32`：`fcmp.cond.s dst, src1, src2`
+- `Iop_CmpF64`：`fcmp.cond.d dst, src1, src2`
 - `Iop_CmpLT32S`：`slli.w src1, src1, 0; slli.w src2, src2, 0; slt dst, src1, src2`
 - `Iop_CmpLT32U`：`slli.w src1, src1, 0; slli.w src2, src2, 0; sltu dst, src1, src2`
 - `Iop_CmpLE64S`：`slt dst, src2, src1; nor dst, src, $zero`
@@ -121,6 +126,7 @@ TODO
 - `Iop_NegF64`：`fneg.d dst, src`
 - `Iop_Not32`：`nor dst, src, $zero`
 - `Iop_Not64`：`nor dst, src, $zero`
+- `Iop_Or1`：`or dst, src1, src2`
 - `Iop_Or32`：`or[i] dst, src1, src2`
 - `Iop_Or64`：`or[i] dst, src1, src2`
 - `Iop_ReinterpF32asI32`：`movfr2gr.s dst, src`
@@ -149,7 +155,6 @@ TODO
 - `Iex_Binop`：用于表示二元操作符和对应的操作数
 - `Iex_Const`：用于表示常量
 - `Iex_Get`：用于读寄存器
-- `Iex_GSPTR`：用于获取客户机状态
 - `Iex_Load`：用于读内存
 - `Iex_Qop`：用于表示四元操作符和对应的操作数
 - `Iex_RdTmp`：用于表示读取临时变量
@@ -172,7 +177,6 @@ TODO
 用到的语句：
 
 - `Ist_CAS`：用于原子操作（Compare And Swap）
-- `Ist_Dirty`：用于会修改客户机状态的函数调用
 - `Ist_Exit`：用于表示退出
 - `Ist_LLSC`：用于原子操作（`ll`/`sc`）
 - `Ist_MBE`：用于表示内存屏障
@@ -201,6 +205,16 @@ or $t3, $t3, $t3
 IR injection:
 or $t4, $t4, $t4
 ```
+
+公共框架添加的内容：
+
+- `Ist_MBE`：添加表示指令屏障的功能
+- `Iop_LogBF32`：`flogb.s dst, src`
+- `Iop_LogBF64`：`flogb.d dst, src`
+- `Iop_ScaleBF32`：`fscaleb.s dst, src1, src2`
+- `Iop_ScaleBF64`：`fscaleb.s dst, src1, src2`
+
+除此以外，还有其他 Valgrind 工具（如 memcheck）会用到一些专有操作符（如 `Iop_CmpNEZ8`），也需要在后端翻译，此处略去。
 
 ## Valgrind
 
