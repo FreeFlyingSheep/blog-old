@@ -9,15 +9,38 @@ categories: ["Valgrind"]
 
 <!--more-->
 
+## 引言
+
+好久没更新了，目前初步完成了 Valgrind for LoongArch 的适配，补丁的整理参考了 [riscv64](https://github.com/petrpavlu/valgrind-riscv64)。
+
+项目仓库见 <https://github.com/FreeFlyingSheep/valgrind-loongarch64>，虽然还有很多测试项目没过，不过大体能用用了（连 arm64 回归测试也有一半跑不过呢，何况我是个菜逼（逃
+
 ## LibVEX
+
+我实际完成 LibVEX 的移植是在 Valgrind 主体的移植后的，当时考虑的是先在本地通过编译跑起来再说。
+但理论上应该先完成 LibVEX 的移植。
 
 ### 前端
 
-TODO
+前端主要包括三个文件：`VEX/priv/guest_loongarch64_defs.h`、`VEX/priv/guest_loongarch64_helpers.c` 和 `VEX/priv/guest_loongarch64_toIR.c`。
+
+前端的设计主要参考了 arm64 和 mips64，不过我把所有指令的解析都分拆在各个函数里。
+
+指令的分类我参考了 QEMU 的 LoongArch 补丁，翻译的内容见[汇总](#汇总)，解码部分每几位归为一组，目的是尽可能凑 `switch` 函数的跳转表。
+
+对于不方便翻译为 Vex IR 的指令，采用函数调用的方式直接交给帮助函数处理，比如一些 `crc` 指令等。
 
 ### 后端
 
-TODO
+前端主要包括三个文件：`VEX/priv/host_loongarch64_defs.h`、`VEX/priv/host_loongarch64_isel.c` 和 `VEX/priv/host_loongarch64_defs.c`。
+
+`host_loongarch64_defs.h` 包括了各种指令的标签（用枚举定义）和结构体定义，方便起见，我直接把指令标签的枚举值定义为指令的操作码。
+
+`host_loongarch64_isel.c` 负责把所有 Vex IR 转换成 LoongArch 指令的结构体，具体内容见[汇总](#汇总)。
+
+`host_loongarch64_defs.c` 负责把 LoongArch 指令的结构体转换成二进制，发射出去。
+
+其中后端设计的原子操作（主要是 CAS）我直接抄了内核的实现（`arch/loongarch/kernel/cmpxchg.c`）。
 
 ### 汇总
 
@@ -55,7 +78,7 @@ TODO
 - `Iop_1Uto32`：`andi dst, src, 0x1`
 - `Iop_1Uto64`：`andi dst, src, 0x1`
 - `Iop_1Uto8`：`andi dst, src, 0x1`
-- `Iop_32Sto64`：`add.w dst, src, $zero`
+- `Iop_32Sto64`：`slli.w dst, src, 0`
 - `Iop_32Uto64`：`slli.d dst, src, 32; srli.d dst, dst, 32`
 - `Iop_32to8`：`andi dst, src, 0xff`
 - `Iop_64HIto32`：`srli.d dst, src, 32`
@@ -218,4 +241,995 @@ or $t4, $t4, $t4
 
 ## Valgrind
 
-TODO
+Valgrind 主体的移植第一步是解决编译问题，几乎所有需要修改的地方都有 `#error` 提示，顺着编译报错加入 LoongArch 的 `#ifdef`，不确定的地方先写 `/* TODO */`。
+
+在顺利通过了编译后，再开始分模块完善代码，下面介绍几个关键模块的移植思路。
+
+### gdbserver
+
+gdbserver 部分的代码主要位于 `coregrind/m_gdbserver/valgrind-low-loongarch64.c`。
+
+这部分代码参考了 GDB 的实现（`gdb/gdbserver/linux-loongarch-low.c`），因为新版本 GDB 的相关代码已经重构过，所以要适当调整（不能照抄，有点难受）。
+
+测试的时候使用使用 `--vgdb=yes --vgdb-error=0` 参数。
+
+### sigframe
+
+信号栈部分的代码主要位于 `coregrind/m_sigframe/sigframe-loongarch64-linux.c`。
+
+这部分代码参考内核信号栈的实现（`arch/loongarch/kernel/signal.c`）。
+
+目前只考虑整数寄存器，暂不实现浮点寄存器和二进制翻译寄存器、向量寄存器的存取。
+
+### dispatch
+
+分派部分的代码主要位于 `coregrind/m_dispatch/dispatch-loongarch64-linux.S`。
+
+这部分代码参考 mips64 的实现，最大的区别是要加上指令屏障。
+
+### cache
+
+缓存部分的代码主要位于 `coregrind/m_cache.c`。
+
+这部分代码参考内核 CPU 探测部分（`arch/loongarch/mm/cache.c`），利用 `cpucfg` 指令实现了用户态下对 CPU 缓存属性的读取。
+
+### machine
+
+机器探测部分的代码主要位于 `coregrind/m_machine.c`。
+
+这部分代码参考 mips64 的实现，为了兼容不同版本的内核，判断字符串使用 `cpu family`，且不区分大小写。
+
+## 踩坑
+
+### 指令屏障
+
+执行同一个程序，有时候会 SIGILL，大部分时候又能正常运行，用 GDB 追踪时却总是好的。
+
+索性在内核添加打印，发现触发 SIGILL 的指令编码永远是 `0`。
+
+后来想了想，可能是需要添加指令屏障，在 dispatch 模块跳转到生成的指令前加了 `ibar` 指令，之后果然好了。
+
+### 32 位除法结果不对
+
+测试发现 32 位除法指令的结果是不对的，但我怎么都觉得自己翻译代码没写错，一脸懵逼。
+
+后来单独验证除法指令，发现 CPU 行为和手册竟然不符！手册上的 32 位除法只考虑寄存器低 32 位，而实际 CPU 执行时，只要高 32 位有值，除法结果就是不确定的。
+
+这个发现让我不得已把所有的加载立即数指令都改成 64 位版本的加载（原本是 32 位立即数用两条指令加载，64 位用四条指令加载），来避免加载时高位符号扩展，同时部分指令手动清零高位，虽然应该有更好的解决方案，但图省事先这样吧，真的坑。
+
+### 地址解析问题
+
+经过不停的修改测试，好不容易把静态链接的小程序跑通了，但一运行动态链接程序就段错误，让人费解。
+
+由于是挂在动态链接器里，所以比较难追踪，为此我甚至写了不少脚本去测试单指令的正确性，以及比较不同日志里面涉及的指令，见[脚本](#脚本)。
+
+某天突然发现了端倪，有大量 `ld` 指令的立即数是很大的负数，这种现象不正常。
+
+再次检查 `VEX/priv/host_loongarch64_isel.c` 中的代码，`ld` 指令立即数的最高位是符号位，因此解析地址时（`iselIntExpr_AMode_wrk()`），超过 11 位的立即数就应该走 `ldx` 指令，而我判断的时候用的是 `0xfff`，改成 `0x7ff` 就解决了问题。
+
+### 来自 C 库的警告
+
+使用 memcheck 跑动态链接程序的时候，发现一万个警告，而在 x86 下运行是没这些警告的。
+
+后来发现可以通过 `*.supp` 文件忽略 C 库的警告，于是我偷懒直接在 `glibc-2.X.supp.in` 中把 `*/libc.so*` 和 `*/ld-linux-loongarch-*.so*` 文件产生的警告给忽略了。
+
+### 结构体要及时同步
+
+运行 `valgrind --tool=none gcc --version` 结果段错误了，用 GDB 追踪发现系统调用传递的参数都错位了。
+
+排查了半天发现是新版本内核结构体变动了，没及时跟上（内核还没进社区，每一版改动可能较大），这蛋疼的 Valgrind 内核接口模块，每次都要手动去更新。
+
+### GDB
+
+每次测试 Valgrind 的 gdbserver 功能都提示 `Remote 'g' packet reply is too long`。
+
+查看社区版 GDB 源码后发现尽管写了代码，但竟然默认不支持浮点寄存器，我把 `coregrind/m_gdbserver/valgrind-low-loongarch64.c` 中浮点寄存器代码注释掉后就好了。
+
+### VDSO
+
+每次在中文环境下执行 `valgrind --tool=none ls -l` 就会段错误，一直以为是指令翻译有问题，追了好久发现是信号处理的时候出了问题。
+
+中文环境下 `valgrind ls -l` 默认客户栈不够，此时内核发送 `SIGSEGV`，Valgrind 信号处理函数会调用 `mmap()` 系统调用扩展栈，之后返回的时候到了 VDSO 的 `sigreturn()` 函数。
+
+这时候问题就来了，Valgrind 的地址空间管理器默认会移除 VDSO 的映射，这时候跳转到的地址是非法的，因此再次触发 `SIGSEGV`，程序退出。
+
+而高版本内核不支持 `SA_RESTORER`，因此没法向其他架构一样用自己的 `my_sigreturn()` 函数。
+
+后来追踪历史记录发现在 `coregrind/m_aspacemgr/aspacemgr-linux.c` 中不取消映射就行了（添加 `#ifdef`）。
+
+### LLSC
+
+LoongArch 下的 `ll`/`sc` 指令对，中间不能有其他访存指令，不然一定会失败。
+
+而要保证 Valgrind 不在 `ll`/`sc` 指令对中使用其他访存指令是非常难的，目前并没有架构实现。
+
+这个问题导致了用到 LLSC 的程序几乎都死循环了，于是我实现了 fallback 版本的 LLSC（即用软件模拟），并强制启用它。
+
+### 其他
+
+部分指令在支持非对齐访问和不支持非对齐访问特性的 CPU 上有不同结果，如 `ldptr` 指令。
+我目前并未将该特性纳入 libVEX 的翻译过程中，这个坑以后有需求再填了。
+
+这么做是因为目前只考虑 64 位 CPU （即 3A5000）的支持，该 CPU 是支持非对齐访问的。
+而后续可能需要适配的不支持非对齐访问的 CPU 是 32 位的，这个大坑以后有需求再填。
+
+Valgrind 并未实现 `clone3()` 系统调用相关的代码，因此我参考其他架构，直接在 `coregrind/m_syswrap/syswrap-loongarch64-linux.c` 的系统调用表里，把 `clone3()` 设置为 `sys_ni_syscall`。
+
+## 脚本
+
+记录一些方便自己测试、调试的小脚本。本着能用就行的原则，写得很烂（其实是太菜，逃
+
+### 验证单指令正确性
+
+为了绕开 glibc，自己实现打印、退出函数（通过系统调用），程序开始执行时保存所有寄存器，这部分用汇编实现：
+
+```text
+.text
+.globl _start
+_start:
+    nop
+
+dump:
+    la.local   $x,   regs
+    st.d       $r0,  $x,  0
+    st.d       $r1,  $x,  8
+    st.d       $r2,  $x,  16
+    st.d       $r3,  $x,  24
+    st.d       $r4,  $x,  32
+    st.d       $r5,  $x,  40
+    st.d       $r6,  $x,  48
+    st.d       $r7,  $x,  56
+    st.d       $r8,  $x,  64
+    st.d       $r9,  $x,  72
+    st.d       $r10, $x,  80
+    st.d       $r11, $x,  88
+    st.d       $r12, $x,  96
+    st.d       $r13, $x,  104
+    st.d       $r14, $x,  112
+    st.d       $r15, $x,  120
+    st.d       $r16, $x,  128
+    st.d       $r17, $x,  136
+    st.d       $r18, $x,  144
+    st.d       $r19, $x,  152
+    st.d       $r20, $x,  160
+    st.d       $r21, $x,  168
+    st.d       $r22, $x,  176
+    st.d       $r23, $x,  184
+    st.d       $r24, $x,  192
+    st.d       $r25, $x,  200
+    st.d       $r26, $x,  208
+    st.d       $r27, $x,  216
+    st.d       $r28, $x,  224
+    st.d       $r29, $x,  232
+    st.d       $r30, $x,  240
+    st.d       $r31, $x,  248
+    fst.d      $f0,  $x,  256
+    fst.d      $f1,  $x,  264
+    fst.d      $f2,  $x,  272
+    fst.d      $f3,  $x,  280
+    fst.d      $f4,  $x,  288
+    fst.d      $f5,  $x,  296
+    fst.d      $f6,  $x,  304
+    fst.d      $f7,  $x,  312
+    fst.d      $f8,  $x,  320
+    fst.d      $f9,  $x,  328
+    fst.d      $f10, $x,  336
+    fst.d      $f11, $x,  344
+    fst.d      $f12, $x,  352
+    fst.d      $f13, $x,  360
+    fst.d      $f14, $x,  368
+    fst.d      $f15, $x,  376
+    fst.d      $f16, $x,  384
+    fst.d      $f17, $x,  392
+    fst.d      $f18, $x,  400
+    fst.d      $f19, $x,  408
+    fst.d      $f20, $x,  416
+    fst.d      $f21, $x,  424
+    fst.d      $f22, $x,  432
+    fst.d      $f23, $x,  440
+    fst.d      $f24, $x,  448
+    fst.d      $f25, $x,  456
+    fst.d      $f26, $x,  464
+    fst.d      $f27, $x,  472
+    fst.d      $f28, $x,  480
+    fst.d      $f29, $x,  488
+    fst.d      $f30, $x,  496
+    fst.d      $f31, $x,  504
+    movfcsr2gr $t0,  $r0
+    movfcsr2gr $t1,  $r1
+    movfcsr2gr $t2,  $r2
+    movfcsr2gr $t3,  $r3
+    st.d       $t0,  $x,  512
+    st.d       $t1,  $x,  520
+    st.d       $t2,  $x,  528
+    st.d       $t3,  $x,  536
+    movcf2gr   $t0,  $fcc0
+    andi       $t0,  $t0, 1
+    movcf2gr   $t1,  $fcc1
+    andi       $t1,  $t1, 1
+    movcf2gr   $t2,  $fcc2
+    andi       $t2,  $t2, 1
+    movcf2gr   $t3,  $fcc3
+    andi       $t3,  $t3, 1
+    movcf2gr   $t4,  $fcc4
+    andi       $t4,  $t4, 1
+    movcf2gr   $t5,  $fcc5
+    andi       $t5,  $t5, 1
+    movcf2gr   $t6,  $fcc6
+    andi       $t6,  $t6, 1
+    movcf2gr   $t7,  $fcc7
+    andi       $t7,  $t7, 1
+    st.d       $t0,  $x,  544
+    st.d       $t1,  $x,  552
+    st.d       $t2,  $x,  560
+    st.d       $t3,  $x,  568
+    st.d       $t4,  $x,  576
+    st.d       $t5,  $x,  584
+    st.d       $t6,  $x,  592
+    st.d       $t7,  $x,  600
+    move       $a0,  $x
+    bl         show
+
+exit:
+    li.w    $a7, 93   // n = __NR_exit
+    syscall 0         // exit(ret)
+
+.globl print
+print:
+    move    $a2, $a1  // l
+    move    $a1, $a0  // s
+    li.w    $a0, 2    // f = stderr
+    li.w    $a7, 64   // n = __NR_write
+    syscall 0         // write(f, s, l)
+    jr      $ra
+```
+
+之后跳转到 C 函数去打印保存的寄存器：
+
+```c
+void print(char *s, int n);
+
+unsigned long regs[32 + 32 + 4 + 8];
+
+int my_strlen(char *s)
+{
+    char *t = s;
+    while (*s != '\0')
+        s++;
+    return s - t;
+}
+
+void my_puts(char *s)
+{
+    print(s, my_strlen(s));
+}
+
+void my_itoa(char *s, unsigned long n, int base)
+{
+    char t[20];
+    char a[] = { '0', '1', '2', '3', '4', '5', '6', '7',
+                 '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+    int i = 0;
+    if (base == 16) {
+        *s++ = '0';
+        *s++ = 'x';
+    } else if ((long) n < 0) {
+        *s++ = '-';
+        n = -n;
+    }
+    do {
+        t[i++] = a[n % base];
+        n /= base;
+    } while (n != 0);
+    while (--i >= 0)
+        *s++ = t[i];
+    *s = '\0';
+}
+
+void widen(char *dst, char *src, int len)
+{
+    *dst++ = *src++; // '0'
+    *dst++ = *src++; // 'x'
+    for (int i = my_strlen(src); i < len; i++)
+        *dst++ = '0';
+    while ((*dst++ = *src++) != '\0')
+        continue;
+}
+
+int show(unsigned long *regs)
+{
+    char s[20], t[20];
+    for (int i = 0; i < 32; i++) {
+        my_puts("r");
+        my_itoa(s, i, 10);
+        my_puts(s);
+        my_puts(":\t");
+        my_itoa(s, regs[i], 16);
+        widen(t, s, 16);
+        my_puts(t);
+        my_puts("\n");
+    }
+    for (int i = 0; i < 32; i++) {
+        my_puts("f");
+        my_itoa(s, i, 10);
+        my_puts(s);
+        my_puts(":\t");
+        my_itoa(s, regs[i + 32], 16);
+        widen(t, s, 16);
+        my_puts(t);
+        my_puts("\n");
+    }
+    for (int i = 0; i < 4; i++) {
+        my_puts("fcsr");
+        my_itoa(s, i, 10);
+        my_puts(s);
+        my_puts(":\t");
+        my_itoa(s, regs[i + 64], 16);
+        widen(t, s, 8);
+        my_puts(t);
+        my_puts("\n");
+    }
+    for (int i = 0; i < 8; i++) {
+        my_puts("fcc");
+        my_itoa(s, i, 10);
+        my_puts(s);
+        my_puts(":\t");
+        my_itoa(s, regs[i + 68], 16);
+        my_puts(s);
+        my_puts("\n");
+    }
+    return 0;
+}
+```
+
+只需要把 `nop` 替换为需要验证的非转移指令，上述代码就可以打印运行指令后的寄存器状态。
+于是之后借助一个 python 脚本来实现不同指令的填充和验证工作：
+
+```python
+import os
+import numpy as np
+
+def write(line, file):
+    with open("dump.S", "r") as input:
+        text = input.read()
+        with open(file, "w") as output:
+            output.write(text.replace("nop\n", line))
+
+def build(line):
+    write(line, "tmp.S")
+    ret = os.system("gcc -nostdlib -static tmp.S show.c -o tmp")
+    if ret != 0:
+        return ret
+    ret = os.system("./tmp > want.txt 2>&1")
+    if ret != 0:
+        return ret
+    return os.system("/usr/local/bin/valgrind --tool=none -q ./tmp > out.txt 2>&1")
+
+
+def diff():
+    with open("want.txt", "r") as want:
+        with open("out.txt", "r") as out:
+            lines1 = want.readlines()
+            lines2 = out.readlines()
+            if len(lines1) != len(lines2):
+                print("len1 != len2")
+                return False
+            for i in range(0, len(lines1)):
+                if i == 3 or i == 11 or i == 21:
+                    continue
+                if lines1[i] != lines2[i]:
+                    print("want: " + lines1[i] + "out: " + lines2[i])
+                    return False
+            return True
+
+def test(name, func, n):
+    for _ in range(0, n):
+        line = func(name)
+        if build(line) != 0:
+            print("Build failed!")
+            return False
+        if not diff():
+            return False
+    return True
+
+
+def rand_reg():
+    reg = np.random.randint(4, 32, 1, np.int32)
+    while reg[0] == 11 or reg[0] == 21:
+        reg = np.random.randint(4, 32, 1, np.int32)
+    num = np.random.randint(np.iinfo(np.int64).min, np.iinfo(np.int64).max, 1, np.int64)
+    return (reg[0], num[0])
+
+def rand_reg_32():
+    reg = np.random.randint(4, 32, 1, np.int32)
+    while reg[0] == 11 or reg[0] == 21:
+        reg = np.random.randint(4, 32, 1, np.int32)
+    num = np.random.randint(0, np.iinfo(np.int32).max, 1, np.int32)
+    return (reg[0], num[0])
+
+def rand_imm(n, sign):
+    min = 0
+    max = 1 << n
+    if (sign):
+        min = -(1 << (n - 1))
+        max = 1 << (n - 1)
+    imm = np.random.randint(min, max, 1, np.int32)
+    return imm[0]
+
+def rand_imm2(n):
+    imm = np.random.randint(0, 1 << n, 2, np.int32)
+    min = imm[0]
+    max = imm[1]
+    if imm[1] < min:
+        max = imm[0]
+        min = imm[1]
+    return (min, max)
+
+def rd_rj(name):
+    line = ""
+    rd, v1 = rand_reg()
+    line += f"li.d $r{rd}, {v1}\n    "
+    rj, v2 = rand_reg()
+    line += f"li.d $r{rj}, {v2}\n    "
+    line += f"{name} $r{rd}, $r{rj}\n"
+    return line
+
+def rd_rj_rk(name):
+    line = ""
+    rd, v1 = rand_reg()
+    line += f"li.d $r{rd}, {v1}\n    "
+    rj, v2 = rand_reg()
+    line += f"li.d $r{rj}, {v2}\n    "
+    rk, v3 = rand_reg()
+    line += f"li.d $r{rk}, {v3}\n    "
+    line += f"{name} $r{rd}, $r{rj}, $r{rk}\n"
+    return line
+
+def rd_rj_rk_32(name):
+    line = ""
+    rd, v1 = rand_reg_32()
+    line += f"li.d $r{rd}, {v1}\n    "
+    rj, v2 = rand_reg_32()
+    line += f"li.d $r{rj}, {v2}\n    "
+    rk, v3 = rand_reg_32()
+    line += f"li.d $r{rk}, {v3}\n    "
+    line += f"{name} $r{rd}, $r{rj}, $r{rk}\n"
+    return line
+
+def rd_rj_si12(name):
+    line = ""
+    rd, v1 = rand_reg()
+    line += f"li.d $r{rd}, {v1}\n    "
+    rj, v2 = rand_reg()
+    line += f"li.d $r{rj}, {v2}\n    "
+    si12 = rand_imm(12, True)
+    line += f"{name} $r{rd}, $r{rj}, {si12}\n"
+    return line
+
+def rd_rj_ui12(name):
+    line = ""
+    rd, v1 = rand_reg()
+    line += f"li.d $r{rd}, {v1}\n    "
+    rj, v2 = rand_reg()
+    line += f"li.d $r{rj}, {v2}\n    "
+    ui12 = rand_imm(12, False)
+    line += f"{name} $r{rd}, $r{rj}, {ui12}\n"
+    return line
+
+def rd_rj_si16(name):
+    line = ""
+    rd, v1 = rand_reg()
+    line += f"li.d $r{rd}, {v1}\n    "
+    rj, v2 = rand_reg()
+    line += f"li.d $r{rj}, {v2}\n    "
+    si16 = rand_imm(16, True)
+    line += f"{name} $r{rd}, $r{rj}, {si16}\n"
+    return line
+
+def rd_rj_ui5(name):
+    line = ""
+    rd, v1 = rand_reg()
+    line += f"li.d $r{rd}, {v1}\n    "
+    rj, v2 = rand_reg()
+    line += f"li.d $r{rj}, {v2}\n    "
+    ui5 = rand_imm(5, False)
+    line += f"{name} $r{rd}, $r{rj}, {ui5}\n"
+    return line
+
+def rd_rj_ui6(name):
+    line = ""
+    rd, v1 = rand_reg()
+    line += f"li.d $r{rd}, {v1}\n    "
+    rj, v2 = rand_reg()
+    line += f"li.d $r{rj}, {v2}\n    "
+    ui6 = rand_imm(6, False)
+    line += f"{name} $r{rd}, $r{rj}, {ui6}\n"
+    return line
+
+def rd_rj_msbw_lsbw(name):
+    line = ""
+    rd, v1 = rand_reg()
+    line += f"li.d $r{rd}, {v1}\n    "
+    rj, v2 = rand_reg()
+    line += f"li.d $r{rj}, {v2}\n    "
+    lsbw, msbw = rand_imm2(5)
+    line += f"{name} $r{rd}, $r{rj}, {msbw}, {lsbw}\n"
+    return line
+
+def rd_rj_msbd_lsbd(name):
+    line = ""
+    rd, v1 = rand_reg()
+    line += f"li.d $r{rd}, {v1}\n    "
+    rj, v2 = rand_reg()
+    line += f"li.d $r{rj}, {v2}\n    "
+    lsbd, msbd = rand_imm2(6)
+    line += f"{name} $r{rd}, $r{rj}, {msbd}, {lsbd}\n"
+    return line
+
+def rd_rj_rk_sa2(name):
+    line = ""
+    rd, v1 = rand_reg()
+    line += f"li.d $r{rd}, {v1}\n    "
+    rj, v2 = rand_reg()
+    line += f"li.d $r{rj}, {v2}\n    "
+    rk, v3 = rand_reg()
+    line += f"li.d $r{rk}, {v3}\n    "
+    sa2 = rand_imm(2, False)
+    line += f"{name} $r{rd}, $r{rj}, $r{rk}, {sa2}\n"
+    return line
+
+def rd_rj_rk_sa2_add1(name):
+    line = ""
+    rd, v1 = rand_reg()
+    line += f"li.d $r{rd}, {v1}\n    "
+    rj, v2 = rand_reg()
+    line += f"li.d $r{rj}, {v2}\n    "
+    rk, v3 = rand_reg()
+    line += f"li.d $r{rk}, {v3}\n    "
+    sa2 = rand_imm(2, False) + 1
+    line += f"{name} $r{rd}, $r{rj}, $r{rk}, {sa2}\n"
+    return line
+
+def rd_rj_rk_sa3(name):
+    line = ""
+    rd, v1 = rand_reg()
+    line += f"li.d $r{rd}, {v1}\n    "
+    rj, v2 = rand_reg()
+    line += f"li.d $r{rj}, {v2}\n    "
+    rk, v3 = rand_reg()
+    line += f"li.d $r{rk}, {v3}\n    "
+    sa3 = rand_imm(3, False)
+    line += f"{name} $r{rd}, $r{rj}, $r{rk}, {sa3}\n"
+    return line
+
+def rd_si20(name):
+    line = ""
+    rd, v1 = rand_reg()
+    line += f"li.d $r{rd}, {v1}\n    "
+    si20 = rand_imm(20, True)
+    line += f"{name} $r{rd}, {si20}\n"
+    return line
+
+insts = [
+    { "name": "add.w",      "func": rd_rj_rk            },
+    { "name": "add.d",      "func": rd_rj_rk            },
+    { "name": "sub.w",      "func": rd_rj_rk            },
+    { "name": "sub.d",      "func": rd_rj_rk            },
+    { "name": "slt",        "func": rd_rj_rk            },
+    { "name": "sltu",       "func": rd_rj_rk            },
+    { "name": "slti",       "func": rd_rj_si12          },
+    { "name": "sltui",      "func": rd_rj_si12          },
+    { "name": "nor",        "func": rd_rj_rk            },
+    { "name": "and",        "func": rd_rj_rk            },
+    { "name": "or",         "func": rd_rj_rk            },
+    { "name": "xor",        "func": rd_rj_rk            },
+    { "name": "orn",        "func": rd_rj_rk            },
+    { "name": "andn",       "func": rd_rj_rk            },
+    { "name": "mul.w",      "func": rd_rj_rk            },
+    { "name": "mulh.w",     "func": rd_rj_rk            },
+    { "name": "mulh.wu",    "func": rd_rj_rk            },
+    { "name": "mul.d",      "func": rd_rj_rk            },
+    { "name": "mulh.d",     "func": rd_rj_rk            },
+    { "name": "mulh.du",    "func": rd_rj_rk            },
+    { "name": "mulw.d.w",   "func": rd_rj_rk            },
+    { "name": "mulw.d.wu",  "func": rd_rj_rk            },
+    { "name": "div.w",      "func": rd_rj_rk_32         },
+    { "name": "mod.w",      "func": rd_rj_rk_32         },
+    { "name": "div.wu",     "func": rd_rj_rk_32         },
+    { "name": "mod.wu",     "func": rd_rj_rk_32         },
+    { "name": "div.d",      "func": rd_rj_rk            },
+    { "name": "mod.d",      "func": rd_rj_rk            },
+    { "name": "div.du",     "func": rd_rj_rk            },
+    { "name": "mod.du",     "func": rd_rj_rk            },
+    { "name": "alsl.w",     "func": rd_rj_rk_sa2_add1   },
+    { "name": "alsl.wu",    "func": rd_rj_rk_sa2_add1   },
+    { "name": "alsl.d",     "func": rd_rj_rk_sa2_add1   },
+    { "name": "lu12i.w",    "func": rd_si20             },
+    { "name": "lu32i.d",    "func": rd_si20             },
+    { "name": "lu52i.d",    "func": rd_rj_si12          },
+    { "name": "addi.w",     "func": rd_rj_si12          },
+    { "name": "addi.d",     "func": rd_rj_si12          },
+    { "name": "addu16i.d",  "func": rd_rj_si16          },
+    { "name": "andi",       "func": rd_rj_ui12          },
+    { "name": "ori",        "func": rd_rj_ui12          },
+    { "name": "xori",       "func": rd_rj_ui12          },
+    { "name": "sll.w",      "func": rd_rj_rk            },
+    { "name": "srl.w",      "func": rd_rj_rk            },
+    { "name": "sra.w",      "func": rd_rj_rk            },
+    { "name": "sll.d",      "func": rd_rj_rk            },
+    { "name": "srl.d",      "func": rd_rj_rk            },
+    { "name": "sra.d",      "func": rd_rj_rk            },
+    { "name": "rotr.w",     "func": rd_rj_rk            },
+    { "name": "rotr.d",     "func": rd_rj_rk            },
+    { "name": "slli.w",     "func": rd_rj_ui5           },
+    { "name": "slli.d",     "func": rd_rj_ui6           },
+    { "name": "srli.w",     "func": rd_rj_ui5           },
+    { "name": "srli.d",     "func": rd_rj_ui6           },
+    { "name": "srai.w",     "func": rd_rj_ui5           },
+    { "name": "srai.d",     "func": rd_rj_ui6           },
+    { "name": "rotri.w",    "func": rd_rj_ui5           },
+    { "name": "rotri.d",    "func": rd_rj_ui6           },
+    { "name": "ext.w.h",    "func": rd_rj               },
+    { "name": "ext.w.b",    "func": rd_rj               },
+    { "name": "clo.w",      "func": rd_rj               },
+    { "name": "clz.w",      "func": rd_rj               },
+    { "name": "cto.w",      "func": rd_rj               },
+    { "name": "ctz.w",      "func": rd_rj               },
+    { "name": "clo.d",      "func": rd_rj               },
+    { "name": "clz.d",      "func": rd_rj               },
+    { "name": "cto.d",      "func": rd_rj               },
+    { "name": "ctz.d",      "func": rd_rj               },
+    { "name": "revb.2h",    "func": rd_rj               },
+    { "name": "revb.4h",    "func": rd_rj               },
+    { "name": "revb.2w",    "func": rd_rj               },
+    { "name": "revb.d",     "func": rd_rj               },
+    { "name": "revh.2w",    "func": rd_rj               },
+    { "name": "revh.d",     "func": rd_rj               },
+    { "name": "bitrev.4b",  "func": rd_rj               },
+    { "name": "bitrev.8b",  "func": rd_rj               },
+    { "name": "bitrev.w",   "func": rd_rj               },
+    { "name": "bitrev.d",   "func": rd_rj               },
+    { "name": "bytepick.w", "func": rd_rj_rk_sa2        },
+    { "name": "bytepick.d", "func": rd_rj_rk_sa3        },
+    { "name": "maskeqz",    "func": rd_rj_rk            },
+    { "name": "masknez",    "func": rd_rj_rk            },
+    { "name": "bstrins.w",  "func": rd_rj_msbw_lsbw     },
+    { "name": "bstrpick.w", "func": rd_rj_msbw_lsbw     },
+    { "name": "bstrins.d",  "func": rd_rj_msbd_lsbd     },
+    { "name": "bstrpick.d", "func": rd_rj_msbd_lsbd     },
+]
+n = 10
+for inst in insts:
+    if not test(inst["name"], inst["func"], n):
+        print(f"{inst['name']} failed")
+        break
+    else:
+        print(f"{inst['name']} passed")
+```
+
+借助这个脚本我发现了大量翻译指令时的笔误……
+
+### 比对文件输出
+
+当时遇到一个问题，发现运行动态链接程序会发生段错误，而静态链接的版本能正常跑过。
+
+我希望能通过比对运行动态和静态链接两个版本的 Valgrind 日志，来定位是哪条或者哪些指令可能出了问题。
+于是顺手写了一个 golang 的比较程序：
+
+```golang
+package main
+
+import (
+    "io/ioutil"
+    "log"
+    "regexp"
+    "sort"
+    "strings"
+)
+
+var insnRe *regexp.Regexp
+var insnRe2 *regexp.Regexp
+
+func unique(s []string) []string {
+    sort.Strings(s)
+    res := []string{}
+    for i := 0; i < len(s); i++ {
+        if (i > 0 && s[i-1] == s[i]) || len(s[i]) == 0 {
+            continue
+        }
+        res = append(res, s[i])
+    }
+    return res
+}
+
+func findMatch(lines []string, re *regexp.Regexp) []string {
+    insn := []string{}
+    for _, line := range lines {
+        found := re.FindAllStringSubmatch(line, -1)
+        if len(found) == 1 {
+            insn = append(insn, found[0][1])
+        }
+    }
+    return insn
+}
+
+func read(file string) ([]string, error) {
+    text, err := ioutil.ReadFile(file)
+    if err != nil {
+        return nil, err
+    }
+    lines := strings.Split(string(text), "\n")
+    return lines, nil
+}
+
+func diff(good, bad []string) []string {
+    good = unique(good)
+    bad = unique(bad)
+    res := []string{}
+    i, j := 0, 0
+    for i < len(good) && j < len(bad) {
+        if good[i] == bad[j] {
+            i++
+            j++
+        } else if good[i] < bad[j] {
+            // res = append(res, "-"+good[i])
+            i++
+        } else {
+            // res = append(res, "+"+bad[j])
+            res = append(res, bad[j])
+            j++
+        }
+    }
+    for ; i < len(good); i++ {
+        // res = append(res, "-"+good[i])
+    }
+    for ; j < len(bad); j++ {
+        // res = append(res, "+"+bad[j])
+        res = append(res, bad[j])
+    }
+    return res
+}
+
+func compare(good, bad []string, re *regexp.Regexp) string {
+    good = findMatch(good, re)
+    bad = findMatch(bad, re)
+    text := diff(good, bad)
+    sort.Strings(text)
+    return strings.Join(text, "\n")
+}
+
+func main() {
+    insnRe = regexp.MustCompile(`\t0x[A-Z0-9]+:\t0x[A-Z0-9]+\t(.*)`)
+    insnRe2 = regexp.MustCompile(`^\s*\d+\s+(.*)`)
+    good, err := read("good.txt")
+    if err != nil {
+        log.Fatalln(err)
+    }
+    bad, err := read("bad.txt")
+    if err != nil {
+        log.Fatalln(err)
+    }
+    out := compare(good, bad, insnRe)
+    out += "\n\n"
+    out += compare(good, bad, insnRe2)
+    out += "\n"
+    err = ioutil.WriteFile("diff.txt", []byte(out), 0644)
+    if err != nil {
+        log.Fatalln(err)
+    }
+}
+```
+
+## 检查笔误、遗漏
+
+检查简单的笔误，以及博文里指令是否写全：
+
+```golang
+package main
+
+import (
+    "fmt"
+    "io/ioutil"
+    "log"
+    "regexp"
+    "sort"
+    "strings"
+)
+
+func find(re *regexp.Regexp, line string, set map[string]bool) {
+    found := re.FindAllString(line, -1)
+    for _, s := range found {
+        set[s] = true
+    }
+}
+
+func show(set map[string]bool) []string {
+    list := []string{}
+    for s, _ := range set {
+        list = append(list, s)
+    }
+    sort.Strings(list)
+    res := []string{}
+    for _, l := range list {
+        l = strings.ReplaceAll(l, "IRConst", "Ico")
+        l = strings.ReplaceAll(l, "IRExpr", "Iex")
+        l = strings.ReplaceAll(l, "IRStmt", "Ist")
+        res = append(res, l)
+    }
+    return res
+}
+
+func findAll(text string) []string {
+    lines := strings.Split(text, "\n")
+    stRe := regexp.MustCompile(`(IRStmt_|Ist_)\w+`)
+    exRe := regexp.MustCompile(`(IRExpr_|Iex_)\w+`)
+    opRe := regexp.MustCompile(`Iop_\w+`)
+    jkRe := regexp.MustCompile(`Ijk_\w+`)
+    coRe := regexp.MustCompile(`(IRConst_|Ico_)\w+`)
+    tyRe := regexp.MustCompile(`Ity_\w+`)
+    enRe := regexp.MustCompile(`Iend_\w+`)
+    stSet := make(map[string]bool)
+    exSet := make(map[string]bool)
+    opSet := make(map[string]bool)
+    jkSet := make(map[string]bool)
+    coSet := make(map[string]bool)
+    tySet := make(map[string]bool)
+    enSet := make(map[string]bool)
+    for _, line := range lines {
+        find(stRe, line, stSet)
+        find(exRe, line, exSet)
+        find(opRe, line, opSet)
+        find(jkRe, line, jkSet)
+        find(coRe, line, coSet)
+        find(tyRe, line, tySet)
+        find(enRe, line, enSet)
+    }
+    res := []string{}
+    res = append(res, show(enSet)...)
+    res = append(res, show(coSet)...)
+    res = append(res, show(tySet)...)
+    res = append(res, show(opSet)...)
+    res = append(res, show(exSet)...)
+    res = append(res, show(jkSet)...)
+    res = append(res, show(stSet)...)
+    return res
+}
+
+func diff2(out1, out2 []string) {
+    i, j := 0, 0
+    for i < len(out1) && j < len(out2) {
+        if out1[i] == out2[j] {
+            i++
+            j++
+        } else if out1[i] < out2[j] {
+            fmt.Println("-" + out1[i])
+            i++
+        } else {
+            fmt.Println("+" + out2[j])
+            j++
+        }
+    }
+    for ; i < len(out1); i++ {
+        fmt.Println("-" + out1[i])
+    }
+    for ; j < len(out2); j++ {
+        fmt.Println("+" + out2[j])
+    }
+}
+
+func check_name(text string) {
+    lines := strings.Split(text, "\n")
+    level := 0
+    name := ""
+    prefix := "static Bool gen_"
+    prefix2 := "   DIP(\""
+    prefix3 := "   UInt "
+    for _, line := range lines {
+        if len(line) == 0 {
+            continue
+        }
+        if strings.Contains(line, "Disassemble a single LOONGARCH64 instruction") {
+            break
+        }
+        if strings.Contains(line, "{") {
+            level++
+        }
+        if strings.Contains(line, "}") {
+            level--
+        }
+        if level == 0 && strings.HasPrefix(line, prefix) {
+            pos := strings.Index(line, " (")
+            if pos < len(prefix) {
+                log.Fatalln("prefix " + line)
+            }
+            name = line[len(prefix):pos]
+        }
+        if level == 1 && strings.HasPrefix(line, prefix2) {
+            pos := strings.Index(line, " %")
+            if pos < len(prefix2) {
+                log.Fatalln("prefix2 " + line)
+            }
+            name2 := line[len(prefix2):pos]
+            if strings.ReplaceAll(name2, ".", "_") != name {
+                fmt.Println("check: " + name + " != " + name2)
+            }
+        }
+        if level == 1 && strings.HasPrefix(line, prefix3) {
+            pos1 := strings.Index(line, " =")
+            pos2 := strings.Index(line, "_")
+            pos3 := strings.Index(line, "(insn)")
+            if pos1 > 0 && pos2 > 0 && pos3 > 0 {
+                name3 := strings.TrimSpace(line[8:pos1])
+                name4 := strings.TrimSpace(line[pos2+1 : pos3])
+                if name3 != name4 &&
+                    name3 != "hint" && name3 != "fcsr" &&
+                    name3 != "lsb" && name3 != "msb" {
+                    fmt.Println("check in " + name + " : " + name3 + " != " + name4)
+                }
+            }
+        }
+    }
+}
+
+func check_dup(text string) {
+    lines := strings.Split(text, "\n")
+    level := 0
+    names := []string{
+        "getIReg8(rd)", "getIReg16(rd)", "getIReg32(rd)", "getIReg64(rd)",
+        "getIReg8(rj)", "getIReg16(rj)", "getIReg32(rj)", "getIReg64(rj)",
+        "getIReg8(rk)", "getIReg16(rk)", "getIReg32(rk)", "getIReg64(rk)",
+        "getFReg8(fd)", "getFReg16(fd)", "getFReg32(fd)", "getFReg64(fd)",
+        "getFReg8(fj)", "getFReg16(fj)", "getFReg32(fj)", "getFReg64(fj)",
+        "getFReg8(fk)", "getFReg16(fk)", "getFReg32(fk)", "getFReg64(fk)",
+        "getFReg8(fa)", "getFReg16(fa)", "getFReg32(fa)", "getFReg64(fa)",
+    }
+    set := make(map[int]bool)
+    prefix := "static Bool gen_"
+    name := ""
+    for _, line := range lines {
+        if len(line) == 0 {
+            continue
+        }
+        if strings.Contains(line, "{") {
+            level++
+        } else if strings.Contains(line, "}") {
+            level--
+        }
+        if level == 0 {
+            if strings.HasPrefix(line, prefix) {
+                pos := strings.Index(line, " (")
+                if pos < len(prefix) {
+                    log.Fatalln("prefix")
+                }
+                name = line[len(prefix):pos]
+            }
+            for k := range set {
+                delete(set, k)
+            }
+        }
+        if level == 1 {
+            for i, n := range names {
+                if strings.Contains(line, n) {
+                    if set[i] {
+                        fmt.Println("check: " + n + " in " + name)
+                    } else {
+                        set[i] = true
+                    }
+                }
+            }
+        }
+    }
+}
+
+func main() {
+    filename := "xxx/valgrind/VEX/priv/guest_loongarch64_toIR.c"
+    filename2 := "xxx/blog/content/posts/valgrind/loongarch.md"
+    text1, _ := ioutil.ReadFile(filename)
+    check_name(string(text1))
+    check_dup(string(text1))
+    out1 := findAll(string(text1))
+    text2, _ := ioutil.ReadFile(filename2)
+    out2 := findAll(string(text2))
+    diff2(out1, out2)
+}
+```
