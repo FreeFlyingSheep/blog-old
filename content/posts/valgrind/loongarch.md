@@ -251,7 +251,7 @@ gdbserver 部分的代码主要位于 `coregrind/m_gdbserver/valgrind-low-loonga
 
 这部分代码参考了 GDB 的实现（`gdb/gdbserver/linux-loongarch-low.c`），因为新版本 GDB 的相关代码已经重构过，所以要适当调整（不能照抄，有点难受）。
 
-测试的时候使用使用 `--vgdb=yes --vgdb-error=0` 参数。
+测试的时候使用 `--vgdb=yes --vgdb-error=0` 参数。
 
 ### sigframe
 
