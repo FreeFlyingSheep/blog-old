@@ -15,6 +15,8 @@ categories: ["Valgrind"]
 
 项目仓库见 <https://github.com/FreeFlyingSheep/valgrind-loongarch64>，虽然还有很多测试项目没过，不过大体能用用了（连 arm64 回归测试也有一半跑不过呢，何况我是个菜逼（逃
 
+虽然向上游邮件列表发送了[邮件](https://sourceforge.net/p/valgrind/mailman/valgrind-developers/thread/CACWXhK%3DjZ8_Wpu8meJOjYFxX5AgbQ3Ad7BdFW19vRWoRhT-fmA%40mail.gmail.com/#msg37651955)，但目前还没人回复（毕竟对老外来说这是个小众架构，很可能就这么凉了）。
+
 ## LibVEX
 
 我实际完成 LibVEX 的移植是在 Valgrind 主体的移植后的，当时考虑的是先在本地通过编译跑起来再说。
@@ -321,6 +323,23 @@ gdbserver 部分的代码主要位于 `coregrind/m_gdbserver/valgrind-low-loonga
 
 后来发现可以通过 `*.supp` 文件忽略 C 库的警告，于是我偷懒直接在 `glibc-2.X.supp.in` 中把 `*/libc.so*` 和 `*/ld-linux-loongarch-*.so*` 文件产生的警告给忽略了。
 
+```text
+##----------------------------------------------------------------------##
+# LoongArch64 Linux
+{
+   glibc-loongarch64-cond-1
+   Memcheck:Cond
+   obj:*/libc.so*
+}
+{
+   glibc-loongarch64-cond-2
+   Memcheck:Cond
+   obj:*/ld-linux-loongarch-*.so*
+}
+```
+
+在完成了一些验证后，我还是把这几行删了，因为我也不确定这是不是高版本 glibc 共有的问题。
+
 ### 结构体要及时同步
 
 运行 `valgrind --tool=none gcc --version` 结果段错误了，用 GDB 追踪发现系统调用传递的参数都错位了。
@@ -360,6 +379,17 @@ LoongArch 下的 `ll`/`sc` 指令对，中间不能有其他访存指令，不�
 在 GDB 里单指令跟踪，发现最后发射的 `ll`/`sc` 指令对总是失败，查看寄存器内容是 `ll.w` 符号扩展了，而比较的时候，另一个操作数还是 32 位的，必定失败。
 
 对另一个操作数进行符号扩展，总算解决了这个问题。
+
+### 接收 `SIGINT` 后直接报错
+
+在部分多线程程序中按 `ctrl + c`，会导致 `coregrind/m_signals.c` 中 `async_signalhandler()` 函数的 `vg_assert(tst->status == VgTs_WaitSys);` 失败。
+
+搜索历史记录，有不少架构也修过这个问题，所以一开始怀疑是哪里需要加东西，但怎么都找不到。
+后来追踪 Valgrind 大锁和信号的 mask，发现该阻塞的地方没阻塞，这一定是哪里设置出了问题。
+
+阻塞信号用的是 `rt_sigprocmask()` 系统调用，查找用到这个系统调用的地方，发现 `coregrind/m_syswrap/syscall-loongarch64-linux.S` 最可疑。
+比照 arm64，果然抄错了一个地方，第二次重新阻塞时应该用 `postmask` 而不是 `syscall_mask`。
+修改后程序能正常处理 `SIGINT`，总算告一段落。
 
 ### 其他
 
@@ -921,6 +951,384 @@ for inst in insts:
         break
     else:
         print(f"{inst['name']} passed")
+```
+
+同理，对浮点指令的测试只需要稍微修改脚本：
+
+```python
+def write(line, file):
+    with open("dump.S", "r") as input:
+        text = input.read()
+        with open(file, "w") as output:
+            output.write(text.replace("nop\n", line))
+
+
+def build(line):
+    write(line, "tmp.S")
+    ret = os.system("gcc -nostdlib -static tmp.S show.c data.c -o tmp")
+    if ret != 0:
+        return ret
+    ret = os.system("./tmp > want.txt 2>&1")
+    if ret != 0:
+        return ret
+    return os.system("/usr/local/bin/valgrind --tool=none -q ./tmp > out.txt 2>&1")
+
+
+def diff(high):
+    with open("want.txt", "r") as want:
+        with open("out.txt", "r") as out:
+            lines1 = want.readlines()
+            lines2 = out.readlines()
+            if len(lines1) != len(lines2):
+                print("len1 != len2")
+                return False
+            for i in range(0, len(lines1)):
+                if high and lines1[i] != lines2[i]:
+                    print("64-bit")
+                    print("want: " + lines1[i] + "out: " + lines2[i])
+                    return False
+                elif lines1[14:] != lines2[14:]:
+                    print("32-bit")
+                    print("want: " + lines1[14:] + "out: " + lines2[14:])
+                    return False
+            return True
+
+
+def test(name, func, n):
+    for _ in range(0, n):
+        line, high = func(name, n)
+        if build(line) != 0:
+            print("Build failed!")
+            return False
+        if not diff(high):
+            return False
+    return True
+
+
+def fd_fj_s(name, n):
+    line = "la.local $t0, fj_s\n    "
+    line += f"fld.s $f1, $t0, {4 * n}\n    "
+    line += f"{name} $f0, $f1\n"
+    return line, False
+
+
+def fd_fj_d(name, n):
+    line = "la.local $t0, fj_d\n    "
+    line += f"fld.d $f1, $t0, {8 * n}\n    "
+    line += f"{name} $f0, $f1\n"
+    return line, True
+
+
+def fd_fj_fk_s(name, n):
+    line = "la.local $t0, fj_s\n    "
+    line += "la.local $t1, fk_s\n    "
+    line += f"fld.s $f1, $t0, {4 * n}\n    "
+    line += f"fld.s $f2, $t1, {4 * n}\n    "
+    line += f"{name} $f0, $f1, $f2\n"
+    return line, False
+
+
+def fd_fj_fk_d(name, n):
+    line = "la.local $t0, fj_d\n    "
+    line += "la.local $t1, fk_d\n    "
+    line += f"fld.d $f1, $t0, {8 * n}\n    "
+    line += f"fld.d $f2, $t1, {8 * n}\n    "
+    line += f"{name} $f0, $f1, $f2\n"
+    return line, True
+
+
+def fd_fj_fk_fa_s(name, n):
+    line = "la.local $t0, fj_s\n    "
+    line += "la.local $t1, fk_s\n    "
+    line += "la.local $t2, fa_s\n    "
+    line += f"fld.s $f1, $t0, {4 * n}\n    "
+    line += f"fld.s $f2, $t1, {4 * n}\n    "
+    line += f"fld.s $f3, $t2, {4 * n}\n    "
+    line += f"{name} $f0, $f1, $f2, $f3\n"
+    return line, False
+
+
+def fd_fj_fk_fa_d(name, n):
+    line = "la.local $t0, fj_d\n    "
+    line += "la.local $t1, fk_d\n    "
+    line += "la.local $t2, fa_d\n    "
+    line += f"fld.d $f1, $t0, {8 * n}\n    "
+    line += f"fld.d $f2, $t1, {8 * n}\n    "
+    line += f"fld.d $f3, $t2, {8 * n}\n    "
+    line += f"{name} $f0, $f1, $f2, $f3\n"
+    return line, True
+
+
+def fd_fj_s_d(name, n):
+    line = "la.local $t0, fj_d\n    "
+    line += f"fld.d $f1, $t0, {8 * n}\n    "
+    line += f"{name} $f0, $f1\n"
+    return line, False
+
+
+def fd_fj_d_s(name, n):
+    line = "la.local $t0, fj_s\n    "
+    line += f"fld.s $f1, $t0, {4 * n}\n    "
+    line += f"{name} $f0, $f1\n"
+    return line, True
+
+
+def fd_fj_w_s(name, n):
+    line = "la.local $t0, fj_s\n    "
+    line += f"fld.s $f1, $t0, {4 * n}\n    "
+    line += f"{name} $f0, $f1\n"
+    return line, False
+
+
+def fd_fj_w_d(name, n):
+    line = "la.local $t0, fj_d\n    "
+    line += f"fld.d $f1, $t0, {8 * n}\n    "
+    line += f"{name} $f0, $f1\n"
+    return line, False
+
+
+def fd_fj_l_s(name, n):
+    line = "la.local $t0, fj_s\n    "
+    line += f"fld.s $f1, $t0, {4 * n}\n    "
+    line += f"{name} $f0, $f1\n"
+    return line, True
+
+
+def fd_fj_l_d(name, n):
+    line = "la.local $t0, fj_d\n    "
+    line += f"fld.d $f1, $t0, {8 * n}\n    "
+    line += f"{name} $f0, $f1\n"
+    return line, True
+
+
+def fd_fj_s_w(name, n):
+    line = "la.local $t0, fj_w\n    "
+    line += f"fld.s $f1, $t0, {4 * n}\n    "
+    line += f"{name} $f0, $f1\n"
+    return line, False
+
+
+def fd_fj_s_l(name, n):
+    line = "la.local $t0, fj_l\n    "
+    line += f"fld.d $f1, $t0, {8 * n}\n    "
+    line += f"{name} $f0, $f1\n"
+    return line, False
+
+
+def fd_fj_d_w(name, n):
+    line = "la.local $t0, fj_w\n    "
+    line += f"fld.s $f1, $t0, {4 * n}\n    "
+    line += f"{name} $f0, $f1\n"
+    return line, True
+
+
+def fd_fj_d_l(name, n):
+    line = "la.local $t0, fj_l\n    "
+    line += f"fld.d $f1, $t0, {8 * n}\n    "
+    line += f"{name} $f0, $f1\n"
+    return line, True
+
+
+insts = [
+    { "name": "fadd.s",         "func": fd_fj_fk_s },
+    { "name": "fadd.d",         "func": fd_fj_fk_d },
+    { "name": "fsub.s",         "func": fd_fj_fk_s },
+    { "name": "fsub.d",         "func": fd_fj_fk_d },
+    { "name": "fmul.s",         "func": fd_fj_fk_s },
+    { "name": "fmul.d",         "func": fd_fj_fk_d },
+    { "name": "fdiv.s",         "func": fd_fj_fk_s },
+    { "name": "fdiv.d",         "func": fd_fj_fk_d },
+    { "name": "fmadd.s",        "func": fd_fj_fk_fa_s },
+    { "name": "fmadd.d",        "func": fd_fj_fk_fa_d },
+    { "name": "fmsub.s",        "func": fd_fj_fk_fa_s },
+    { "name": "fmsub.d",        "func": fd_fj_fk_fa_d },
+    { "name": "fnmadd.s",       "func": fd_fj_fk_fa_s },
+    { "name": "fnmadd.d",       "func": fd_fj_fk_fa_d },
+    { "name": "fnmsub.s",       "func": fd_fj_fk_fa_s },
+    { "name": "fnmsub.d",       "func": fd_fj_fk_fa_d },
+    { "name": "fmax.s",         "func": fd_fj_fk_s },
+    { "name": "fmax.d",         "func": fd_fj_fk_d },
+    { "name": "fmin.s",         "func": fd_fj_fk_s },
+    { "name": "fmin.d",         "func": fd_fj_fk_d },
+    { "name": "fmaxa.s",        "func": fd_fj_fk_s },
+    { "name": "fmaxa.d",        "func": fd_fj_fk_d },
+    { "name": "fmina.s",        "func": fd_fj_fk_s },
+    { "name": "fmina.d",        "func": fd_fj_fk_d },
+    { "name": "fabs.s",         "func": fd_fj_s },
+    { "name": "fabs.d",         "func": fd_fj_d },
+    { "name": "fneg.s",         "func": fd_fj_s },
+    { "name": "fneg.d",         "func": fd_fj_d },
+    { "name": "fsqrt.s",        "func": fd_fj_s },
+    { "name": "fsqrt.d",        "func": fd_fj_d },
+    { "name": "frecip.s",       "func": fd_fj_s },
+    { "name": "frecip.d",       "func": fd_fj_d },
+    { "name": "frsqrt.s",       "func": fd_fj_s },
+    { "name": "frsqrt.d",       "func": fd_fj_d },
+    { "name": "fscaleb.s",      "func": fd_fj_fk_s },
+    { "name": "fscaleb.d",      "func": fd_fj_fk_d },
+    { "name": "flogb.s",        "func": fd_fj_s },
+    { "name": "flogb.d",        "func": fd_fj_d },
+    { "name": "fcopysign.s",    "func": fd_fj_fk_s },
+    { "name": "fcopysign.d",    "func": fd_fj_fk_d },
+    { "name": "fclass.s",       "func": fd_fj_s },
+    { "name": "fclass.d",       "func": fd_fj_d },
+    { "name": "fcvt.s.d",       "func": fd_fj_s_d },
+    { "name": "fcvt.d.s",       "func": fd_fj_d_s },
+    { "name": "ftintrm.w.s",    "func": fd_fj_w_s },
+    { "name": "ftintrm.w.d",    "func": fd_fj_w_d },
+    { "name": "ftintrm.l.s",    "func": fd_fj_l_s },
+    { "name": "ftintrm.l.d",    "func": fd_fj_l_d },
+    { "name": "ftintrp.w.s",    "func": fd_fj_w_s },
+    { "name": "ftintrp.w.d",    "func": fd_fj_w_d },
+    { "name": "ftintrp.l.s",    "func": fd_fj_l_s },
+    { "name": "ftintrp.l.d",    "func": fd_fj_l_d },
+    { "name": "ftintrz.w.s",    "func": fd_fj_w_s },
+    { "name": "ftintrz.w.d",    "func": fd_fj_w_d },
+    { "name": "ftintrz.l.s",    "func": fd_fj_l_s },
+    { "name": "ftintrz.l.d",    "func": fd_fj_l_d },
+    { "name": "ftintrne.w.s",   "func": fd_fj_w_s },
+    { "name": "ftintrne.w.d",   "func": fd_fj_w_d },
+    { "name": "ftintrne.l.s",   "func": fd_fj_l_s },
+    { "name": "ftintrne.l.d",   "func": fd_fj_l_d },
+    { "name": "ftint.w.s",      "func": fd_fj_w_s },
+    { "name": "ftint.w.d",      "func": fd_fj_w_d },
+    { "name": "ftint.l.s",      "func": fd_fj_l_s },
+    { "name": "ftint.l.d",      "func": fd_fj_l_d },
+    { "name": "ffint.s.w",      "func": fd_fj_s_w },
+    { "name": "ffint.s.l",      "func": fd_fj_s_l },
+    { "name": "ffint.d.w",      "func": fd_fj_d_w },
+    { "name": "ffint.d.l",      "func": fd_fj_d_l },
+    { "name": "frint.s",        "func": fd_fj_s },
+    { "name": "frint.d",        "func": fd_fj_d }
+]
+
+n = 24
+for inst in insts:
+    if not test(inst["name"], inst["func"], n):
+        print(f"{inst['name']} failed")
+        break
+    else:
+        print(f"{inst['name']} passed")
+```
+
+在 `dump.S` 前加入对 `fcsr` 寄存器的修改：
+
+```text
+.text
+.globl _start
+_start:
+    // li.w       $t0, 0x0
+    // li.w       $t0, 0x100
+    // li.w       $t0, 0x200
+    li.w       $t0, 0x300
+    movgr2fcsr $r0, $t0
+
+    nop
+    ...
+```
+
+使用的数据文件 `data.c` 如下（抄的 mips 测试案例）：
+
+```c
+const float fj_s[] = {
+    0,         456.25,   3,          -1,
+    1384.5,    -7.25,    1000000000, -5786.5,
+    1752,      0.015625, 0.03125,    -248562.75,
+    -45786.5,  456,      34.03125,   45786.75,
+    1752065,   107,      -45667.25,  -7,
+    -347856.5, 356047.5, -1.0,       23.0625
+};
+
+const double fj_d[] = {
+    0,         456.25,   3,          -1,
+    1384.5,    -7.25,    1000000000, -5786.5,
+    1752,      0.015625, 0.03125,    -248562.75,
+    -45786.5,  456,      34.03125,   45786.75,
+    1752065,   107,      -45667.25,  -7,
+    -347856.5, 356047.5, -1.0,       23.0625
+};
+
+const float fk_s[] = {
+    -4578.5, 456.25,   34.03125, 4578.75,
+    175,     107,      -456.25,  -7.25,
+    -3478.5, 356.5,    -1.0,     23.0625,
+    0,       456.25,   3,        -1,
+    1384.5,  -7,       100,      -5786.5,
+    1752,    0.015625, 0.03125,  -248562.75
+};
+
+const double fk_d[] = {
+    -45786.5,  456.25,   34.03125,   45786.75,
+    1752065,   107,      -45667.25,  -7.25,
+    -347856.5, 356047.5, -1.0,       23.0625,
+    0,         456.25,   3,          -1,
+    1384.5,    -7,       1000000000, -5786.5,
+    1752,      0.015625, 0.03125,    -248562.75
+};
+
+const float fa_s[] = {
+    -347856.5,  356047.5,  -1.0,       23.0625,
+    1752,       0.015625,  0.03125,    -248562.75,
+    1384.5,     -7.25,     1000000000, -5786.5,
+    -347856.75, 356047.75, -1.0,       23.03125,
+    0,          456.25,    3,          -1,
+    -45786.5,   456,       34.03125,   45786.03125,
+};
+
+const double fa_d[] = {
+    -347856.5,  356047.5,  -1.0,       23.0625,
+    1752,       0.015625,  0.03125,    -248562.75,
+    1384.5,     -7.25,     1000000000, -5786.5,
+    -347856.75, 356047.75, -1.0,       23.03125,
+    0,          456.25,    3,          -1,
+    -45786.5,   456,       34.03125,   45786.03125,
+};
+
+const int fj_w[] = {
+    0,          456,        3,          -1,
+    0xffffffff, 356,        1000000000, -5786,
+    1752,       24575,      10,         -248562,
+    -45786,     456,        34,         45786,
+    1752065,    107,        -45667,     -7,
+    -347856,    0x80000000, 0xfffffff,  23,
+};
+
+const long fj_l[] = {
+    18,         25,         3,          -1,
+    0xffffffff, 356,        1000000,    -5786,
+    -1,         24575,      10,         -125458,
+    -486,       456,        34,         45786,
+    0,          1700000,    -45667,     -7,
+    -347856,    0x80000000, 0xfffffff,  23,
+};
+```
+
+对于 `show.c`，只检查 `f0` 和 `fcsr` 即可：
+
+```c
+...
+
+int show(unsigned long *regs)
+{
+    char s[20], t[20];
+    my_puts("f");
+    my_itoa(s, 0, 10);
+    my_puts(s);
+    my_puts(":\t");
+    my_itoa(s, regs[32], 16);
+    widen(t, s, 16);
+    my_puts(t);
+    my_puts("\n");
+    my_puts("fcsr");
+    my_itoa(s, 0, 10);
+    my_puts(s);
+    my_puts(":\t");
+    my_itoa(s, regs[64], 16);
+    widen(t, s, 8);
+    my_puts(t);
+    my_puts("\n");
+    return 0;
+}
 ```
 
 借助这个脚本我发现了大量翻译指令时的笔误……
