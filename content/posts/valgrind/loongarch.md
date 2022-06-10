@@ -321,7 +321,7 @@ gdbserver 部分的代码主要位于 `coregrind/m_gdbserver/valgrind-low-loonga
 
 使用 memcheck 跑动态链接程序的时候，发现一万个警告，而在 x86 下运行是没这些警告的。
 
-后来发现可以通过 `*.supp` 文件忽略 C 库的警告，于是我偷懒直接在 `glibc-2.X.supp.in` 中把 `*/libc.so*` 和 `*/ld-linux-loongarch-*.so*` 文件产生的警告给忽略了。
+后来发现可以通过 `*.supp` 文件忽略 C 库的警告，于是我暂时偷懒直接在 `glibc-2.X.supp.in` 中把 `*/libc.so*` 和 `*/ld-linux-loongarch-*.so*` 文件产生的警告给忽略了，。
 
 ```text
 ##----------------------------------------------------------------------##
@@ -338,7 +338,11 @@ gdbserver 部分的代码主要位于 `coregrind/m_gdbserver/valgrind-low-loonga
 }
 ```
 
-在完成了一些验证后，我还是把这几行删了，因为我也不确定这是不是高版本 glibc 共有的问题。
+在完成了一些验证后，我发现报错的来源主要是 `sc.w` 指令，我怀疑是我模拟的有问题。
+
+在逐步排查所有 `exit` 的地方后，发现问题大概是出自 `guest_LLSC_DATA` 和 `data` 的比较上，因为 `guest_LLSC_DATA` 是一个 64 位的变量，我把 32 位的 `data` 也转成 64 位后， `sc` 指令产生的报错就消失了。
+
+其他报错来自于 C 位域，反汇编后发现和 `bstrins` 指令有关，推测是我偷懒用 C 语言函数模拟，导致 memcheck 不能正确跟踪位的情况，于是老老实实用多条 Vex IR 指令模拟，之后发现 memcheck 关于 C 库的报错全没了，太爽了。
 
 ### 结构体要及时同步
 
