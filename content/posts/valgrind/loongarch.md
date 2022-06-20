@@ -305,8 +305,6 @@ gdbserver 部分的代码主要位于 `coregrind/m_gdbserver/valgrind-low-loonga
 
 一个简单粗暴的解决方案是把 32 位除法指令的操作数统一进行符号扩展。
 
-考虑到可能还有类似的问题，我索性把所有的加载立即数指令都改成 64 位版本的加载（原本是 32 位立即数用两条指令加载，64 位用四条指令加载），来避免加载时高位符号扩展，同时部分指令手动清零高位，虽然应该有更好的解决方案，但图省事先这样吧，真的坑。
-
 ### 地址解析问题
 
 经过不停的修改测试，好不容易把静态链接的小程序跑通了，但一运行动态链接程序就段错误，让人费解。
@@ -321,7 +319,7 @@ gdbserver 部分的代码主要位于 `coregrind/m_gdbserver/valgrind-low-loonga
 
 使用 memcheck 跑动态链接程序的时候，发现一万个警告，而在 x86 下运行是没这些警告的。
 
-后来发现可以通过 `*.supp` 文件忽略 C 库的警告，于是我暂时偷懒直接在 `glibc-2.X.supp.in` 中把 `*/libc.so*` 和 `*/ld-linux-loongarch-*.so*` 文件产生的警告给忽略了，。
+后来发现可以通过 `*.supp` 文件忽略 C 库的警告，于是我暂时偷懒直接在 `glibc-2.X.supp.in` 中把 `*/libc.so*` 和 `*/ld-linux-loongarch-*.so*` 文件产生的警告给忽略了。
 
 ```text
 ##----------------------------------------------------------------------##
@@ -354,7 +352,9 @@ gdbserver 部分的代码主要位于 `coregrind/m_gdbserver/valgrind-low-loonga
 
 每次测试 Valgrind 的 gdbserver 功能都提示 `Remote 'g' packet reply is too long`。
 
-查看社区版 GDB 源码后发现尽管写了代码，但竟然默认不支持浮点寄存器，我把 `coregrind/m_gdbserver/valgrind-low-loongarch64.c` 中浮点寄存器代码注释掉后就好了。
+查看社区版 GDB 源码后发现尽管写了代码，但竟然默认不支持浮点寄存器（`gdb/arch/loongarch.c`），我把 `coregrind/m_gdbserver/valgrind-low-loongarch64.c` 中浮点寄存器代码注释掉后就好了。
+
+最后改用了内部完整版的 GDB 进行测试，把浮点寄存器加回去了。
 
 ### VDSO
 
@@ -397,11 +397,7 @@ LoongArch 下的 `ll`/`sc` 指令对，中间不能有其他访存指令，不�
 
 ### 其他
 
-部分指令在支持非对齐访问和不支持非对齐访问特性的 CPU 上有不同结果，如 `ldptr` 指令。
-我目前并未将该特性纳入 libVEX 的翻译过程中，这个坑以后有需求再填了。
-
-这么做是因为目前只考虑 64 位 CPU （即 3A5000）的支持，该 CPU 是支持非对齐访问的。
-而后续可能需要适配的不支持非对齐访问的 CPU 是 32 位的，这个大坑以后有需求再填。
+`movcf2gr` 和 `movcf2fr` 指令会清空高位，手册没写明。
 
 Valgrind 并未实现 `clone3()` 系统调用相关的代码，因此我参考其他架构，直接在 `coregrind/m_syswrap/syswrap-loongarch64-linux.c` 的系统调用表里，把 `clone3()` 设置为 `sys_ni_syscall`。
 
