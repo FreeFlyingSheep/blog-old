@@ -77,7 +77,6 @@ categories: ["Valgrind"]
 - `Iop_16Sto64`：`ext.w.h dst, src`
 - `Iop_16Uto64`：`slli.d dst, src, 48; srli.d dst, dst, 48`
 - `Iop_1Sto64`：`slli.d dst, src, 63; srai.d dst, dst, 63`
-- `Iop_1Uto32`：`andi dst, src, 0x1`
 - `Iop_1Uto64`：`andi dst, src, 0x1`
 - `Iop_1Uto8`：`andi dst, src, 0x1`
 - `Iop_32Sto64`：`slli.w dst, src, 0`
@@ -97,6 +96,8 @@ categories: ["Valgrind"]
 - `Iop_AddF64`：`fadd.d dst, src1, src2`
 - `Iop_And32`：`and[i] dst, src1, src2`
 - `Iop_And64`：`and[i] dst, src1, src2`
+- `Iop_CasCmpNE32`：`xor dst, src1, src2; sltu dst, $zero, dst`
+- `Iop_CasCmpNE64`：`xor dst, src1, src2; sltu dst, $zero, dst`
 - `Iop_Clz32`：`clz.w dst, src`
 - `Iop_Clz64`：`clz.d dst, src`
 - `Iop_CmpEQ32`：`xor dst, src1, src2; sltui dst, dst, 1`
@@ -137,6 +138,10 @@ categories: ["Valgrind"]
 - `Iop_MAddF64`：`fmadd.d dst, src1, src2, src3`
 - `Iop_MSubF32`：`fmsub.s dst, src1, src2, src3`
 - `Iop_MSubF64`：`fmsub.d dst, src1, src2, src3`
+- `Iop_MaxNumAbsF32`：`fmaxa.s dst, src1, src2`
+- `Iop_MaxNumAbsF64`：`fmaxa.d dst, src1, src2`
+- `Iop_MinNumAbsF32`：`fmina.s dst, src1, src2`
+- `Iop_MinNumAbsF64`：`fmina.d dst, src1, src2`
 - `Iop_MaxNumF32`：`fmax.s dst, src1, src2`
 - `Iop_MaxNumF64`：`fmax.d dst, src1, src2`
 - `Iop_MinNumF32`：`fmin.s dst, src1, src2`
@@ -154,6 +159,8 @@ categories: ["Valgrind"]
 - `Iop_Or1`：`or dst, src1, src2`
 - `Iop_Or32`：`or[i] dst, src1, src2`
 - `Iop_Or64`：`or[i] dst, src1, src2`
+- `Iop_RSqrtF32`：`frsqrt.s dst, src`
+- `Iop_RSqrtF64`：`frsqrt.d dst, src`
 - `Iop_ReinterpF32asI32`：`movfr2gr.s dst, src`
 - `Iop_ReinterpF64asI64`：`movfr2gr.d dst, src`
 - `Iop_ReinterpI32asF32`：`movgr2fr.w dst, src`
@@ -180,6 +187,7 @@ categories: ["Valgrind"]
 - `Iex_Binop`：用于表示二元操作符和对应的操作数
 - `Iex_Const`：用于表示常量
 - `Iex_Get`：用于读寄存器
+- `Iex_ITE`：用于表示 `if-else` 操作
 - `Iex_Load`：用于读内存
 - `Iex_Qop`：用于表示四元操作符和对应的操作数
 - `Iex_RdTmp`：用于表示读取临时变量
@@ -190,11 +198,14 @@ categories: ["Valgrind"]
 
 - `Ijk_Boring`：用于表示普通的跳转
 - `Ijk_ClientReq`：用于表示需要处理客户端请求（Valgrind 专用）
-- `Ijk_SigFPE`：用于表示当前指令触发 `SIGFPE` 异常
+- `Ijk_SigFPE_IntDiv`：用于表示当前指令触发 `SIGFPE` 异常，且是整数除 0 异常
+- `Ijk_SigFPE_IntOvf`：用户表示当前指令触发 `SIGFPE` 异常，且是整数溢出异常
 - `Ijk_INVALID`：用于表示无效（libVEX 本身出现错误）
 - `Ijk_InvalICache`：用于表示需要使指令缓存无效（Valgrind 专用）
 - `Ijk_NoDecode`：用于表示解码失败
 - `Ijk_NoRedir`：用于表示跳转到未重定向到地址（Valgrind 专用）
+- `Ijk_SigBUS`：用于表示当前指令触发 `SIGBUS` 异常
+- `Ijk_SigILL`：用于表示当前指令触发 `SIGILL` 异常
 - `Ijk_SigSEGV`：用于表示当前指令触发 `SIGSEGV` 异常
 - `Ijk_SigTRAP`：用于表示当前指令触发 `SIGTRAP` 异常
 - `Ijk_Sys_syscall`：用于表示需要进行系统调用
@@ -342,6 +353,8 @@ gdbserver 部分的代码主要位于 `coregrind/m_gdbserver/valgrind-low-loonga
 
 其他报错来自于 C 位域，反汇编后发现和 `bstrins` 指令有关，推测是我偷懒用 C 语言函数模拟，导致 memcheck 不能正确跟踪位的情况，于是老老实实用多条 Vex IR 指令模拟，之后发现 memcheck 关于 C 库的报错全没了，太爽了。
 
+除了 memcheck，helgrind 也有来自 C 库的警告，最终发现是需要在 `coregrind/m_redir.c` 中添加动态链接库的名字。
+
 ### 结构体要及时同步
 
 运行 `valgrind --tool=none gcc --version` 结果段错误了，用 GDB 追踪发现系统调用传递的参数都错位了。
@@ -366,7 +379,7 @@ gdbserver 部分的代码主要位于 `coregrind/m_gdbserver/valgrind-low-loonga
 
 而高版本内核不支持 `SA_RESTORER`，因此没法向其他架构一样用自己的 `my_sigreturn()` 函数。
 
-后来追踪历史记录发现在 `coregrind/m_aspacemgr/aspacemgr-linux.c` 中不取消映射就行了（添加 `#ifdef`）。
+后来追踪历史记录发现在 `coregrind/m_initimg/initimg-linux.c` 中不取消映射就行了（添加 `#ifdef`）。
 
 ### LLSC
 
