@@ -11,11 +11,11 @@ categories: ["Valgrind"]
 
 ## 引言
 
-好久没更新了，目前初步完成了 Valgrind for LoongArch 的适配，补丁的整理参考了 [riscv64](https://github.com/petrpavlu/valgrind-riscv64)。
+好久没更新了，目前基本完成了 Valgrind for LoongArch 的适配，补丁的整理参考了 [riscv64](https://github.com/petrpavlu/valgrind-riscv64)。
 
-项目仓库见 <https://github.com/FreeFlyingSheep/valgrind-loongarch64>，虽然还有很多测试项目没过，不过大体能用用了（连 arm64 回归测试也有一半跑不过呢，何况我是个菜逼（逃
+项目仓库见 <https://github.com/FreeFlyingSheep/valgrind-loongarch64>，通过了除 `drd/tests/pth_mutex_signal` 以外的所有回归测试，且这个未通过项目是已知的公共问题。
 
-虽然向上游邮件列表发送了[邮件](https://sourceforge.net/p/valgrind/mailman/valgrind-developers/thread/CACWXhK%3DjZ8_Wpu8meJOjYFxX5AgbQ3Ad7BdFW19vRWoRhT-fmA%40mail.gmail.com/#msg37651955)，但目前还没人回复（毕竟对老外来说这是个小众架构，很可能就这么凉了）。
+向上游邮件列表发送了[邮件](https://sourceforge.net/p/valgrind/mailman/valgrind-developers/thread/CACWXhK%3DjZ8_Wpu8meJOjYFxX5AgbQ3Ad7BdFW19vRWoRhT-fmA%40mail.gmail.com/#msg37651955)，进一步跟进中，希望能早日合入上游。
 
 ## LibVEX
 
@@ -207,6 +207,7 @@ categories: ["Valgrind"]
 - `Ijk_SigBUS`：用于表示当前指令触发 `SIGBUS` 异常
 - `Ijk_SigILL`：用于表示当前指令触发 `SIGILL` 异常
 - `Ijk_SigSEGV`：用于表示当前指令触发 `SIGSEGV` 异常
+- `Ijk_SigSYS`：用于表示当前指令触发 `SIGSYS` 异常
 - `Ijk_SigTRAP`：用于表示当前指令触发 `SIGTRAP` 异常
 - `Ijk_Sys_syscall`：用于表示需要进行系统调用
 
