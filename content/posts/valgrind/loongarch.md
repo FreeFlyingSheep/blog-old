@@ -409,9 +409,51 @@ LoongArch 下的 `ll`/`sc` 指令对，中间不能有其他访存指令，不�
 比照 arm64，果然抄错了一个地方，第二次重新阻塞时应该用 `postmask` 而不是 `syscall_mask`。
 修改后程序能正常处理 `SIGINT`，总算告一段落。
 
-### 其他
+### 加载立即数
+
+为了优化大量的加载立即数指令，根据立即数大小分为三种情况：
+
+```c
+if ((imm >> 12) == 0)
+    p = mkLoadImm_EXACTLY1(p, dst, imm);
+else if (imm < 0xffffffff || (imm >> 31) == 0x1ffffffffUL)
+    p = mkLoadImm_EXACTLY2(p, dst, imm);
+else
+    p = mkLoadImm_EXACTLY4(p, dst, imm);
+return p;
+```
+
+使用一条指令加载：
+
+```text
+ori dst, $zero, imm[11:0]
+```
+
+使用两条指令加载：
+
+```text
+lu12i.w dst, imm[31:12]
+ori     dst, dst, imm[11:0]
+```
+
+使用四条指令加载：
+
+```text
+lu12i.w dst, imm[31:12]
+ori     dst, dst, imm[11:0]
+lu32i.d dst, imm[51:32]
+lu52i.d dst, dst, imm[63:52]
+```
+
+在验证 `pcaddu12i` 和 `pcalau12i` 指令时发现问题，高位应该为 `0` 的情况变成全 `1` 了。
+追踪发现是加载立即数是，希望加载一个第 32 位为 `1` 的 64 位立即数，但被误判为了使用两条指令去加载 32 位立即数。
+解决办法是修改 `imm < 0xffffffff` 为 `imm < 0x80000000`，确保这种情况下使用四条指令去加载。
+
+### `movcf2gr` 和 `movcf2fr`
 
 `movcf2gr` 和 `movcf2fr` 指令会清空高位，手册没写明。
+
+### `clone3()` 系统调用
 
 Valgrind 并未实现 `clone3()` 系统调用相关的代码，因此我参考其他架构，直接在 `coregrind/m_syswrap/syswrap-loongarch64-linux.c` 的系统调用表里，把 `clone3()` 设置为 `sys_ni_syscall`。
 
