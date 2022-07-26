@@ -14,6 +14,7 @@ categories: ["Valgrind"]
 这部分内容主要来源于 Valgrind 官网的[用户手册](https://valgrind.org/docs/manual/manual.html)。
 
 [Valgrind](https://valgrind.org/) 是一个用于建立动态分析工具的插桩（Instrumentation）框架。
+其本质是一个类似 QEMU TCG 的虚拟机（似乎 Valgrind 比 QEMU 项目更早创立），在动态翻译的过程中可以插入很多检查，同时提供了一个 gdbserver 方便远程调试。
 
 ### 工具介绍
 
