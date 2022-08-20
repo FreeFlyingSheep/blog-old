@@ -162,6 +162,8 @@ LoongArch 的寄存器使用约定基本和 RISC-V 相同。
 - `alsl.wu rd, rj, rk, sa2`
 - `alsl.d rd, rj, rk, sa2`
 
+"alsl" 是 "add logical shift left" 的缩写，这命名只能靠猜啊。
+
 本质上是执行 `rd = (rj << sa2) + rk`，需要注意的是这里 `sa2` 的取值范围是 `[1, 4]`。
 手册上是写的是 `rj << (sa2 + 1)`，这里非常容易引起误解，因为指令编码和我们需要写的汇编不同。
 指令编码里的 `sa2` 的取值范围是 `[0, 3]`，而汇编器需要的 `sa2` 的取值范围却是 `[1, 4]`（即需要我们手动加一）。
@@ -180,6 +182,8 @@ LoongArch 的寄存器使用约定基本和 RISC-V 相同。
 - `pcalau12i rd, si20`
 - `pcaddu12i rd, si20`
 - `pcaddu18i rd, si20`
+
+其中，"pcalau" 是 "pc align add upper" 的缩写，鬼才命名，反正我是猜不出来。
 
 这些指令主要在[加载地址](#加载地址)时被使用。
 
@@ -273,6 +277,8 @@ LoongArch 的寄存器使用约定基本和 RISC-V 相同。
 
 - `bstrins.w rd, rj, msbw, lsbw`
 - `bstrins.d rd, rj, msbd, lsbd`
+
+"bstrins" 是 "bit string insert" 的缩写，这个命名相对好猜一点。
 
 把 `rd` 中的 `msbw - lsbw`/`msbd - lsbd` 替换为 `rj` 中的 `[0, msbw - lsbw]`/`[0, msbd - lsbd]` 位。
 我们必须确保 `msbw`/`msbd` 大于 `lsbw`/`lsbd`。
