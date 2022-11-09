@@ -283,7 +283,7 @@ VexTranslateResult LibVEX_Translate ( /*MOD*/ VexTranslateArgs* vta )
 1. 初始化一些变量，根据架构设置对应的功能函数。
 2. 调用 `bb_to_IR()` 函数翻译二进制代码到 Vex IR 超级块。
 3. 调用 `do_iropt_BB()` 函数进行优化（iropt: IR optimiser）。
-4. 装上分析工具（get the thing instrumented），似乎主要是给 gdbserve 用的。
+4. 装上分析工具（get the thing instrumented），似乎主要是给 gdbserver 用的。
 5. 进行一些后续的清理工作。
 
 若设置了调试参数，会打印额外信息。同时，期间进行了很多理智检查，我略去了这些步骤，后文也是如此。

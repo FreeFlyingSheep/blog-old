@@ -274,7 +274,7 @@ static SyscallTableEntry syscall_main_table[] = {
 
 `coregrind/m_cache.c` 主要就是探测缓存信息，因为不同 CPU 的探测方式都不同，所以每个架构都实现了一套。
 
-cachegrind 是 valgrind 的缓存工具，里面基本都是公共化的代码，基本上每个架构只需要设置一些默认值。
+cachegrind 是 Valgrind 的缓存工具，里面基本都是公共化的代码，基本上每个架构只需要设置一些默认值。
 
 ### 初始镜像（initial image）
 
