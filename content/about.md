@@ -18,7 +18,6 @@ summary: "about"
 
 - Git：Git 相关的学习笔记
 - Kernel：Linux 内核相关的学习笔记
-- LeetCode：LeetCode 刷题笔记
 - Linux：不同 Linux 发行版的使用记录
 - LoongArch：LoongArch 相关的学习笔记
 - Mips：Mips 体系结构相关的学习笔记

@@ -22,3 +22,4 @@ series: ["Linux 内核学习笔记"]
 - [内存模型](/posts/kernel/memory/model) 385 行，活动页和不活动页相关内容。
 - [连续页框的管理](/posts/kernel/memory/continuous) 532 行，块设备驱动程序相关内容。
 - [slab 分配器](/posts/kernel/memory/slab) 448 行，内核同步相关内容。
+- [bootmem 分配器](/posts/kernel/memory/bootmem)，bootmem 分配器相关内容。
