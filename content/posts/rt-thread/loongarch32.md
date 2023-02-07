@@ -28,13 +28,13 @@ RT-Thread 使用的是 SCons 构建系统，该构建系统由 Python 编写。
 
 ### 项目结构
 
-考虑我们需要移植一个新的架构，所以我们需要在 `libcpu` 下建立一个 `loongarch` 目录，而需要适配的芯片则在 `bsp/loongson` 下建立子目录（该芯片是 Loongson 公司的 la132），大致的项目结构如下：
+考虑我们需要移植一个新的架构，所以我们需要在 `libcpu` 下建立一个 `loongarch` 目录，而需要适配的芯片则在 `bsp/loongson` 下建立子目录（芯片名称以 `xxx` 代替），大致的项目结构如下：
 
 ```text
 rt-thread
 ├── bsp
 │   └── loongson
-│       └── la132 # 具体的芯片型号
+│       └── xxx # 具体的芯片型号
 │           ├── applications # 应用程序目录
 │           │   └── SConscript
 │           ├── drivers # 驱动目录
@@ -48,7 +48,7 @@ rt-thread
     └── loongarch
         ├── common # 该架构通用的代码
         │   └── SConscript
-        ├── la132 # 具体的处理器核
+        ├── xxx # 具体的处理器核
         │   └── SConscript
         └── SConscript
 ```
@@ -57,7 +57,7 @@ rt-thread
 
 ### 构建系统相关的代码
 
-`bsp/loongson/la132/SConscript` 的内容如下：
+`bsp/loongson/xxx/SConscript` 的内容如下：
 
 ```Python
 # for module compiling
@@ -94,7 +94,7 @@ Return('group')
 
 不难理解，这是编译当前目录下所有的 `*.c`、`*.cpp` 和 `*_gcc.S` 文件（我们使用的是 GCC 编译器，因此汇编文件需要以 `_gcc.S` 结尾）。
 
-`bsp/loongson/la132/SConstruct` 的内容如下：
+`bsp/loongson/xxx/SConstruct` 的内容如下：
 
 ```Python
 import os
@@ -131,14 +131,14 @@ objs = PrepareBuilding(env, RTT_ROOT)
 DoBuilding(TARGET, objs)
 ```
 
-`bsp/loongson/la132/rtconfig.py` 的内容如下（工具链路径略去）：
+`bsp/loongson/xxx/rtconfig.py` 的内容如下（工具链路径略去）：
 
 ```Python
 import os
 
 # toolchains options
 ARCH       = 'loongarch'
-CPU        = 'la132'
+CPU        = 'xxx'
 CROSS_TOOL = 'gcc'
 
 if os.getenv('RTT_ROOT'):
@@ -978,7 +978,7 @@ config PKGS_DIR
 source "$RTT_DIR/Kconfig"
 source "$PKGS_DIR/Kconfig"
 
-config SOC_LA132
+config SOC_XXX
     bool
     select ARCH_LOONGARCH
     select RT_USING_COMPONENTS_INIT
