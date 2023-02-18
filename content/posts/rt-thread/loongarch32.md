@@ -407,7 +407,6 @@ rt_uint8_t *rt_hw_stack_init(void *tentry, void *parameter, rt_uint8_t *stack_ad
     ...
 
     /* Get stk aligned */
-    stk = stack_addr + sizeof(rt_uint32_t);
     stk = (rt_uint8_t *)RT_ALIGN_DOWN((rt_uint32_t)stack_addr, 8);
     stk -= sizeof(struct stack_frame);
 
@@ -1084,3 +1083,5 @@ SECTIONS
 不过 64 位的工具链和 QEMU 已经比较完善了，就差个 newlib 库没人移植。
 后续有空可以整个在 QEMU 上运行的 LoongArch64 的 RT，这样就方便开源了。
 但还需要移植 newlib（乍一看这个库的移植好像不复杂？），然后自己做一套工具链，这个坑有点大，不知道以后会不会填（逃
+
+**坑已填，见[移植 RT-Thread 到 LoongArch64](/posts/rt-thread/loongarch64)。**
