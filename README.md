@@ -1,20 +1,3 @@
-# Blog
+# 旧博客
 
-## Clone
-
-```bash
-git clone --recurse-submodules git@github.com:FreeFlyingSheep/blog.git
-```
-
-## Update
-
-```bash
-git submodule update --remote --merge
-git pull --rebase
-```
-
-## Publish
-
-```bash
-git push
-```
+该项目仅仅是为了保留旧博客，方便日后查询用，不再更新。
