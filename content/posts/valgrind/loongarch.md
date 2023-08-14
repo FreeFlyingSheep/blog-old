@@ -34,7 +34,7 @@ categories: ["Valgrind"]
 
 ### 后端
 
-前端主要包括三个文件：`VEX/priv/host_loongarch64_defs.h`、`VEX/priv/host_loongarch64_isel.c` 和 `VEX/priv/host_loongarch64_defs.c`。
+后端主要包括三个文件：`VEX/priv/host_loongarch64_defs.h`、`VEX/priv/host_loongarch64_isel.c` 和 `VEX/priv/host_loongarch64_defs.c`。
 
 `host_loongarch64_defs.h` 包括了各种指令的标签（用枚举定义）和结构体定义，方便起见，我直接把指令标签的枚举值定义为指令的操作码。
 
